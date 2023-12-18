@@ -1,0 +1,189 @@
+import Header from "../components/header/Header";
+import Footer from "../components/footer/Footer";
+import { ArrowRightTwoTone } from "@mui/icons-material";
+import { Link } from "react-router-dom";
+import fb from "../assets/icon/fb-btn.svg";
+import gg from "../assets/icon/gp-btn.svg";
+import { FormikHelpers } from "formik/dist/types";
+import { Field, Form, Formik } from "formik";
+import * as Yup from "yup";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { createAccount } from "../redux/action/account";
+import { randomString } from "../utilities";
+
+interface Values {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  password: string;
+}
+
+const initValue = {
+  id: "",
+  firstName: "",
+  lastName: "",
+  phone: "",
+  email: "",
+  password: "",
+};
+
+const SignupSchema = Yup.object().shape({
+  firstName: Yup.string()
+    .min(1, "Họ quá ngắn")
+    .max(10, "Họ quá dài")
+    .required("Đây là bắt buộc"),
+  lastName: Yup.string()
+    .min(1, "Tên quá ngắn")
+    .max(10, "Tên quá dài")
+    .required("Đây là bắt buộc"),
+  password: Yup.string()
+    .min(6, "Mật khẩu tối thiểu phải là 6 kí tự")
+    .max(12, "Mật khẩu phải nhỏ hơn 12 kí tự")
+    .required("Đây là bắt buộc"),
+  phone: Yup.string()
+    .matches(/^[0-9]{10}$/, "Số điện thoại không hợp lệ")
+    .required("Số điện thoại là bắt buộc"),
+  email: Yup.string().email("Email không hợp lệ").required("Đây là bắt buộc"),
+});
+
+const Login = () => {
+  const [showPass, setShowPass] = useState(false);
+  const dispatch = useDispatch();
+  const handleSubmitForm = (
+    values: Values,
+    { setSubmitting, resetForm }: FormikHelpers<Values>
+  ) => {
+    values.id = randomString(12);
+    dispatch(createAccount(values));
+    resetForm();
+    setSubmitting(true);
+  };
+  return (
+    <div className="bg-black">
+      <Header />
+      <div className="mt-20 text-center text-white uppercase text-4xl primary font-bold">
+        <h3>đăng nhập tài khoản</h3>
+        <div>
+          <span className="text-base text-white normal-case">
+            <Link to="/" className="hover:opacity-60">
+              Trang chủ
+            </Link>{" "}
+            <ArrowRightTwoTone /> Đăng ký tài khoản
+          </span>
+        </div>
+      </div>
+      <div className="bg-white mt-20 py-10">
+        <Formik
+          initialValues={initValue}
+          onSubmit={handleSubmitForm}
+          validationSchema={SignupSchema}
+        >
+          {({ errors, touched }) => (
+            <Form action="" className="bg-white  w-1/5 mx-auto p-7 shadow-2xl">
+              <h2 className="uppercase text-2xl font-medium text-center">
+                {" "}
+                Đăng ký
+              </h2>
+              <p className="text-sm mt-2 mb-5 text-center">
+                Đã có tài khoản, đăng nhập<Link to="/login" className="underline"> tại đây</Link>
+              </p>
+              <div className="w-full mb-3">
+                <Field
+                  className="bg-green-50 px-2 py-3 w-full outline-none"
+                  type="text"
+                  name="firstName"
+                  placeholder="Họ"
+                />
+                {errors.firstName && touched.firstName ? (
+                  <div className="text-sm text-red-700">{errors.firstName}</div>
+                ) : null}
+              </div>
+              <div className="w-full mb-3">
+                <Field
+                  className="bg-green-50 px-2 py-3 w-full outline-none"
+                  type="text"
+                  name="lastName"
+                  placeholder="Tên"
+                />
+                {errors.lastName && touched.lastName ? (
+                  <div className="text-sm text-red-700">{errors.lastName}</div>
+                ) : null}
+              </div>
+
+              <div className="w-full mb-3">
+                <Field
+                  className="bg-green-50 px-2 py-3 w-full outline-none"
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                />
+                {errors.email && touched.email ? (
+                  <div className="text-sm text-red-700">{errors.email}</div>
+                ) : null}
+              </div>
+              <div className="w-full mb-3">
+                <Field
+                  className="bg-green-50 px-2 py-3 w-full outline-none"
+                  type="text"
+                  name="phone"
+                  placeholder="Số điện thoại"
+                />
+                {errors.phone && touched.phone ? (
+                  <div className="text-sm text-red-700">{errors.phone}</div>
+                ) : null}
+              </div>
+              <div className="w-full mb-3">
+                <Field
+                  className="bg-green-50 px-2 py-3 w-full outline-none"
+                  type={showPass ? "text" : "password"}
+                  name="password"
+                  placeholder="Mật khẩu"
+                />
+                {errors.password && touched.password ? (
+                  <div className="text-sm text-red-700">{errors.password}</div>
+                ) : null}
+                <div className="flex mb-3">
+                  <input
+                    type="checkbox"
+                    name=""
+                    id="check"
+                    className="mr-1"
+                    checked={showPass}
+                    onChange={() => setShowPass(!showPass)}
+                  />
+                  <label htmlFor="check" className="select-none">
+                    Hiện mật khẩu
+                  </label>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="mb-4 bg-black text-white w-full py-2 font-semibold duration-100 border hover:bg-white hover:border-black hover:text-black"
+              >
+                {" "}
+                Đăng ký
+              </button>
+              <p className="text-sm text-center">Hoặc đăng nhập bằng</p>
+              <div className="flex items-center justify-center mt-4">
+                <a href="" className="block w-2/5 mr-2">
+                  <img src={fb} alt="" />
+                </a>
+                <a href="" className="block w-2/5">
+                  <img src={gg} alt="" />
+                </a>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </div>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default Login;

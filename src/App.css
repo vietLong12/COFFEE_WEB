@@ -1,0 +1,124 @@
+body {
+  background-image: url("assets/bg/slider_1.jpg");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.bg-black-opacity {
+  background-color: rgba(0, 0, 0, 0.562);
+}
+
+.hover-primary:hover {
+  color: #c19977;
+}
+.slider-left::after {
+  content: "";
+  background: url("assets/icon/icon-flash.webp");
+  background-repeat: no-repeat;
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 100px;
+  height: 100px;
+}
+.slider-left {
+  font-family: "Calibri" !important;
+}
+
+.border-primary {
+  border-color: #c19977;
+}
+.productName::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: #c19977;
+  position: absolute;
+  left: -16px;
+  top: 8px;
+  transform: rotate(45deg);
+}
+
+.bg-blur {
+  background-color: #fcf3ec;
+}
+
+.about-us::after {
+  content: "";
+  position: absolute;
+  background-image: url("assets/bg/logo-title.webp");
+  background-repeat: no-repeat;
+  top: -30px;
+  left: 0;
+  width: 200px;
+  height: 200px;
+}
+.about-us::before {
+  content: "";
+  position: absolute;
+  background-image: url("assets/bg/bg-after-title-about.webp");
+  background-repeat: no-repeat;
+  bottom: 0;
+  left: 0;
+  width: 200px;
+  height: 190px;
+}
+.img-aboutUs::after {
+  content: "";
+  position: absolute;
+  background-image: url("assets/bg/before-img-about.webp");
+  background-repeat: no-repeat;
+  background-size: contain;
+  top: 0px;
+  left: -100px;
+  width: 100%;
+  height: 450px;
+  z-index: -9;
+  transform: rotate(-10deg);
+}
+.img-aboutUs::before {
+  content: "";
+  position: absolute;
+  background-image: url("assets/bg/before-img-about.webp");
+  background-repeat: no-repeat;
+  background-size: contain;
+  bottom: 10px;
+  right: -103px;
+  width: 49%;
+  height: 450px;
+  z-index: -9;
+  transform: rotate(207deg);
+}
+
+.service-hover::after {
+  content: "";
+  position: absolute;
+  display: none;
+  top: -10px;
+  left: -10px;
+  width: 228px;
+  height: 228px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+.service-parent:hover .service-hover::after {
+  display: block;
+}
+
+.service-parent h3:hover {
+  opacity: .6;
+}
+
+.input-popup ~ label::after {
+  content: "";
+  width: 20px;
+  height: 20px;
+  border: 1px solid #a9a9a9;
+  position: absolute;
+  top: 4px;
+  left: -20px;
+  border-radius: 5px;
+}
+
+.input-popup:checked ~ label::after {
+  background-image: url(https://bizweb.dktcdn.net/100/451/095/themes/894906/assets/tick-mark.png?1664360071876) ;
+}

@@ -1,0 +1,34 @@
+.bg-image {
+  background-image: url("../../assets/bg/bg-thoi-gian-hoat-dong.webp");
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 100%;
+  height: 1015px;
+}
+
+.bg-inner {
+  background-image: url("../../assets/bg/bg-inner-thoi-gian-hoat-dong.webp");
+  background-repeat: no-repeat;
+  background-position: center top;
+  width: 795px;
+  height: 631px;
+  padding-top: 45px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+.bg-inner a::after {
+  background-image: url("../../assets/logo/logo-title-w.webp");
+}
+
+.bg-inner a::before {
+  background-image: url("../../assets/logo/bg-after-title-w.webp");
+}
+.bg-inner a:hover {
+  color: inherit;
+}
+.hotline {
+  color: #ffc127;
+}
+.hotline:hover {
+  color: #000 !important;
+}

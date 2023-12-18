@@ -1,0 +1,9 @@
+.hello {
+    font-size: 50px;
+}
+.bgLogo {
+    background-image: url("../../assets/icon/bg-logo.webp");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+}
