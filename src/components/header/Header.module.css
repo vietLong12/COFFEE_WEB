@@ -1,9 +1,12 @@
 .hello {
-    font-size: 50px;
+  font-size: 50px;
 }
 .bgLogo {
-    background-image: url("../../assets/icon/bg-logo.webp");
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
+  background-image: url("../../assets/icon/bg-logo.webp");
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 250px;
+  height: 250px;
 }
+
+

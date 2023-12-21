@@ -2,7 +2,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PersonIcon from "@mui/icons-material/Person";
 import HomePageLogo from "./HomePageLogo";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "animate.css";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,15 +10,19 @@ import { RootState } from "../../../redux/reducer";
 import { showCartAction } from "../../../redux/action/showCart";
 import Cart from "./Cart/Cart";
 import AccountTopBar from "../../common/AccountTopBar";
+import NavBar from "../../menu/NavBar";
+import { AuthContext } from "../../../context/authContext";
 
 const HeaderLeft = () => {
+  const auth = useContext(AuthContext);
   const cart = useSelector((store: RootState) => store.cart);
-  const isLoggedIn = useSelector((store: RootState) => store.login);
+  const isLoggedIn = auth?.isLoggedIn;
 
   const [showSearchInput, setShowSearchInput] = useState(false);
-  const showCart = useSelector((store: RootState) => store.showCart);
+  const showCart = auth?.showCart;
   const [showAccount, setShowAccount] = useState(false);
   const [valueInputSearch, setValueInputSearch] = useState("");
+  console.log("valueInputSearch: ", valueInputSearch);
 
   const dispatch = useDispatch();
 
@@ -39,39 +43,38 @@ const HeaderLeft = () => {
   };
 
   const handleCart = () => {
-    dispatch(showCartAction(!showCart));
+    auth?.setShowCart(!auth.showCart);
   };
   return (
-    <div className="w-3/5 mx-auto flex justify-end items-center py-3 relative">
+    <div className="xl:w-3/5 mx-auto flex xl:justify-end justify-between items-center py-3 relative">
+      <NavBar />
       <HomePageLogo />
-
+      <Link to={"/"} className="xl:hidden text-white font-bold text-sm block ">
+        MONSTER <br /> COFFEE
+      </Link>
       {/* Search icon */}
-      <div className="relative" onClick={handleSearchInput}>
+      <div className="relative group" onClick={handleSearchInput}>
         <SearchIcon
           sx={{ fontSize: "40px", color: "white", cursor: "pointer" }}
         />
 
-        {showSearchInput ? (
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="bg-white absolute top-12 right-0 p-2 flex items-center animate__animated animate__bounceIn"
-            style={{ animationDuration: ".5s" }}
-          >
-            <form action="" onSubmit={(e) => handleSearchProduct(e)}>
-              <input
-                type="text"
-                className="focus:outline-none px-2 text-sm"
-                placeholder="Tìm kiếm sản phẩm"
-                onChange={(e) => setValueInputSearch(e.target.value)}
-              />
-              <div className="absolute top-0 right-0 flex justify-center items-center h-full p-1 cursor-pointer">
-                <SearchIcon />
-              </div>
-            </form>
-          </div>
-        ) : (
-          ""
-        )}
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="bg-white absolute top-12 right-0 p-2 hidden items-center animate__animated animate__bounceIn group-hover:flex before:absolute before:-top-4 before:right-0 before:w-20 before:h-4"
+          style={{ animationDuration: ".5s" }}
+        >
+          <form action="" onSubmit={(e) => handleSearchProduct(e)}>
+            <input
+              type="text"
+              className="focus:outline-none px-2 text-sm"
+              placeholder="Tìm kiếm sản phẩm"
+              onChange={(e) => setValueInputSearch(e.target.value)}
+            />
+            <div className="absolute top-0 right-0 flex justify-center items-center h-full p-1 cursor-pointer">
+              <SearchIcon />
+            </div>
+          </form>
+        </div>
       </div>
 
       {/* Cart Icon */}
@@ -96,7 +99,7 @@ const HeaderLeft = () => {
         {showCart ? (
           <div className="bg-black bg-opacity-40 fixed top-0 right-0 left-0 bottom-0 flex items-center justify-center  z-20">
             <div
-              className="bg-white w-1/5 absolute top-0 right-0 animate__animated animate__slideInRight h-full"
+              className="bg-white lg:w-1/5 absolute top-0 right-0 animate__animated animate__slideInRight h-full"
               style={{ animationDuration: "0.5s" }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -110,7 +113,7 @@ const HeaderLeft = () => {
 
       {/* User icon */}
       {!isLoggedIn ? (
-        <div className="relative" onClick={handleAccount}>
+        <div className="relative group" onClick={handleAccount}>
           {" "}
           <PersonIcon
             sx={{
@@ -120,25 +123,23 @@ const HeaderLeft = () => {
               cursor: "pointer",
             }}
           />
-          {showAccount ? (
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="bg-white absolute top-12 left-4 p-2 flex items-center animate__animated animate__bounceIn  w-32 "
-            >
-              <ul>
-                <li>
-                  <Link to="/login">Đăng nhập</Link>
-                </li>
-                <li>
-                  <Link to="/register">Đăng ký</Link>
-                </li>
-              </ul>
-            </div>
-          ) : (
-            ""
-          )}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white absolute xl:top-12 xl:left-4 top-12 right-0 p-2 hidden items-center animate__animated animate__bounceIn  w-32 group-hover:flex before:absolute before:-top-4 before:left-0 before:w-20 before:h-4 "
+          >
+            <ul>
+              <li>
+                <Link to="/login">Đăng nhập</Link>
+              </li>
+              <li>
+                <Link to="/register">Đăng ký</Link>
+              </li>
+            </ul>
+          </div>
         </div>
-      ) : <AccountTopBar/>}
+      ) : (
+        <AccountTopBar />
+      )}
     </div>
   );
 };

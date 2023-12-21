@@ -11,13 +11,10 @@ import RateComponent from "../components/rateComponent/RateComponent";
 import Service from "../components/service/Service";
 import Slider from "../components/slider/Slider";
 
-
 const Home = () => {
   return (
-    <div>
-      <Header />
-      <div className="w-3/5 mx-auto">
-        <NavBar />
+    <div className="bg-home">
+      <div className="xl:w-3/5 xl:mx-auto xl:p-0 ps-4 pe-4 w-full mx-auto ">
         <Slider />
         <AboutUs />
         <Service />
@@ -25,12 +22,10 @@ const Home = () => {
       <MenuToday />
       <RateComponent />
       <OpeningTime />
-      <div className="w-3/5 mx-auto">
+      <div className="xl:w-3/5 mx-auto overflow-hidden">
         <ImageCoffee />
       </div>
       <News />
-      <Footer />
-      <BackToTop />
     </div>
   );
 };

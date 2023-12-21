@@ -1,11 +1,17 @@
-.w-46p{
-    width: 46%;
+.w-46p {
+  width: 46%;
 }
 
-.w-54p{
-    width: 54%;
+.w-54p {
+  width: 54%;
+}
+@media only screen and (max-width: 600px) {
+  .w-54p,.w-46p {
+    width: 100%;
+    margin-bottom: 12px;
+  }
 }
 
 .border-primary {
-    border-color: #c19977;
+  border-color: #c19977;
 }

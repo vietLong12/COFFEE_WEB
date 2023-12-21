@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 import "./listItem.css";
-import { ArrowDropDown, ArrowLeft } from "@mui/icons-material";
+import { ArrowDropDown, ArrowLeft, Circle } from "@mui/icons-material";
 import "animate.css";
+import { Link } from "react-router-dom";
+import { slugify } from "../../utilities";
 
 interface TListItemProps {
   title: string;
   list?: string[];
-  href?: string;
+  href: string;
 }
 const ListItem: React.FC<TListItemProps> = ({ title, list, href }) => {
   const [items, setItems] = useState<string[]>([]);
 
-  const handleShowMenu = () => {
+  const handleShowMenu = (e: React.MouseEvent<HTMLElement>) => {
+    if (list) {
+      e.stopPropagation();
+    }
     if (items.length == 0) {
       list ? setItems(list) : "";
     } else {
@@ -20,14 +25,19 @@ const ListItem: React.FC<TListItemProps> = ({ title, list, href }) => {
   };
   return (
     <li className="mb-2">
-      <a
-        href={href}
-        className={`flex justify-between items-center title ${
+      <Link
+        to={href}
+        className={`flex justify-start items-center title ${
           items.length > 0 ? "primary" : ""
         }`}
-        onClick={handleShowMenu}
+        onClick={(e) => handleShowMenu(e)}
       >
         {title}
+        {href === "live" ? (
+          <Circle fontSize="small" sx={{fontSize: "10px",position: "relative",top: "-5px"}} color="warning" />
+        ) : (
+          ""
+        )}
         {list ? (
           items && items.length !== 0 ? (
             <div>
@@ -41,12 +51,12 @@ const ListItem: React.FC<TListItemProps> = ({ title, list, href }) => {
         ) : (
           ""
         )}
-      </a>
+      </Link>
       {items ? (
         <ul className="ml-6">
           {items.map((item, i) => (
             <li key={i}>
-              <a href="#">{item}</a>
+              <Link to={"/menu/" + slugify(item)}>{item}</Link>
             </li>
           ))}
         </ul>

@@ -14,7 +14,7 @@ const NavBarList: React.FC<TNavBarListProps> = ({ handleOpen }) => {
       onClick={handleOpen}
     >
       <div
-        className="w-1/6 h-screen bg-white animate__animated animate__slideInRight"
+        className="lg:w-1/6 h-screen bg-white animate__animated animate__slideInRight"
         style={{ animationDuration: "0.5s" }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -25,16 +25,13 @@ const NavBarList: React.FC<TNavBarListProps> = ({ handleOpen }) => {
           </button>
         </div>
 
-        <ul className="text-2xl font-bold px-4 py-2">
-          <ListItem title="Trang chủ" href="#" />
-          <ListItem title="Giới thiệu" href="#" />
-          <ListItem
-            title="Menu"
-            href="#"
-            list={["Cà phê", "Trà", "Bánh ngọt"]}
-          />
-          <ListItem title="Tin tức" href="#" />
-          <ListItem title="Liên hệ" href="#" />
+        <ul className="text-2xl font-bold px-4 py-2" onClick={handleOpen}>
+          <ListItem title="Trang chủ" href="/" />
+          <ListItem title="Giới thiệu" href="/gioi-thieu" />
+          <ListItem title="Menu" href="/menu" />
+          <ListItem title="Tin tức" href="tin-tuc" />
+          <ListItem title="Liên hệ" href="lien-he" />
+          <ListItem title="Live" href="live" />
         </ul>
       </div>
     </div>

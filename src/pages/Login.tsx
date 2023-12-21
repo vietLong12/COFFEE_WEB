@@ -1,13 +1,14 @@
-import Header from "../components/header/Header";
-import Footer from "../components/footer/Footer";
-import { ArrowRightTwoTone } from "@mui/icons-material";
-import { Link } from "react-router-dom";
 import fb from "../assets/icon/fb-btn.svg";
 import gg from "../assets/icon/gp-btn.svg";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/action/account";
+import SubHeader from "../components/subHeader/SubHeader";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/authContext";
+import Swal from "sweetalert2";
 
 interface Values {
   email: string;
@@ -20,9 +21,9 @@ const initValue = {
 };
 
 const Login = () => {
-
   const dispatch = useDispatch();
-
+  const auth = useContext(AuthContext);
+  const navigate = useNavigate();
   const SignupSchema = Yup.object().shape({
     password: Yup.string()
       .min(6, "Mật khẩu tối thiểu phải là 6 kí tự")
@@ -31,31 +32,18 @@ const Login = () => {
     email: Yup.string().email("Email không hợp lệ").required("Đây là bắt buộc"),
   });
 
-
   const handleSubmitForm = (
     values: Values,
     { setSubmitting }: FormikHelpers<Values>
   ) => {
-    setTimeout(() => {
-      dispatch(login(values))
-      setSubmitting(false);
-    }, 500);
+    auth?.setLoggedIn(true);
+    navigate("/")
+    setSubmitting(false);
   };
 
   return (
     <div className="bg-black">
-      <Header />
-      <div className="mt-20 text-center text-white uppercase text-4xl primary font-bold">
-        <h3>đăng nhập tài khoản</h3>
-        <div>
-          <span className="text-base text-white normal-case">
-            <Link to="/" className="hover:opacity-60">
-              Trang chủ
-            </Link>{" "}
-            <ArrowRightTwoTone /> Đăng nhập tài khoản
-          </span>
-        </div>
-      </div>
+      <SubHeader heading={"Đăng nhập"} />
       <div className="bg-white mt-20 py-10">
         <Formik
           initialValues={initValue}
@@ -64,14 +52,16 @@ const Login = () => {
         >
           {({ errors, touched }) => {
             return (
-              <Form className="bg-white  w-1/5 mx-auto p-7 shadow-2xl">
-                <h2 className="uppercase text-2xl font-medium text-center">
+              <Form className="bg-white xl:w-1/5 lg:w-2/5 mx-auto p-7 shadow-2xl">
+                <h2 className="uppercase text-2xl font-medium text-center mt-10">
                   {" "}
                   Đăng nhập
                 </h2>
                 <p className="text-sm mt-2 mb-5">
                   Nếu bạn chưa có tài khoản,{" "}
-                  <Link to="/register" className="underline">hãy đăng ký tại đây</Link>
+                  <Link to="/register" className="underline">
+                    hãy đăng ký tại đây
+                  </Link>
                 </p>
                 <div className="w-full mb-3">
                   <Field
@@ -121,8 +111,6 @@ const Login = () => {
           }}
         </Formik>
       </div>
-
-      <Footer />
     </div>
   );
 };

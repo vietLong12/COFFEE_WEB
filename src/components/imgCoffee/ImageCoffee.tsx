@@ -9,10 +9,10 @@ const ImageCoffee = () => {
   return (
     <div>
       <div className="font-bold tracking-tighter">
-        <Heading title="Hình ảnh monster quán" />
+        <Heading title="Hình ảnh monster quán" href="/hinh-anh-monster-coffee" />
       </div>
       <div>
-        <div className="flex flex-row text-center mt-20 justify-between">
+        <div className="flex  flex-row text-center mt-20 justify-between">
           <a href="#" className="block basis-2/3">
             <img src={img1} className="max-w-none" alt="" />
           </a>

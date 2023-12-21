@@ -2,17 +2,23 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../redux/reducer";
 import { ProductCart } from "../../../../Types";
 import Swal from "sweetalert2";
-import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../../../context/authContext";
 
 const Cart = ({}) => {
+  const auth = useContext(AuthContext);
   const cart: ProductCart[] = useSelector((store: RootState) => store.cart);
-  const isLoggedIn: boolean = useSelector((store: RootState) => store.login);
+  const isLoggedIn = auth?.isLoggedIn;
+  let navigate = useNavigate();
+
   const handleOrder = () => {
-    if(isLoggedIn){
-      console.log(cart);
+    if (isLoggedIn) {
+      navigate("/order");
+      auth?.setShowCart(false);
     } else {
-      Swal.fire("Vui lòng đăng nhập trước khi đặt hàng")
-      redirect("/login");
+      auth?.setShowCart(false);
+      navigate("/order");
     }
   };
 
@@ -67,7 +73,10 @@ const Cart = ({}) => {
               .000đ
             </span>
           </div>
-          <button onClick={handleOrder} className="uppercase w-full py-2 text-center bg-red-600 text-white font-bold">
+          <button
+            onClick={handleOrder}
+            className="uppercase w-full py-2 text-center bg-red-600 text-white font-bold"
+          >
             đặt hàng
           </button>
         </>

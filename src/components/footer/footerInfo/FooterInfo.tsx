@@ -1,5 +1,5 @@
 import {
-    Call,
+  Call,
   Email,
   Facebook,
   Instagram,
@@ -13,9 +13,11 @@ import logoFooter from "../../../assets/logo/logo-footer.webp";
 const FooterInfo = () => {
   return (
     <>
-      <div className="flex uppercase text-white w-3/5 mx-auto mt-10">
-        <div className="py-6 w-46p mr-10">
-          <img src={logoFooter} alt="" className="mb-8" />
+      <div className="flex lg:flex-row flex-col uppercase text-white xl:w-3/5 mx-auto mt-10 xl:px-0 px-8">
+        <div className="py-6 w-46p mr-10  ">
+          <div className="flex xl:justify-start justify-center">
+            <img src={logoFooter} alt="" className="mb-8" />
+          </div>{" "}
           <p className="normal-case mb-5">
             Monster Coffee mong rằng chúng tôi luôn mang đến cho khách hàng
             những trải nghiệm tốt nhất, tạo ra những khoảnh khắc khó quên khi
@@ -60,40 +62,68 @@ const FooterInfo = () => {
           </div>
         </div>
 
-        <div className="w-54p relative mt-6 normal-case
-        ">
+        <div
+          className="w-54p relative mt-6 normal-case
+        "
+        >
           <div className="text-base">
             <h6 className="uppercase primary text-2xl font-semibold mb-4">
               Hệ thống cửa hàng
             </h6>
             <div className="flex items-center mb-2">
-              <LocationOnIcon fontSize="small" sx={{ color: "#c19977", marginRight: "6px" }} />
+              <LocationOnIcon
+                fontSize="small"
+                sx={{ color: "#c19977", marginRight: "6px" }}
+              />
               CN1: Tầng 6 toà nhà Ladeco, 266 Đội Cấn, phường Liễu Giai, Hà Nội,
               Việt Nam
             </div>
             <div className="flex items-center">
-              <LocationOnIcon fontSize="small" sx={{ color: "#c19977", marginRight: "6px" }} />
+              <LocationOnIcon
+                fontSize="small"
+                sx={{ color: "#c19977", marginRight: "6px" }}
+              />
               CN2: Toà nhà Lữ Gia, 70 Lữ Gia, phường 15, quận 11, TP. HCM, Việt
               Nam
             </div>
           </div>
 
           <div className="text-base">
-            <h6 className="uppercase primary text-2xl font-semibold mb-4 mt-10">Liên hệ</h6>
+            <h6 className="uppercase primary text-2xl font-semibold mb-4 mt-10">
+              Liên hệ
+            </h6>
             <div className="flex items-center mb-2">
-              <Call fontSize="small" sx={{ color: "#c19977", marginRight: "6px" }} />
-              Hotline đặt hàng: <a href="" className="ml-2">19006750</a>
+              <Call
+                fontSize="small"
+                sx={{ color: "#c19977", marginRight: "6px" }}
+              />
+              Hotline đặt hàng:{" "}
+              <a href="" className="ml-2">
+                19006750
+              </a>
             </div>
             <div className="flex items-center">
-              <Email fontSize="small" sx={{ color: "#c19977", marginRight: "6px" }} />
-              Email: <a href="" className="ml-2">support@monster.vn</a>
+              <Email
+                fontSize="small"
+                sx={{ color: "#c19977", marginRight: "6px" }}
+              />
+              Email:{" "}
+              <a href="" className="ml-2">
+                support@monster.vn
+              </a>
             </div>
             <div className="flex items-center">
-              <Email fontSize="small" sx={{ color: "transparent", marginRight: "6px" }} />
+              <Email
+                fontSize="small"
+                sx={{ color: "transparent", marginRight: "6px" }}
+              />
               Thứ 2 - Thứ 6: 7am - 10pm
             </div>
             <div className="flex items-center">
-              <Email fontSize="small" sx={{ color: "transparent", marginRight: "6px" }} />
+              <Email
+                fontSize="small"
+                sx={{ color: "transparent", marginRight: "6px" }}
+              />
               Thứ 7 - Chủ nhật: 8am - 9pm
             </div>
           </div>

@@ -1,38 +1,36 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
-import { login, logout } from "../../redux/action/account";
+import { AuthContext } from "../../context/authContext";
 
 const AccountTopBar = () => {
-  const [showInfoAccount, setShowInfoAccount] = useState(false);
-  const dispatch = useDispatch()
+  const auth = useContext(AuthContext);
   return (
-    <div className="relative ml-4">
+    <div className="relative group ml-4">
       <img
         src="https://bom.so/vAwaUU"
         className="rounded-full w-9 h-9 cursor-pointer"
         alt=""
-        onClick={() => setShowInfoAccount(!showInfoAccount)}
       />
 
-      {showInfoAccount ? (
-        <div
-          onClick={(e) => e.stopPropagation()}
-          className=" bg-white absolute top-12 right-0 p-2 flex items-center w-28 animate__animated animate__bounceIn"
-          style={{ animationDuration: ".5s" }}
-        >
-          <ul>
-            <li>
-              <Link to="/information">Tài khoản</Link>
-            </li>
-            <li>
-              <a href="javascript:void(0)" onClick={() => dispatch(logout())}  >Đăng xuất</a>
-            </li>
-          </ul>
-        </div>
-      ) : (
-        ""
-      )}
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className=" bg-white absolute top-12 right-0 p-2 hidden items-center w-28 animate__animated animate__bounceIn group-hover:flex before:absolute before:-top-4 before:right-0 before:w-20 before:h-4 "
+        style={{ animationDuration: ".5s" }}
+      >
+        <ul>
+          <li>
+            <Link to="/information">Tài khoản</Link>
+          </li>
+          <li>
+            <a
+              href="javascript:void(0)"
+              onClick={() => auth?.setLoggedIn(false)}
+            >
+              Đăng xuất
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };

@@ -2,9 +2,10 @@ import { useState } from "react";
 import { AddRounded, StarRateRounded } from "@mui/icons-material";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 import data from "../../data/data";
-import { getRandomNumber } from "../../utilities";
+import { getRandomNumber, slugify } from "../../utilities";
 import { TProduct } from "../../Types";
 import PopUp from "../common/PopUp";
+import { Link } from "react-router-dom";
 
 const Slider = () => {
   const arr = [
@@ -39,9 +40,9 @@ const Slider = () => {
     return <div>{stars}</div>;
   };
   return (
-    <div className="text-white flex justify-between mt-40 h-auto">
+    <div className="text-white flex justify-between pt-40 h-auto">
       <div
-        className="flex flex-col items-center mx-auto w-5/12 justify-center  text-2xl
+        className="hidden xl:flex flex-col items-center mx-auto w-5/12 justify-center  text-2xl
          font-medium"
       >
         <p className="bg-white text-black hover-primary font-bold uppercase text-3xl px-4 py-2 cursor-pointer slider-left w-96 text-center mb-4 duration-200 relative">
@@ -61,7 +62,7 @@ const Slider = () => {
           Đặt hàng ngay
         </button>
       </div>
-      <ul className="w-6/12">
+      <ul className="xl:w-6/12 w-full mt-5 lg:mt-0">
         {list.map((item, i) => {
           return (
             <li key={i} className="flex bg-blur mb-4 p-2">
@@ -74,12 +75,13 @@ const Slider = () => {
               />
               <div className="w-full">
                 <div className="primary flex justify-between text-xl font-bold items-center">
-                  <h3
+                  <Link
+                    to={"/detail-product/" + slugify(item.productName)}
                     className="cursor-pointer ml-4 uppercase productName relative hover:text-black
                   "
                   >
                     {item.productName}
-                  </h3>
+                  </Link>
                   {!item.inStock ? (
                     <p className="">Liên hệ</p>
                   ) : (

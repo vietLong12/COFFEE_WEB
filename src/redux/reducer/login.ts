@@ -1,6 +1,6 @@
 import Swal from "sweetalert2";
 import { Account } from "../../Types";
-import { CREATE_ACCOUNT, LOGIN, LOGOUT } from "../constant";
+import { LOGIN, LOGOUT } from "../constant";
 
 const listAccountLS: Account[] = JSON.parse(
   localStorage.getItem("accounts") as string

@@ -5,8 +5,8 @@ import s from "../Header.module.css";
 
 const HomePageLogo = () => {
   return (
-    <div className={`absolute top-0 left-0 w-1/5 pb-5 ${s.bgLogo}`}>
-      <div className="flex items-center justify-start mt-3 ps-4 ">
+    <div className={`hidden lg:block absolute top-0 left-0 ${s.bgLogo}`}>
+      <div className="flex items-center justify-start mt-3 ms-4">
         <img src={deliveryMan} alt="" className="mr-2 ml-3" />
         <div>
           <p className="text-xs">Gọi ngay</p>
@@ -18,7 +18,7 @@ const HomePageLogo = () => {
           </a>
         </div>
       </div>
-      <Link to="/" className="mt-6 flex justify-center">
+      <Link to="/" className="flex justify-center w-220px">
         <img src={logo} alt="" />
       </Link>
     </div>

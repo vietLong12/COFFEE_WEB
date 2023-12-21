@@ -1,7 +1,4 @@
 body {
-  background-image: url("assets/bg/slider_1.jpg");
-  background-repeat: no-repeat;
-  background-size: contain;
 }
 .bg-black-opacity {
   background-color: rgba(0, 0, 0, 0.562);
@@ -57,7 +54,7 @@ body {
   position: absolute;
   background-image: url("assets/bg/bg-after-title-about.webp");
   background-repeat: no-repeat;
-  bottom: 0;
+  top: 50px;
   left: 0;
   width: 200px;
   height: 190px;
@@ -89,6 +86,13 @@ body {
   transform: rotate(207deg);
 }
 
+@media only screen and (max-width: 1024px) {
+  .img-aboutUs::before,
+  .img-aboutUs::before {
+    display: none;
+  }
+}
+
 .service-hover::after {
   content: "";
   position: absolute;
@@ -105,7 +109,7 @@ body {
 }
 
 .service-parent h3:hover {
-  opacity: .6;
+  opacity: 0.6;
 }
 
 .input-popup ~ label::after {
@@ -120,5 +124,86 @@ body {
 }
 
 .input-popup:checked ~ label::after {
-  background-image: url(https://bizweb.dktcdn.net/100/451/095/themes/894906/assets/tick-mark.png?1664360071876) ;
+  background-image: url(https://bizweb.dktcdn.net/100/451/095/themes/894906/assets/tick-mark.png?1664360071876);
+}
+
+.bg-home {
+  background-image: url("assets/bg/slider_1.jpg");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.w-220px {
+  width: 220px;
+}
+.input-detailt-product input {
+  outline: none;
+  border: 1px solid black;
+  padding: 8px;
+  padding-left: 44px;
+  position: relative;
+  width: 100%;
+  color: #333;
+}
+.input-detailt-product::after {
+  content: "";
+  position: absolute;
+  background-image: url("/public/pencil.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  top: 14px;
+  left: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+.form-contact input,
+.form-contact textarea {
+  outline: none;
+  border: 1px solid #c19977;
+  padding: 8px 25px;
+  border-radius: 10px;
+  font-size: 16px;
+  margin-bottom: 45px;
+  width: 100%;
+}
+
+.list-style::before {
+  content: "";
+  width: 13px;
+  height: 13px;
+  background: #000;
+  position: absolute;
+  left: -24px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.MuiInputBase-root {
+  background-color: white !important;
+}
+
+.dropdown-custom .MuiSelect-select {
+  padding: 5px 10px;
+  font-size: 14px;
+}
+
+.dropdown-custom label {
+  font-size: 14px;
+}
+
+ul.MuiList-root {
+  height: 200px;
+}
+
+input.MuiInputBase-input {
+  padding: 5px 10px;
+}
+.text-input label.MuiFormLabel-root,
+.text-input legend {
+  font-size: 14px;
+}
+
+.hidden-label label.MuiFormLabel-root,
+.text-input legend {
+  display: none;
 }

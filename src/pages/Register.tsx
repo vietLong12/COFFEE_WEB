@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createAccount } from "../redux/action/account";
 import { randomString } from "../utilities";
+import SubHeader from "../components/subHeader/SubHeader";
 
 interface Values {
   id: string;
@@ -63,18 +64,7 @@ const Login = () => {
   };
   return (
     <div className="bg-black">
-      <Header />
-      <div className="mt-20 text-center text-white uppercase text-4xl primary font-bold">
-        <h3>đăng nhập tài khoản</h3>
-        <div>
-          <span className="text-base text-white normal-case">
-            <Link to="/" className="hover:opacity-60">
-              Trang chủ
-            </Link>{" "}
-            <ArrowRightTwoTone /> Đăng ký tài khoản
-          </span>
-        </div>
-      </div>
+      <SubHeader  heading="Đăng ký tài khoản"/>
       <div className="bg-white mt-20 py-10">
         <Formik
           initialValues={initValue}
@@ -82,13 +72,17 @@ const Login = () => {
           validationSchema={SignupSchema}
         >
           {({ errors, touched }) => (
-            <Form action="" className="bg-white  w-1/5 mx-auto p-7 shadow-2xl">
+            <Form action="" className="bg-white lg:w-2/5 xl:w-1/5 mx-auto p-7 shadow-2xl">
               <h2 className="uppercase text-2xl font-medium text-center">
                 {" "}
                 Đăng ký
               </h2>
               <p className="text-sm mt-2 mb-5 text-center">
-                Đã có tài khoản, đăng nhập<Link to="/login" className="underline"> tại đây</Link>
+                Đã có tài khoản, đăng nhập
+                <Link to="/login" className="underline">
+                  {" "}
+                  tại đây
+                </Link>
               </p>
               <div className="w-full mb-3">
                 <Field
@@ -180,8 +174,6 @@ const Login = () => {
           )}
         </Formik>
       </div>
-
-      <Footer />
     </div>
   );
 };

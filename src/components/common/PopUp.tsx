@@ -27,17 +27,20 @@ const PopUp: React.FC<TPopUpProps> = ({ item, setShowDetail }) => {
         note,
         size,
         quantity,
-        total: quantity * item.price
+        total: quantity * item.price,
       };
       dispatch(addProductToCart(productAddToCart));
-      setShowDetail(false)
+      setShowDetail(false);
     }
+  };
+  const handleChangeSize = (size: string) => {
+    setSize(size);
   };
 
   return (
-    <div className="bg-black bg-opacity-50 fixed top-0 left-0 right-0 bottom-0 text-black  ">
+    <div className="bg-black bg-opacity-50 fixed top-0 left-0 right-0 bottom-0 text-black  z-50">
       <div
-        className="bg-white rounded-lg w-1/3 mx-auto mt-20 p-5 relative animate__animated animate__backInDown"
+        className="bg-white rounded-lg xl:w-1/3 xl:mx-auto mx-3 mt-20 p-5 relative animate__animated animate__backInDown"
         style={{ animationDuration: ".5s" }}
       >
         <div
@@ -59,13 +62,13 @@ const PopUp: React.FC<TPopUpProps> = ({ item, setShowDetail }) => {
           <hr />
           <div className="py-2">
             <p className="font-medium text-xl">Size:</p>
-            <div className="flex justify-between w-1/4 mt-2 ml-10">
+            <div className="xl:flex justify-between w-1/4 mt-2 ml-10">
               {item?.size.map((size, index) => {
                 return (
                   <div key={index} className="relative">
                     <input
                       type="radio"
-                      onChange={() => setSize(size)}
+                      onClick={() => handleChangeSize(size)}
                       className="input-popup hidden"
                       name="size"
                       id={`option${index + 1}`}
@@ -92,8 +95,8 @@ const PopUp: React.FC<TPopUpProps> = ({ item, setShowDetail }) => {
             />
           </div>
           <hr />
-          <div className="flex justify-around pt-4">
-            <div className="flex items-center">
+          <div className="xl:flex block justify-around pt-4">
+            <div className="flex items-center mb-8 xl:mb-0">
               <button
                 className="mr-1 p-0 w-6 h-6 bg-green-600 text-center text-xl inline-flex justify-center items-center text-white"
                 onClick={() => (quantity <= 1 ? 1 : setQuantity(quantity - 1))}
