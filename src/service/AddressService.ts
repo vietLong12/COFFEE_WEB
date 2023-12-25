@@ -6,7 +6,7 @@ const request = axios.create({
 
 export class AddressService {
   static getListCity = async () => {
-    const respone = await request.get("/");
+    const respone = await request.get("/?depth=3");
     return respone.data;
   };
   static getDistrictByCityCode = async (cityCode: string) => {

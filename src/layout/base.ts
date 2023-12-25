@@ -8,6 +8,7 @@ import News from "../pages/News";
 import Contact from "../pages/Contact";
 import MenuPage from "../pages/menu/MenuPage";
 import Order from "../pages/Order";
+import TransactionNotification from "../pages/TransactionNotification";
 
 interface TBaseLayout {
   path: string;
@@ -50,5 +51,9 @@ export const baseLayout: TBaseLayout[] = [
   {
     path: "order",
     element: Order,
+  },
+  {
+    path: "order/alert",
+    element: TransactionNotification,
   },
 ];

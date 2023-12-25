@@ -19,7 +19,8 @@ module.exports = {
         "primary-same": "#e6c5a9"
       },
       minHeight: {
-        "custom-h-60px": "60px"
+        "custom-h-60px": "60px",
+        "140px": "140px",
       }, screens: {
         "laptop-small": "1500px"
       }

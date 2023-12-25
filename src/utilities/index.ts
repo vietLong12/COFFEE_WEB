@@ -71,3 +71,4 @@ export function makeTitle(slug: string) {
 
   return words.join(" ");
 }
+
