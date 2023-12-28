@@ -19,15 +19,10 @@ const AccountTopBar = () => {
       >
         <ul>
           <li>
-            <Link to="/information">Tài khoản</Link>
+            <Link to="/account">Tài khoản</Link>
           </li>
           <li>
-            <a
-              href="javascript:void(0)"
-              onClick={() => auth?.setLoggedIn(false)}
-            >
-              Đăng xuất
-            </a>
+            <button onClick={() => auth?.setLoggedIn(false)}>Đăng xuất</button>
           </li>
         </ul>
       </div>

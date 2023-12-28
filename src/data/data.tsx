@@ -1,3 +1,4 @@
+import { Account } from "../Types";
 import { getRandomNumber } from "../utilities";
 
 const data = [
@@ -352,3 +353,64 @@ export const dataUserReview = [
   // Thêm các đối tượng khác ở đây...
 ];
 
+export const account: Account[] = [
+  {
+    cart: {
+      items: [
+        {
+          productId: data[1].id.toString(),
+          quantity: 3,
+          _id: "111",
+        },
+        {
+          productId: data[10].id.toString(),
+          quantity: 4,
+          _id: "112",
+        },
+      ],
+    },
+    _id: "_122",
+    username: "Nguyễn Việt Long",
+    password: "123123",
+    avatar:
+      "https://images.unsplash.com/photo-1575936123452-b67c3203c357?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D",
+    email: "longnv223@gmail.com",
+    phone: "0979001085",
+    createdAt: new Date("27/12/2023").toString(),
+    updatedAt: new Date().toString(),
+    address: [
+      {
+        homeAddress: "148 Nguyen Trai",
+        city: {
+          code: 1,
+          name: "Hà Nội",
+        },
+        district: {
+          code: 1,
+          name: "Quận Ba Đình",
+        },
+        ward: {
+          code: 4,
+          name: "Phường Trúc Bạch",
+        },
+        defaultAddress: true,
+      },
+      {
+        homeAddress: "148 Nguyen Trai",
+        city: {
+          code: 2,
+          name: "Hà Nội",
+        },
+        district: {
+          code: 3,
+          name: "Quận Ba Đình",
+        },
+        ward: {
+          code: 4,
+          name: "Phường Địa chỉ 2",
+        },
+        defaultAddress: false,
+      },
+    ],
+  },
+];

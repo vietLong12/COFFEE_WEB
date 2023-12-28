@@ -8,6 +8,7 @@ interface SubHeaderProps {
 const SubHeader = ({ heading }: SubHeaderProps) => {
   let matches = useLocation().pathname.split("/");
   matches = matches.map((path) => {
+    console.log("path: ", path);
     switch (path) {
       case "login":
         return "Đăng nhập";
@@ -15,6 +16,14 @@ const SubHeader = ({ heading }: SubHeaderProps) => {
         return "Đăng ký";
       case "detail-product":
         return "Chi tiết sản phẩm";
+      case "so-dia-chi":
+        return "Sổ địa chỉ";
+      case "doi-mat-khau":
+        return "Đổi mật khẩu";
+      case "don-hang":
+        return "Đơn hàng của tôi";
+      case "":
+        return path;
       default:
         return path;
     }
@@ -27,8 +36,12 @@ const SubHeader = ({ heading }: SubHeaderProps) => {
           <Link to="/" className="hover:opacity-60 uppercase">
             Trang chủ
           </Link>{" "}
-          <ArrowRightTwoTone /> <p className="inline-block uppercase">{heading}</p>
+          <ArrowRightTwoTone />{" "}
+          <p className="inline-block uppercase">{heading}</p>
           {matches.splice(2).map((item, i) => {
+            if (item === "") {
+              return "";
+            }
             return (
               <span key={i} className="uppercase">
                 <ArrowRightTwoTone /> {item}

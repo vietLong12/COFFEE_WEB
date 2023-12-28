@@ -9,6 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import Swal from "sweetalert2";
+import { account } from "../data/data";
 
 interface Values {
   email: string;
@@ -21,7 +22,6 @@ const initValue = {
 };
 
 const Login = () => {
-  const dispatch = useDispatch();
   const auth = useContext(AuthContext);
   const navigate = useNavigate();
   const SignupSchema = Yup.object().shape({
@@ -36,9 +36,21 @@ const Login = () => {
     values: Values,
     { setSubmitting }: FormikHelpers<Values>
   ) => {
-    auth?.setLoggedIn(true);
-    navigate("/")
-    setSubmitting(false);
+    const user = account.filter((user) => user.email === values.email);
+    if (user.length > 0) {
+      auth?.setLoggedIn(true);
+      auth?.setCart(user[0].cart.items);
+      auth?.setUserData({
+        address: user[0].address,
+        email: user[0].email,
+        phone: user[0].phone,
+        username: user[0].username,
+      });
+      navigate("/");
+      setSubmitting(false);
+    } else {
+      Swal.fire({ title: "Đăng nhập thất bại", icon: "error" });
+    }
   };
 
   return (

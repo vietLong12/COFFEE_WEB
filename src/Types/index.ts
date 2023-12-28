@@ -30,11 +30,58 @@ export interface ProductCart {
   total: number;
 }
 
-export interface Account{
-  id: string;
-  firstName: string;
-  lastName: string;
+//27/12/2023
+interface CartItem {
+  productId: string;
+  quantity: number;
+  _id: string;
+}
+
+export interface Address {
+  homeAddress?: string;
+  city?: {
+    code: number;
+    name: string;
+  };
+  district?: {
+    code: number;
+    name: string;
+  };
+  ward?: {
+    code: number;
+    name: string;
+  };
+  defaultAddress?: boolean;
+}
+
+export interface Account {
+  cart: {
+    items: CartItem[];
+  };
+  _id: string;
+  username: string;
+  password: string;
+  avatar: string;
   email: string;
   phone: string;
-  password: string;
+  createdAt: string;
+  updatedAt: string;
+  address: Address[];
+}
+
+export interface UserTransfer {
+  username: string;
+  email: string;
+  phone: string;
+  address: Address[];
+}
+
+export interface OrderType {
+  _id: string | number;
+  orderDate: string;
+  address: Address | undefined;
+  priceTotal: number;
+  status: boolean;
+  shippingStatus: boolean;
+  email: string;
 }

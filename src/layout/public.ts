@@ -9,13 +9,15 @@ import Contact from "../pages/Contact";
 import MenuPage from "../pages/menu/MenuPage";
 import Order from "../pages/Order";
 import TransactionNotification from "../pages/TransactionNotification";
+import Account from "../pages/Account";
+import NotFound from "../pages/NotFound";
 
 interface TBaseLayout {
   path: string;
   element: React.FC;
 }
 
-export const baseLayout: TBaseLayout[] = [
+export const publicLayout: TBaseLayout[] = [
   {
     path: "/",
     element: Home,
@@ -55,5 +57,9 @@ export const baseLayout: TBaseLayout[] = [
   {
     path: "order/alert",
     element: TransactionNotification,
+  },
+  {
+    path: "*",
+    element: NotFound,
   },
 ];
