@@ -51,7 +51,7 @@ const Order = () => {
       submitForm.current.isValid
     ) {
       console.log(submitForm.current.submitForm());
-      navigate("/order/alert")
+      navigate("/order/alert");
     }
   };
   useEffect(() => {
@@ -76,27 +76,13 @@ const Order = () => {
 
   useEffect(() => {
     AddressService.getListCity().then((listCity) => {
-      if (listCity) {
-        listCity = listCity.map((city: any) => {
-          return {
-            value: city.name,
-            code: city.code,
-          };
-        });
-        setCity(listCity);
-      }
+      setCity(listCity);
     });
   }, []);
   useEffect(() => {
     AddressService.getDistrictByCityCode(citySelected).then((listDistrict) => {
       let data = listDistrict.districts;
       if (data) {
-        data = data.map((district: any) => {
-          return {
-            value: district.name,
-            code: district.code,
-          };
-        });
         setDistrict(data);
       }
     });
@@ -105,12 +91,6 @@ const Order = () => {
     AddressService.getWardByDicstrictCode(districtSelected).then((listWard) => {
       let data = listWard.wards;
       if (data) {
-        data = data.map((ward: any) => {
-          return {
-            value: ward.name,
-            code: ward.code,
-          };
-        });
         setWard(data);
       }
     });

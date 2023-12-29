@@ -40,7 +40,7 @@ const MyOrder = () => {
 
   return (
     <div>
-      <h2 className="text-2xl uppercase">đơn hàng của bạn</h2>
+      <h2 className="text-2xl uppercase mb-4">đơn hàng của bạn</h2>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>

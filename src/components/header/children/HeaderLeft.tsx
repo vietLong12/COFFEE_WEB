@@ -4,7 +4,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import HomePageLogo from "./HomePageLogo";
 import { useContext, useState } from "react";
 import "animate.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/reducer";
 import { showCartAction } from "../../../redux/action/showCart";
@@ -22,9 +22,7 @@ const HeaderLeft = () => {
   const showCart = auth?.showCart;
   const [showAccount, setShowAccount] = useState(false);
   const [valueInputSearch, setValueInputSearch] = useState("");
-  console.log("valueInputSearch: ", valueInputSearch);
-
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSearchInput = () => {
     setShowSearchInput(!showSearchInput);
@@ -44,6 +42,14 @@ const HeaderLeft = () => {
 
   const handleCart = () => {
     auth?.setShowCart(!auth.showCart);
+  };
+  const handleSearch = () => {
+    navigate("/search?q=" + valueInputSearch);
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
   };
   return (
     <div className="xl:w-3/5 mx-auto flex xl:justify-end justify-between items-center py-3 relative">
@@ -68,9 +74,13 @@ const HeaderLeft = () => {
               type="text"
               className="focus:outline-none px-2 text-sm"
               placeholder="Tìm kiếm sản phẩm"
+              onKeyDown={(event) => handleKeyDown(event)}
               onChange={(e) => setValueInputSearch(e.target.value)}
             />
-            <div className="absolute top-0 right-0 flex justify-center items-center h-full p-1 cursor-pointer">
+            <div
+              className="absolute top-0 right-0 flex justify-center items-center h-full p-1 cursor-pointer"
+              onClick={handleSearch}
+            >
               <SearchIcon />
             </div>
           </form>

@@ -1,7 +1,7 @@
 import { InputLabel, MenuItem, Select } from "@mui/material";
 
 interface ValueProps {
-  value: string;
+  name: string;
   code: string;
 }
 
@@ -9,7 +9,7 @@ interface DropDownProps {
   label: string;
   setValue: (data: any) => void;
   value: ValueProps[];
-  dataSelected: string;
+  dataSelected: string | undefined | number;
 }
 
 const DropDown = ({ label, value, setValue, dataSelected }: DropDownProps) => {
@@ -28,7 +28,7 @@ const DropDown = ({ label, value, setValue, dataSelected }: DropDownProps) => {
         {value.map((item, index) => {
           return (
             <MenuItem key={index} value={item.code}>
-              {item.value}
+              {item.name}
             </MenuItem>
           );
         })}

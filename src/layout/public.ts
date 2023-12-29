@@ -11,6 +11,7 @@ import Order from "../pages/Order";
 import TransactionNotification from "../pages/TransactionNotification";
 import Account from "../pages/Account";
 import NotFound from "../pages/NotFound";
+import SearchPage from "../pages/SearchPage";
 
 interface TBaseLayout {
   path: string;
@@ -61,5 +62,9 @@ export const publicLayout: TBaseLayout[] = [
   {
     path: "*",
     element: NotFound,
+  },
+  {
+    path: "/search",
+    element: SearchPage,
   },
 ];

@@ -398,16 +398,16 @@ export const account: Account[] = [
       {
         homeAddress: "148 Nguyen Trai",
         city: {
-          code: 2,
-          name: "Hà Nội",
+          code: 4,
+          name: "Tỉnh Cao Bằng",
         },
         district: {
-          code: 3,
-          name: "Quận Ba Đình",
+          code: 40,
+          name: "Thành phố Cao Bằng",
         },
         ward: {
-          code: 4,
-          name: "Phường Địa chỉ 2",
+          code: 1270,
+          name: "Phường Sông Bằng",
         },
         defaultAddress: false,
       },

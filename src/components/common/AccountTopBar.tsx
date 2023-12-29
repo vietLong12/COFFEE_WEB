@@ -22,7 +22,7 @@ const AccountTopBar = () => {
             <Link to="/account">Tài khoản</Link>
           </li>
           <li>
-            <button onClick={() => auth?.setLoggedIn(false)}>Đăng xuất</button>
+            <Link to={"/"} onClick={() => auth?.setLoggedIn(false)}>Đăng xuất</Link>
           </li>
         </ul>
       </div>
