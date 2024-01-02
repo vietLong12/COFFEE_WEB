@@ -45,6 +45,7 @@ const HeaderLeft = () => {
   };
   const handleSearch = () => {
     navigate("/search?q=" + valueInputSearch);
+    setShowSearchInput(false);
   };
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -66,7 +67,7 @@ const HeaderLeft = () => {
 
         <div
           onClick={(e) => e.stopPropagation()}
-          className="bg-white absolute top-12 right-0 p-2 hidden items-center animate__animated animate__bounceIn group-hover:flex before:absolute before:-top-4 before:right-0 before:w-20 before:h-4"
+          className="bg-white absolute top-12 xl:right-0 p-2 hidden items-center animate__animated animate__bounceIn group-hover:flex before:absolute before:-top-4 before:right-0 before:w-20 before:h-4"
           style={{ animationDuration: ".5s" }}
         >
           <form action="" onSubmit={(e) => handleSearchProduct(e)}>
@@ -74,7 +75,7 @@ const HeaderLeft = () => {
               type="text"
               className="focus:outline-none px-2 text-sm"
               placeholder="Tìm kiếm sản phẩm"
-              onKeyDown={(event) => handleKeyDown(event)}
+              onKeyPress={(event) => handleKeyDown(event)}
               onChange={(e) => setValueInputSearch(e.target.value)}
             />
             <div

@@ -74,8 +74,9 @@ export const privateLayout: TBaseLayout[] = [
       { path: "so-dia-chi", element: MyAddress },
     ],
   },
-  // {
-  //   path: "*",
-  //   element: NotFound,
-  // },
+  {
+    path: "*",
+    element: NotFound,
+    childRoute: [],
+  },
 ];

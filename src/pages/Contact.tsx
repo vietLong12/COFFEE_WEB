@@ -8,8 +8,8 @@ const Contact = () => {
   return (
     <div className="bg-primary-100">
       <SubHeader heading="liên hệ" />
-      <div className="mx-auto w-3/5 bg-white p-6 pt-8 mt-10 rounded-xl border">
-        <div className="grid grid-cols-4 gap-4 mb-40">
+      <div className="xl:mx-auto xl:w-3/5  bg-white p-6 pt-8 mt-10 mx-6 rounded-xl border">
+        <div className="grid xl:grid-cols-4 grid-cols-1 gap-4 mb-40">
           <div className="">
             <h6 className=" mb-6 text-primary font-bold text-2xl uppercase">
               Liên hệ
@@ -55,7 +55,7 @@ const Contact = () => {
               </a>
             </div>
           </div>
-          <div className="col-span-2">
+          <div className="xl:col-span-2">
             <h6 className=" mb-6 text-primary font-bold text-2xl uppercase">
               địa chỉ
             </h6>
@@ -84,11 +84,11 @@ const Contact = () => {
         <Heading
           title="Liên hệ với chúng tôi"
           href="/lien-he"
-          className="font-bold mb-20"
+          className="font-bold mb-20 text-xl xl:text-3xl"
         />
         <form className="form-contact">
-          <div>
-            <input type="text" placeholder="Họ và tên" />
+          <div className="">
+            <input type="text" placeholder="Họ và tên" className="text-xs"/>
           </div>
           <div className="grid grid-cols-2 gap-6">
             <input type="text" placeholder="Số điện thoại" />

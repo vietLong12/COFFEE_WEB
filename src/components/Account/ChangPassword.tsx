@@ -36,7 +36,7 @@ const ChangPassword = () => {
           <input
             onChange={(e) => setOldPass(e.target.value)}
             type="password"
-            className="border bg-neutral-300 w-2/5 px-4 py-2 text-black outline-none"
+            className="border bg-neutral-300 xl:w-2/5 w-full px-4 py-2 text-black outline-none"
             id="password"
           />
         </div>
@@ -47,7 +47,7 @@ const ChangPassword = () => {
           <input
             onChange={(e) => setNewPass(e.target.value)}
             type="password"
-            className="border bg-neutral-300 w-2/5 px-4 py-2 text-black outline-none"
+            className="border bg-neutral-300 xl:w-2/5 w-full px-4 py-2 text-black outline-none"
             id="newPassword"
           />
         </div>
@@ -58,7 +58,7 @@ const ChangPassword = () => {
           <input
             onChange={(e) => setReNewPass(e.target.value)}
             type="password"
-            className="border bg-neutral-300 w-2/5 px-4 py-2 text-black outline-none"
+            className="border bg-neutral-300 xl:w-2/5 w-full px-4 py-2 text-black outline-none"
             id="reNewPassword"
           />
         </div>

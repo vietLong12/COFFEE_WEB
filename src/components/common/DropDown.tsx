@@ -13,6 +13,8 @@ interface DropDownProps {
 }
 
 const DropDown = ({ label, value, setValue, dataSelected }: DropDownProps) => {
+  console.log("value: ", value);
+
   return (
     <div className="dropdown-custom">
       <InputLabel color="primary" id="demo-simple-select-helper-label">
@@ -20,7 +22,8 @@ const DropDown = ({ label, value, setValue, dataSelected }: DropDownProps) => {
       </InputLabel>
       <Select
         className="w-full"
-        value={dataSelected}
+        defaultValue={""}
+        value={dataSelected ? dataSelected : ""}
         onChange={(e: any) => {
           setValue(e.target.value);
         }}

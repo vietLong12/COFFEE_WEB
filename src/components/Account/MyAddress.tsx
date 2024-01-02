@@ -15,6 +15,7 @@ import { Address } from "../../Types";
 const MyAddress = () => {
   const auth = useContext(AuthContext);
 
+  const [checked, setChecked] = useState(false);
   const [isEdit, setEditStatus] = useState(false);
   const [open, setOpen] = useState(false);
   const [city, setCity] = useState([]);
@@ -22,13 +23,13 @@ const MyAddress = () => {
   const [wards, setWards] = useState([]);
   const [homeAddress, setHomeAddress] = useState<string | undefined>("");
   const [citySelected, setCitySelected] = useState<number | undefined | string>(
-    ""
+    0
   );
   const [districtSelected, setDistrictSelected] = useState<
     number | undefined | string
   >(0);
   const [wardSelected, setWardSelected] = useState<number | undefined | string>(
-    ""
+    0
   );
   console.log({ citySelected, districtSelected, wardSelected });
 
@@ -44,7 +45,7 @@ const MyAddress = () => {
 
   const handleEditAddress = async (address: Address) => {
     setEditStatus(true);
-
+    setChecked(address.defaultAddress);
     console.log("address: ", address);
     if (address) {
       setHomeAddress(address.homeAddress);
@@ -69,52 +70,46 @@ const MyAddress = () => {
   }, []);
 
   useEffect(() => {
-    setDistrictSelected("");
-    setWardSelected("");
     const fetchDistricts = async () => {
       try {
-        const selectedCity: any = city.find(
-          (city: any) => city.code === citySelected
+        const listDistrict = await AddressService.getDistrictByCityCode(
+          citySelected
         );
-
-        if (selectedCity) {
-          setDistricts(selectedCity.districts);
-        }
+        console.log("listDistrict[0].districts: ", listDistrict);
+        setDistricts(listDistrict.districts);
       } catch (error) {
         console.error("Error fetching districts:", error);
       }
     };
 
     fetchDistricts();
-  }, [citySelected, city]);
+  }, [citySelected]);
 
   useEffect(() => {
-    setWardSelected("");
     const fetchWards = async () => {
+      const listWards = await AddressService.getWardByDicstrictCode(
+        districtSelected
+      );
+      console.log("listWards: ", listWards);
       try {
-        const selectedCity: any = city.find(
-          (city: any) => city.code === citySelected
-        );
-        const selectedDistrict = selectedCity?.districts.find(
-          (district: any) => district.code === districtSelected
-        );
-
-        if (selectedDistrict) {
-          setWards(selectedDistrict.wards);
-        }
+        setWards(listWards.wards);
       } catch (error) {
         console.error("Error fetching wards:", error);
       }
     };
 
     fetchWards();
-  }, [districtSelected, citySelected, city]);
+  }, [districtSelected, citySelected]);
   return (
     <div>
       <h2 className="text-2xl uppercase mb-4">địa chỉ của bạn</h2>
       <button
         onClick={() => {
           setEditStatus(false);
+          setHomeAddress("");
+          setCitySelected(0);
+          setDistrictSelected(0);
+          setWardSelected(0);
           setOpen(!open);
         }}
         className="bg-primary text-white text-sm p-4 py-3 mt-3 up hover:opacity-60 border border-primary duration-200"
@@ -139,7 +134,7 @@ const MyAddress = () => {
           <div className="mb-4">
             <DropDown
               dataSelected={citySelected}
-              label="Tỉnh/ Thành phố"
+              label="Tỉnh/Thành phố"
               setValue={setCitySelected}
               value={city}
             />
@@ -147,7 +142,7 @@ const MyAddress = () => {
           <div className="mb-4">
             <DropDown
               dataSelected={districtSelected}
-              label="Quận/ Huyện"
+              label="Quận/Huyện"
               setValue={setDistrictSelected}
               value={districts}
             />
@@ -155,14 +150,24 @@ const MyAddress = () => {
           <div className="mb-4">
             <DropDown
               dataSelected={wardSelected}
-              label="Tỉnh/ Thành phố"
+              label="Xã/Phường"
               setValue={setWardSelected}
               value={wards}
             />
           </div>
           <div>
-            <input type="checkbox" id="isDefaultAddress" />
-            <label htmlFor="isDefaultAddress" className="ml-2 text-sm select-none">Đặt là địa chỉ mặc định?</label>
+            <input
+              type="checkbox"
+              id="isDefaultAddress"
+              onChange={() => setChecked(!checked)}
+              checked={checked}
+            />
+            <label
+              htmlFor="isDefaultAddress"
+              className="ml-2 text-sm select-none"
+            >
+              Đặt là địa chỉ mặc định?
+            </label>
           </div>
         </DialogContent>
         <DialogActions>
@@ -178,14 +183,14 @@ const MyAddress = () => {
           {auth?.userData?.address.map((address, index) => {
             return (
               <li
-                className="flex justify-between py-4 border-t pb-6"
+                className="flex xl:flex-row flex-col justify-between py-4 pt-6 border-t pb-6"
                 key={index}
               >
                 <div className="relative">
                   <span className="font-bold">{`Địa chỉ ${index + 1}: `}</span>
                   {`${address.homeAddress}, ${address.ward?.name}, ${address.district?.name}, ${address.city?.name}`}
                   {address.defaultAddress ? (
-                    <div className="absolute top-6 left-0 text-xs text-red-500 flex items-center">
+                    <div className="absolute -top-4 left-0 text-xs text-red-500 flex items-center">
                       <CropSquare sx={{ fontSize: "10px" }} />
                       Địa chỉ mặc định
                     </div>
@@ -193,7 +198,7 @@ const MyAddress = () => {
                     ""
                   )}
                 </div>
-                <div className="flex">
+                <div className="flex xl:mt-0 mt-2">
                   <p
                     className="mr-4 text-blue-500 hover:text-red-500 cursor-pointer duration-200"
                     onClick={() => handleEditAddress(address)}

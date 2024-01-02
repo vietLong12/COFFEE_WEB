@@ -205,7 +205,7 @@ const data = [
     productName: "Chai Tea",
     price: 30,
     size: ["s", "m", "l"],
-    img: "https://static.vecteezy.com/system/resources/previews/026/553/492/l_2x/spiced-chai-tea-in-a-white-cup-isolated-on-white-background-free-photo.jpg",
+    img: "https://img.freepik.com/premium-photo/spiced-chai-tea-isolated-white-background-generative-ai_936711-3073.jpg",
     desc: "Spicy and aromatic chai tea, perfect for spice enthusiasts.",
     rating: 5,
     inStock: true,

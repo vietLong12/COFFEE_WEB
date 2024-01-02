@@ -76,9 +76,9 @@ const MenuPage = () => {
       </div>
 
       <div className="bg-primary-100 py-12">
-        <div className="laptop-small:w-3/5 laptop-small:px-0 px-20 sm:px-6 mx-auto">
+        <div className="xl:w-3/5 xl:px-20 px-4 sm:px-6 mx-auto w-full">
           <div className="xl:grid grid-cols-10 gap-4">
-            <div className="col-span-2  ">
+            <div className="col-span-2 xl:mb-0 mb-4">
               <div className="bg-white rounded-xl py-4 px-6">
                 <ul className="text-xl ml-4 uppercase font-bold">
                   {listCategory.map((item, index) => {
@@ -119,18 +119,18 @@ const MenuPage = () => {
               <div>
                 {dataMenu.map((item, index) => (
                   <div
-                    className={`grid grid-cols-4 px-4 py-6 border-black ${
+                    className={`xl:grid grid-cols-4 px-4 py-6 border-black  ${
                       index + 1 == dataMenu.length ? "border-0" : "border-b"
                     }`}
                   >
                     <div className="flex justify-center items-center">
-                      <img src={item.img} alt="" width={80} />
+                      <img src={item.img} alt="" className="w-full xl:w-20" />
                     </div>
-                    <div className="col-span-2">
+                    <div className="col-span-2 mt-2 mb-3">
                       <p className="font-bold text-lg">{item.productName}</p>
                       <p className="line-clamp-3 text-sm">{item.desc}</p>
                     </div>
-                    <div className="flex justify-between ml-6">
+                    <div className="flex justify-between xl:ml-6">
                       <p className="font-bold text-lg">
                         {item.inStock ? item.price + ".000đ" : "Liên hệ"}
                       </p>
@@ -150,12 +150,11 @@ const MenuPage = () => {
                     </div>
                   </div>
                 ))}
-                <div className="flex justify-center mb-4">
+                <div className="flex justify-center pb-4">
                   <Pagination
-                    showFirstButton
+                    size="small"
                     onChange={(e) => console.log({ ...e.target })}
-                    showLastButton
-                    count={5}
+                    count={100}
                   />
                 </div>
               </div>

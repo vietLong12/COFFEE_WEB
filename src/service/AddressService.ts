@@ -17,4 +17,12 @@ export class AddressService {
     const response = await request.get(`/d/${dicstrictCode}?depth=2`);
     return response.data;
   };
+  static getListDicstrict = async () => {
+    const response = await request.get(`/d`);
+    return response.data;
+  };
+  static getListWard = async () => {
+    const response = await request.get(`/w`);
+    return response.data;
+  };
 }

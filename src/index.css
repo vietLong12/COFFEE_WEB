@@ -6,6 +6,7 @@
 
 ::-webkit-scrollbar {
   width: 6px;
+  height: 2px;
 }
 
 ::-webkit-scrollbar-track {
@@ -19,6 +20,8 @@
   border-radius: 8px;
   background-color: #363636;
 }
+
+
 
 #root {
   font-family: "Quicksand", sans-serif;

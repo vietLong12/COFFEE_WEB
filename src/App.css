@@ -208,4 +208,9 @@ input.MuiInputBase-input {
   display: none;
 }
 
+.menu-icon {
+  background-image: url("/menu.png");
+  background-size: contain;
+  background-color: #c19977;
+}
 

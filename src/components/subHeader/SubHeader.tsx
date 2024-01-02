@@ -30,9 +30,9 @@ const SubHeader = ({ heading }: SubHeaderProps) => {
   });
   return (
     <div className="pt-20 pb-16 text-center text-white uppercase text-4xl primary font-bold bg-black">
-      <h3>{heading}</h3>
+      <h3 className="xl:text-3xl text-2xl">{heading}</h3>
       <div>
-        <span className="text-base text-white normal-case">
+        <span className="xl:text-base text-xs text-white normal-case">
           <Link to="/" className="hover:opacity-60 uppercase">
             Trang chủ
           </Link>{" "}

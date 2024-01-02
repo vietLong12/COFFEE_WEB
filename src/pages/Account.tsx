@@ -19,8 +19,8 @@ const Account = () => {
   return (
     <>
       <SubHeader heading="Trang khách hàng" />
-      <div className="lg:w-3/5 grid grid-cols-12 mx-auto py-12">
-        <div className="col-span-3 ">
+      <div className="lg:w-3/5 grid xl:grid-cols-12 mx-auto py-12 xl:px-0 px-4">
+        <div className="xl:col-span-3 ">
           <h2 className="mb-2 uppercase text-2xl">Trang tài khoản</h2>
           <p className="font-semibold">
             Xin chào,{" "}
@@ -69,7 +69,7 @@ const Account = () => {
             </li>
           </ul>
         </div>
-        <div className="col-span-9">
+        <div className="xl:col-span-9 overflow-hidden">
           <div>
             <Outlet />
           </div>

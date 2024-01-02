@@ -32,7 +32,7 @@ const SearchPage = () => {
   return (
     <div>
       <SubHeader heading="tìm kiếm" />
-      <div className="w-3/5 mx-auto">
+      <div className="xl:w-3/5 mx-auto xl:px-0 px-2 pb-10">
         {listFilter.length === 0 ? (
           <>
             <p className="pt-10 pb-20 text-center text-lg font-semibold">
@@ -48,9 +48,9 @@ const SearchPage = () => {
         ) : (
           <>
             <p className="py-10 pb-6 text-center text-xl font-semibold">
-              Có {listFilter.length} kết quả phù hợp với từ khoá
+              Có {listFilter.length} kết quả phù hợp với từ khoá: "{searchParams}"
             </p>
-            <ul className="grid grid-cols-2 gap-4">
+            <ul className="xl:grid xl:grid-cols-2 gap-4">
               {listFilter.map((item, i) => (
                 <li key={i} className="flex bg-blur mb-4 p-2">
                   <img
