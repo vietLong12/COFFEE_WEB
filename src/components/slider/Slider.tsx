@@ -1,33 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AddRounded, StarRateRounded } from "@mui/icons-material";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 import data from "../../data/data";
-import { getRandomNumber, slugify } from "../../utilities";
+import { getRandomNumber } from "../../utilities";
 import { TProduct } from "../../Types";
 import PopUp from "../common/PopUp";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { ProductService } from "../../service/ProductService";
+import {
+  GetProductListResponse,
+  ProductResponse,
+} from "../../Types/ResponseType";
 
 const Slider = () => {
-  const arr = [
-    data[getRandomNumber(23)],
-    data[getRandomNumber(23)],
-    data[getRandomNumber(23)],
-    data[getRandomNumber(23)],
-    data[getRandomNumber(23)],
-  ];
+  // const auth = useContext(AuthContext);
 
+  const navigate = useNavigate();
   const [showDetail, setShowDetail] = useState(false);
 
-  const [list, setList] = useState(arr);
+  const [list, setList] = useState<ProductResponse[] | null>(null);
 
-  const handleAddToCart = (item: TProduct) => {
+  const handleAddToCart = (item: ProductResponse) => {
     setItemDetail(item);
     setShowDetail(true);
   };
 
-  const [itemDetail, setItemDetail] = useState<TProduct>(
-    data[getRandomNumber(23)]
-  );
+  const [itemDetail, setItemDetail] = useState<ProductResponse | null>();
 
   const handleRating = (item: number) => {
     const stars = [];
@@ -39,6 +37,20 @@ const Slider = () => {
     }
     return <div>{stars}</div>;
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const q = {
+        limit: "5",
+        page: "1",
+        keyword: "trà sữa",
+      };
+      const products: GetProductListResponse =
+        await ProductService.getListProduct(q);
+      setList(products.products);
+    };
+    fetchData();
+  }, []);
   return (
     <div className="text-white flex justify-between pt-40 h-auto">
       <div
@@ -58,12 +70,15 @@ const Slider = () => {
         <p className="mt-6 font-medium text-2xl border-dashed border-2 rounded-xl border-primary px-4 py-2">
           Nhập <span className="font-bold">"TANGBANHNGOT"</span>
         </p>
-        <button className="mt-8 bg-primary font-bold uppercase px-4 py-2 border border-primary rounded-lg text-2xl hover:bg-black hover:border-black duration-200">
+        <button
+          className="mt-8 bg-primary font-bold uppercase px-4 py-2 border border-primary rounded-lg text-2xl hover:bg-black hover:border-black duration-200"
+          onClick={() => navigate("/login")}
+        >
           Đặt hàng ngay
         </button>
       </div>
       <ul className="xl:w-6/12 w-full mt-5 lg:mt-0">
-        {list.map((item, i) => {
+        {list?.map((item, i) => {
           return (
             <li key={i} className="flex bg-blur mb-4 p-2">
               <img
@@ -76,8 +91,8 @@ const Slider = () => {
               <div className="w-full">
                 <div className="primary flex justify-between text-xl font-bold items-center">
                   <Link
-                    to={"/detail-product/" + slugify(item.productName)}
-                    className="cursor-pointer ml-4 uppercase productName relative hover:text-black
+                    to={"/detail-product/" + item._id}
+                    className="cursor-pointer uppercase productName relative hover:text-black line-clamp-1
                   "
                   >
                     {item.productName}
@@ -85,12 +100,12 @@ const Slider = () => {
                   {!item.inStock ? (
                     <p className="">Liên hệ</p>
                   ) : (
-                    <p className="">{item.price}.000đ</p>
+                    <p className="">{item.sizes[0].price}.000đ</p>
                   )}
                 </div>
                 <p className="w-full bg-primary h-px mt-"></p>
                 <div className="text-black flex justify-between items-center mt-2">
-                  {handleRating(item.rating)}
+                  {handleRating(item.rating || 5)}
                   {item.inStock ? (
                     <div
                       className="cursor-pointer"

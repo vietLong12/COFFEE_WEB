@@ -3,12 +3,12 @@ import { Link, useLocation } from "react-router-dom";
 
 interface SubHeaderProps {
   heading: string;
+  productName?: string;
 }
 
-const SubHeader = ({ heading }: SubHeaderProps) => {
+const SubHeader = ({ heading, productName }: SubHeaderProps) => {
   let matches = useLocation().pathname.split("/");
   matches = matches.map((path) => {
-    console.log("path: ", path);
     switch (path) {
       case "login":
         return "Đăng nhập";
@@ -44,7 +44,7 @@ const SubHeader = ({ heading }: SubHeaderProps) => {
             }
             return (
               <span key={i} className="uppercase">
-                <ArrowRightTwoTone /> {item}
+                <ArrowRightTwoTone /> {productName ? productName : item}
               </span>
             );
           })}

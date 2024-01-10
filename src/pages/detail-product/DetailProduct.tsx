@@ -10,9 +10,13 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import SubDetailProduct from "./sub/SubDetailProduct";
 import ProductRelate from "./sub/ProductRelate";
+import { useEffect, useState } from "react";
+import { ProductResponse } from "../../Types/ResponseType";
+import { ProductService } from "../../service/ProductService";
 const DetailProduct = () => {
   const slug = useLocation();
-  const product = data[10];
+  const productId = slug.pathname.split("/")[2];
+  const [product, setProduct] = useState<ProductResponse>();
 
   const listCommentProp = {
     listComment: [
@@ -139,29 +143,35 @@ const DetailProduct = () => {
     ],
   };
 
+  useEffect(() => {
+    ProductService.getProductById(productId).then((res) =>
+      setProduct(res.product)
+    );
+  }, []);
+
   return (
     <div className="">
-      <SubHeader heading={"Chi tiết sản phẩm"} />
+      <SubHeader heading={"Chi tiết sản phẩm"} productName={product?.productName}/>
       <div className="" style={{ backgroundColor: "#fcf3ec" }}>
         <div className="grid lg:grid-cols-2 gap-4 xl:w-3/5 mx-auto pt-14 px-6 xl:px-0">
           <div className="flex justify-center items-center">
-            <img src={product.img} alt="" className="mr-8" />
+            <img src={product?.img} alt="" className="mr-8" />
           </div>
           <div className="">
             <h2 className="uppercase text-3xl font-bold mb-2">
-              {product.productName}
+              {product?.productName}
             </h2>
-            <Rating name="read-only" value={product.rating} readOnly />
-            <p>{product.desc}</p>
+            <Rating name="read-only" value={product?.rating} readOnly />
+            <p>{product?.desc}</p>
             <p className="mt-2 mb-2">
               Giá:{" "}
               <span className="ml-2 text-4xl primary font-bold">
-                {product.price}.000₫
+                {product?.sizes[0].price}.000₫
               </span>
             </p>
             <p>Size</p>
             <div className="flex mb-2">
-              {product.size.map((size, index) => {
+              {product?.sizes.map((size, index) => {
                 return (
                   <div key={index} className="ms-5 relative mr-4">
                     <input
@@ -174,7 +184,7 @@ const DetailProduct = () => {
                       className="uppercase text-xl ml-1  cursor-pointer"
                       htmlFor={`optionDetail${index + 1}`}
                     >
-                      {size}
+                      {size.name}
                     </label>
                   </div>
                 );
@@ -220,7 +230,7 @@ const DetailProduct = () => {
                 Đặt hàng ngay
               </button>
             </div>
-            <div className="text-lg border-primary border-dotted w-1/2 rounded-xl mt-4 border border-black p-2">
+            <div className="text-lg border-primary border-dotted w-1/2 rounded-xl mt-4 border  p-2">
               <p>
                 Nhập "<span className="font-bold">YEUMONSTER</span>"
               </p>
@@ -229,7 +239,7 @@ const DetailProduct = () => {
                 <span className="font-bold">80k</span>
               </p>
             </div>
-            <div className="text-lg border-primary border-dotted w-1/2 rounded-xl mt-4 border border-black p-2">
+            <div className="text-lg border-primary border-dotted w-1/2 rounded-xl mt-4 border  p-2">
               <p>
                 Nhập "<span className="font-bold">FREESHIP</span>"
               </p>
@@ -244,10 +254,10 @@ const DetailProduct = () => {
       </div>
 
       <div className="bg-white xl:w-3/5 mx-auto mt-8 xl:px-0 px-6">
-        <SubDetailProduct desc={product.desc} rateList={listCommentProp} />
+        <SubDetailProduct desc={product?.desc} rateList={listCommentProp} />
       </div>
       <div className="bg-white">
-        <ProductRelate category={product.category} />
+        <ProductRelate category={product?.category} />
       </div>
     </div>
   );

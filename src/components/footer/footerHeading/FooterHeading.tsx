@@ -1,7 +1,14 @@
 import { useState } from "react";
+import Swal from "sweetalert2";
+
 
 const FooterHeading = () => {
   const [emailSubcriber, setEmailSubcriber] = useState<string>("");
+  const handleSubcriber = () => {
+    if(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(emailSubcriber)){
+      Swal.fire({icon: "success",title: "Đăng ký thành công",text: "Cảm ơn bạn đã đăng ký để nhận những khuyến mãi hấp dẫn từ Monster"})
+    }
+  }
   return (
     <>
       <div className="flex lg:flex-row flex-col uppercase text-white w-full xl:w-3/5 mx-auto px-8 xl:px-0">
@@ -36,7 +43,7 @@ const FooterHeading = () => {
             <button
               className="uppercase
          xl:text-2xl lg:text-xl text-sm bg-primary px-2 h-full w-1/4 rounded-e-lg absolute top-0 right-0"
-              onClick={() => alert("Đăng kí thành công")}
+              onClick={handleSubcriber}
             >
               Đăng ký
             </button>

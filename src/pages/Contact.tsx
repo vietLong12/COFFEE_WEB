@@ -1,10 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import SubHeader from "../components/subHeader/SubHeader";
 import { Email, LocationOn, Phone } from "@mui/icons-material";
 import Heading from "../components/common/Heading";
-import { Input } from "@mui/material";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    username: "",
+    phone: "",
+    email: "",
+    content: "",
+  });
+
+  const handleSubmit = async () => {
+    try {
+      const formDataSaved = await axios.post(
+        "http://localhost:5500/contacts",
+        formData
+      );
+      console.log(formDataSaved);
+      Swal.fire({
+        icon: "success",
+        title: "Thành công",
+        text: "Cảm ơn bạn đã gửi thông tin góp ý về cho chúng tôi!",
+      });
+      setFormData({
+        username: "",
+        phone: "",
+        email: "",
+        content: "",
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Có lỗi xảy ra",
+        text: "Vui lòng kiểm tra lại các thông tin của bạn",
+      });
+    }
+  };
+  console.log("formData: ", formData);
   return (
     <div className="bg-primary-100">
       <SubHeader heading="liên hệ" />
@@ -86,21 +121,51 @@ const Contact = () => {
           href="/lien-he"
           className="font-bold mb-20 text-xl xl:text-3xl"
         />
-        <form className="form-contact">
+        <form className="form-contact" onSubmit={(e) => e.preventDefault()}>
           <div className="">
-            <input type="text" placeholder="Họ và tên" className="text-xs"/>
+            <input
+              value={formData.username}
+              type="text"
+              placeholder="Họ và tên"
+              className="text-xs"
+              onChange={(e) =>
+                setFormData({ ...formData, username: e.target.value })
+              }
+            />
           </div>
           <div className="grid grid-cols-2 gap-6">
-            <input type="text" placeholder="Số điện thoại" />
-            <input type="text" placeholder="Email" />
+            <input
+              value={formData.phone}
+              type="text"
+              placeholder="Số điện thoại"
+              onChange={(e) =>
+                setFormData({ ...formData, phone: e.target.value })
+              }
+            />
+            <input
+              value={formData.email}
+              type="text"
+              placeholder="Email"
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
+            />
           </div>
           <div>
-            <textarea className="mb-10" placeholder="Nội dung" />
+            <textarea
+              value={formData.content}
+              className="mb-10"
+              placeholder="Nội dung"
+              onChange={(e) =>
+                setFormData({ ...formData, content: e.target.value })
+              }
+            />
           </div>
           <div className="flex justify-center mb-20">
             <button
               type="submit"
               className="px-4 py-1 bg-white text-primary hover:text-white hover:bg-primary border-primary border uppercase font-bold text-2xl rounded-xl"
+              onClick={handleSubmit}
             >
               Gửi thông tin
             </button>

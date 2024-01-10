@@ -2,12 +2,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PersonIcon from "@mui/icons-material/Person";
 import HomePageLogo from "./HomePageLogo";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "animate.css";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/reducer";
-import { showCartAction } from "../../../redux/action/showCart";
 import Cart from "./Cart/Cart";
 import AccountTopBar from "../../common/AccountTopBar";
 import NavBar from "../../menu/NavBar";
@@ -47,11 +46,12 @@ const HeaderLeft = () => {
     navigate("/search?q=" + valueInputSearch);
     setShowSearchInput(false);
   };
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: any) => {
     if (e.key === "Enter") {
       handleSearch();
     }
   };
+
   return (
     <div className="xl:w-3/5 mx-auto flex xl:justify-end justify-between items-center py-3 relative">
       <NavBar />

@@ -1,41 +1,61 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ProductCart, TProduct } from "../../Types";
 import { CloseOutlined } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
-import { addProductToCart } from "../../redux/action/AddProductToCart";
+import {
+  ProductPayload,
+  addProductToCart,
+} from "../../redux/action/AddProductToCart";
+import { ProductResponse } from "../../Types/ResponseType";
+import { ProductService } from "../../service/ProductService";
+import { AuthContext } from "../../context/authContext";
 
 interface TPopUpProps {
-  item: TProduct | undefined;
+  item: ProductResponse | undefined;
   setShowDetail: (value: boolean) => void;
+}
+interface SizesState {
+  name: string;
+  price: number;
+  _id: string;
 }
 
 const PopUp: React.FC<TPopUpProps> = ({ item, setShowDetail }) => {
+  const auth = useContext(AuthContext);
   const [quantity, setQuantity] = useState(1);
+  const [listSize, setListSize] = useState(item?.sizes);
   const [note, setNote] = useState("Không có ghi chú");
-
   const dispatch = useDispatch();
+  const [sizes, setSizes] = useState<SizesState | null>(null);
+  const [selectedSize, setSelectedSize] = useState(item?.sizes[0]._id);
+  console.log("selectedSize: ", selectedSize);
+  const [price, setPrice] = useState(item?.sizes[0].price);
 
-  const [size, setSize] = useState("");
-
-  const handleSubmit = () => {
-    if (item) {
-      const productAddToCart: ProductCart = {
-        itemId: item.id,
-        productName: item.productName,
-        category: item.category,
-        price: item.price,
-        note,
-        size,
-        quantity,
-        total: quantity * item.price,
-      };
-      dispatch(addProductToCart(productAddToCart));
-      setShowDetail(false);
+  const handleSubmit = async () => {
+    if (selectedSize) {
+      if (auth?.isLoggedIn) {
+        // Xử lí khi đã đăng nhập
+      } else {
+        // Xử lí khi chưa đăng nhập
+        const payload: ProductPayload = {
+          _id: item?._id,
+          note: note,
+          productName: item?.productName,
+          quantity: quantity,
+          size: sizes?.name,
+          total: sizes?.price * quantity,
+        };
+        console.log("payload: ", payload);
+        dispatch(addProductToCart(payload));
+        setShowDetail(false);
+      }
     }
   };
-  const handleChangeSize = (size: string) => {
-    setSize(size);
-  };
+
+  useEffect(() => {
+    const size = item?.sizes.filter((size) => size._id === selectedSize)[0];
+    if (size) setSizes(size);
+  }, [selectedSize]);
 
   return (
     <div className="bg-black bg-opacity-50 fixed top-0 left-0 right-0 bottom-0 text-black  z-50">
@@ -55,7 +75,7 @@ const PopUp: React.FC<TPopUpProps> = ({ item, setShowDetail }) => {
             <div className="text-xl ml-4 flex flex-col justify-center">
               <h6 className="font-bold ">{item?.productName}</h6>
               <p>
-                Giá: <span className="font-bold">{item?.price}.000đ</span>
+                Giá: <span className="font-bold">{price}.000đ</span>
               </p>
             </div>
           </div>
@@ -63,12 +83,16 @@ const PopUp: React.FC<TPopUpProps> = ({ item, setShowDetail }) => {
           <div className="py-2">
             <p className="font-medium text-xl">Size:</p>
             <div className="xl:flex justify-between w-1/4 mt-2 ml-10">
-              {item?.size.map((size, index) => {
+              {listSize?.map((size, index) => {
                 return (
                   <div key={index} className="relative">
                     <input
                       type="radio"
-                      onClick={() => handleChangeSize(size)}
+                      defaultChecked={size?._id == selectedSize ? true : false}
+                      onClick={() => {
+                        setSelectedSize(size._id);
+                        setPrice(size.price);
+                      }}
                       className="input-popup hidden"
                       name="size"
                       id={`option${index + 1}`}
@@ -77,7 +101,7 @@ const PopUp: React.FC<TPopUpProps> = ({ item, setShowDetail }) => {
                       className="uppercase text-xl ml-1  cursor-pointer"
                       htmlFor={`option${index + 1}`}
                     >
-                      {size}
+                      {size.name}
                     </label>
                   </div>
                 );
@@ -121,9 +145,7 @@ const PopUp: React.FC<TPopUpProps> = ({ item, setShowDetail }) => {
               className="bg-red-500 text-white px-3 py-1 text-lg"
             >
               Thêm vào giỏ{" "}
-              <span className="font-bold text-xl">
-                {item?.price ? item.price * quantity : ""}.000đ
-              </span>
+              <span className="font-bold text-xl">{price * quantity}.000đ</span>
             </button>
           </div>
         </div>

@@ -1,13 +1,31 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/authContext";
+import { LoginService } from "../../service/LoginService";
+import { useCookies } from "react-cookie";
 
 const AccountTopBar = () => {
   const auth = useContext(AuthContext);
+  console.log("auth: ", auth?.userData);
+  const [cookies, setCookies, removeCookies] = useCookies(["token"]);
+
+  const handleLogout = async () => {
+    if (auth?.userData?.email) {
+      const logout = await LoginService.logoutAccount({
+        email: auth?.userData?.email,
+      });
+    }
+    auth?.setLoggedIn(false);
+    removeCookies("token");
+  };
   return (
     <div className="relative group ml-4">
       <img
-        src="https://bom.so/vAwaUU"
+        src={
+          auth?.userData?.avatar === "https://bom.so/l6xbjc"
+            ? "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png"
+            : auth?.userData?.avatar
+        }
         className="rounded-full w-9 h-9 cursor-pointer"
         alt=""
       />
@@ -22,7 +40,9 @@ const AccountTopBar = () => {
             <Link to="/account">Tài khoản</Link>
           </li>
           <li>
-            <Link to={"/"} onClick={() => auth?.setLoggedIn(false)}>Đăng xuất</Link>
+            <Link to={"/"} onClick={handleLogout}>
+              Đăng xuất
+            </Link>
           </li>
         </ul>
       </div>

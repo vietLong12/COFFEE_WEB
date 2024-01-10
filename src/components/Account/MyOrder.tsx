@@ -7,37 +7,31 @@ import {
   TableRow,
 } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 import { Address, OrderType } from "../../Types";
+import { AccountService } from "../../service/AccountService";
+import { OrderService } from "../../service/OrderService";
 
 const MyOrder = () => {
   const auth = useContext(AuthContext);
-  const orders: OrderType[] = [
-    {
-      _id: 1024,
-      orderDate: new Date().toLocaleDateString(),
-      address: auth?.userData?.address[0],
-      email: auth?.userData?.email
-        ? auth?.userData?.email
-        : "example@example.com",
-      priceTotal: 76,
-      shippingStatus: false,
-      status: false,
-    },
-    {
-      _id: 1025,
-      orderDate: new Date().toLocaleDateString(),
-      address: auth?.userData?.address[0],
-      email: auth?.userData?.email
-        ? auth?.userData?.email
-        : "example@example.com",
-      priceTotal: 124,
-      shippingStatus: true,
-      status: true,
-    },
-  ];
+  const user = auth?.userData;
+  const [userData, setUserData] = useState();
+  const [orders, setOrders] = useState();
+  console.log("orders: ", orders);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const account = await AccountService.getAccountById(user?._id);
+      setUserData(account.data);
+
+      const orders = await OrderService.getListOrder({
+        keyword: account.data.email,
+      });
+      setOrders(orders.orders);
+    };
+    fetchData();
+  }, []);
   return (
     <div>
       <h2 className="text-2xl uppercase mb-4">đơn hàng của bạn</h2>
@@ -70,7 +64,7 @@ const MyOrder = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {orders.map((row) => (
+            {orders?.map((row) => (
               <TableRow
                 key={row._id}
                 className=""
@@ -81,14 +75,13 @@ const MyOrder = () => {
                   scope="row"
                   sx={{ color: "blueviolet" }}
                 >
-                  {"#" + row._id}
+                  {"#" + row.orderNumber}
                 </TableCell>
-                <TableCell align="center">{row.orderDate}</TableCell>
                 <TableCell align="center">
-                  {row.address?.homeAddress},{row.address?.ward?.name},
-                  {row.address?.district?.name},{row.address?.city?.name},
+                  {new Date(row.createdAt).toLocaleDateString()}
                 </TableCell>
-                <TableCell align="center">{row.priceTotal}.000đ</TableCell>
+                <TableCell align="center">{row.customer.address}</TableCell>
+                <TableCell align="center">{row.totalAmount}.000đ</TableCell>
                 <TableCell align="center" sx={{}}>
                   <span
                     className={` block ${
@@ -98,9 +91,7 @@ const MyOrder = () => {
                     {row.status ? "Chưa thanh toán" : "Đã thanh toán"}
                   </span>
                 </TableCell>
-                <TableCell align="center">
-                  {!row.shippingStatus ? "Đang vận chuyển" : "Chưa chuyển"}
-                </TableCell>
+                <TableCell align="center">{row.status}</TableCell>
               </TableRow>
             ))}
           </TableBody>

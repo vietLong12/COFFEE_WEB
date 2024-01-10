@@ -1,43 +1,47 @@
-import { InputLabel, MenuItem, Select } from "@mui/material";
+import { useState } from "react";
 
-interface ValueProps {
-  name: string;
-  code: string;
-}
-
-interface DropDownProps {
+interface Props {
+  options: any[];
+  onSelect: (code: Number) => void;
   label: string;
-  setValue: (data: any) => void;
-  value: ValueProps[];
-  dataSelected: string | undefined | number;
+  defaultValue?: Number | null;
 }
 
-const DropDown = ({ label, value, setValue, dataSelected }: DropDownProps) => {
-  console.log("value: ", value);
+const Dropdown = ({ defaultValue, options, onSelect, label }: Props) => {
+  const [selectedOption, setSelectedOption] = useState(defaultValue);
+
+  const handleSelect = (option: string) => {
+    console.log("option: ", option);
+
+    setSelectedOption(Number(option));
+    onSelect(Number(option));
+  };
 
   return (
-    <div className="dropdown-custom">
-      <InputLabel color="primary" id="demo-simple-select-helper-label">
+    <div className="flex flex-col">
+      <label htmlFor={label} style={{ marginRight: "8px" }}>
         {label}
-      </InputLabel>
-      <Select
-        className="w-full"
-        defaultValue={""}
-        value={dataSelected ? dataSelected : ""}
-        onChange={(e: any) => {
-          setValue(e.target.value);
+      </label>
+      <select
+        id={label}
+        className="border py-2 rounded outline-none hover:border-black"
+        value={selectedOption}
+        onChange={(e) => {
+          handleSelect(e.target.value);
         }}
+        aria-label={label}
       >
-        {value.map((item, index) => {
-          return (
-            <MenuItem key={index} value={item.code}>
-              {item.name}
-            </MenuItem>
-          );
-        })}
-      </Select>
+        <option value="" disabled className="text-blue-500">
+          -- Vui lòng chọn --
+        </option>
+        {options?.map((option) => (
+          <option key={option.code} value={option.code}>
+            {option.name}
+          </option>
+        ))}
+      </select>
     </div>
   );
 };
 
-export default DropDown;
+export default Dropdown;

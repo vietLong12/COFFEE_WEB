@@ -1,20 +1,21 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SubHeader from "../components/subHeader/SubHeader";
 import { AuthContext } from "../context/authContext";
 import { Link, NavLink, Outlet, Route, Routes } from "react-router-dom";
-
-const ChildrenComponent = () => {
-  return (
-    <>
-      <h1>aaaa</h1>
-    </>
-  );
-};
+import { AccountService } from "../service/AccountService";
 
 const Account = () => {
   const auth = useContext(AuthContext);
   const username = auth?.userData?.username;
-  const address = auth?.userData?.address;
+
+  const [account, setAccount] = useState<any>();
+  const addressLength = auth?.userData?.address.length || 0;
+
+  useEffect(() => {
+    AccountService.getAccountById(auth?.userData?._id).then((res) => {
+      setAccount(res.data);
+    });
+  }, []);
 
   return (
     <>
@@ -64,7 +65,7 @@ const Account = () => {
                 }
                 to="/account/so-dia-chi"
               >
-                Sổ địa chỉ ({address?.length})
+                Sổ địa chỉ ({addressLength})
               </NavLink>
             </li>
           </ul>

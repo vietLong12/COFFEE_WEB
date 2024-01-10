@@ -4,29 +4,33 @@ import { publicLayout } from "./layout/public";
 import Header from "./components/header/Header";
 import Footer from "./components/footer/Footer";
 import BackToTop from "./components/common/BackToTop";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "./context/authContext";
 import { privateLayout } from "./layout/private";
-
-const AccountInfo = () => {
-  return <h1>Account Info</h1>;
-};
-
-const MyOrder = () => {
-  return <h1>Order Info</h1>;
-};
-
-const ChangePassword = () => {
-  return <h1>Doi mat khau</h1>;
-};
-
-const MyAddress = () => {
-  return <h1>So lien lac</h1>;
-};
+import { ProductService } from "./service/ProductService";
+import { useCookies } from "react-cookie";
+import { LoginService } from "./service/LoginService";
 
 function App() {
   const auth = useContext(AuthContext);
-
+  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
+  useEffect(() => {
+    if (cookies.token) {
+      LoginService.loginAccountByToken(cookies.token).then((res) => {
+        auth?.setLoggedIn(true);
+        auth?.setUserData({
+          username: res.account.username,
+          email: res.account.email,
+          phone: res.account.phone,
+          _id: res.account._id,
+          address: res.account.address,
+          avatar: res.account.avatar,
+        });
+      });
+    } else {
+      auth?.setLoggedIn(false);
+    }
+  }, []);
   return (
     <div>
       <Header />

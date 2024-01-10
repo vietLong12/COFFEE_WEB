@@ -7,9 +7,10 @@ import { Link } from "react-router-dom";
 import PopUp from "../../../components/common/PopUp";
 import { TProduct } from "../../../Types";
 interface ProductRelateProps {
-  category: string;
+  category?: string;
 }
-const ProductRelate = ({ category }: ProductRelateProps) => {
+const ProductRelate = () => {
+  const category = "coffee"
   const [itemPopup, setItemPopup] = useState<TProduct>();
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const listProductRelate = data.filter(
@@ -19,14 +20,13 @@ const ProductRelate = ({ category }: ProductRelateProps) => {
   for (let i = 0; i < 4; i++) {
     dataRender.push(listProductRelate[i]);
   }
-  console.log("dataRender: ", dataRender);
 
   return (
     <div className="mx-auto w-full xl:w-3/5 pt-28 pb-20 xl:px-0 px-6">
       <Heading
         title="ĐỒ UỐNG Cùng loại"
         className="font-bold"
-        href="/do-uong-cung-loai"
+        href="/menu"
       />
       <div>
         <ul className="grid lg:grid-cols-4 mt-10 gap-6">

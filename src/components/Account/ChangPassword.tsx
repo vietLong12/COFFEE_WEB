@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { AuthContext } from "../../context/authContext";
 
 const ChangPassword = () => {
   const [oldPass, setOldPass] = useState("");
   const [newPass, setNewPass] = useState("");
   const [reNewPass, setReNewPass] = useState("");
+  const auth = useContext(AuthContext);
 
   const [statusChangePassword, setStatusChangePassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");

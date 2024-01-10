@@ -19,22 +19,17 @@ export interface TUserReview {
   cmt: string;
 }
 
-export interface ProductCart {
-  itemId: number | string;
-  productName: string;
-  note: string;
-  price: number;
-  size: string;
-  quantity: number;
-  category: string;
-  total: number;
+export interface Cart {
+  items: CartItem[];
 }
 
 //27/12/2023
 interface CartItem {
   productId: string;
+  sizeId: string;
+  note: string;
   quantity: number;
-  _id: string;
+  _id?: string;
 }
 
 export interface Address {
@@ -73,7 +68,9 @@ export interface UserTransfer {
   username: string;
   email: string;
   phone: string;
+  _id: string;
   address: Address[];
+  avatar: string;
 }
 
 export interface OrderType {

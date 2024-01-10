@@ -1,9 +1,10 @@
 import React from "react";
 import { TProduct } from "../../../Types";
 import { Link } from "react-router-dom";
+import { ProductResponse } from "../../../Types/ResponseType";
 
 interface TMenuItemProps {
-  data: TProduct;
+  data: ProductResponse;
 }
 
 const MenuItem: React.FC<TMenuItemProps> = ({ data }) => {
@@ -19,7 +20,7 @@ const MenuItem: React.FC<TMenuItemProps> = ({ data }) => {
         <div className="w-full">
           <div className="primary flex justify-between text-xl font-bold items-center">
             <Link
-              to={"/detail-product/" + data.id}
+              to={"/detail-product/" + data._id}
               className="cursor-pointer ml-4 uppercase productName relative hover:opacity-60"
             >
               {data.productName}
@@ -27,7 +28,7 @@ const MenuItem: React.FC<TMenuItemProps> = ({ data }) => {
             {!data.inStock ? (
               <p className="">Liên hệ</p>
             ) : (
-              <p className="">{data.price}.000đ</p>
+              <p className="">{data.sizes[0].price}.000đ</p>
             )}
           </div>
           <p className="w-full bg-primary h-px mt-1"></p>

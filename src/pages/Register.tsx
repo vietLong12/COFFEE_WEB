@@ -1,16 +1,11 @@
-import Header from "../components/header/Header";
-import Footer from "../components/footer/Footer";
-import { ArrowRightTwoTone } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import fb from "../assets/icon/fb-btn.svg";
 import gg from "../assets/icon/gp-btn.svg";
 import { FormikHelpers } from "formik/dist/types";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { createAccount } from "../redux/action/account";
-import { randomString } from "../utilities";
+import { AccountService } from "../service/AccountService";
 import SubHeader from "../components/subHeader/SubHeader";
 
 interface Values {
@@ -52,19 +47,28 @@ const SignupSchema = Yup.object().shape({
 
 const Login = () => {
   const [showPass, setShowPass] = useState(false);
-  const dispatch = useDispatch();
-  const handleSubmitForm = (
+  const navigate = useNavigate();
+  const handleSubmitForm = async (
     values: Values,
     { setSubmitting, resetForm }: FormikHelpers<Values>
   ) => {
-    values.id = randomString(12);
-    dispatch(createAccount(values));
-    resetForm();
-    setSubmitting(true);
+    const req = {
+      email: values.email,
+      username: `${values.firstName} ${values.lastName}`,
+      password: values.password,
+      phone: values.phone,
+    };
+
+    const account = await AccountService.createAccount(req);
+    if (account) {
+      resetForm();
+      navigate("/login");
+      setSubmitting(true);
+    }
   };
   return (
     <div className="bg-black">
-      <SubHeader  heading="Đăng ký tài khoản"/>
+      <SubHeader heading="Đăng ký tài khoản" />
       <div className="bg-white mt-20 py-10">
         <Formik
           initialValues={initValue}
@@ -72,7 +76,10 @@ const Login = () => {
           validationSchema={SignupSchema}
         >
           {({ errors, touched }) => (
-            <Form action="" className="bg-white lg:w-2/5 xl:w-1/5 mx-auto p-7 shadow-2xl">
+            <Form
+              action=""
+              className="bg-white lg:w-2/5 xl:w-1/5 mx-auto p-7 shadow-2xl"
+            >
               <h2 className="uppercase text-2xl font-medium text-center">
                 {" "}
                 Đăng ký

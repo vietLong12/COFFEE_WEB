@@ -2,27 +2,31 @@ import fb from "../assets/icon/fb-btn.svg";
 import gg from "../assets/icon/gp-btn.svg";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
-import { useDispatch } from "react-redux";
-import { login } from "../redux/action/account";
 import SubHeader from "../components/subHeader/SubHeader";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import Swal from "sweetalert2";
-import { account } from "../data/data";
+import { LoginService } from "../service/LoginService";
+import { UserTransfer } from "../Types";
+import { useCookies } from "react-cookie";
 
 interface Values {
   email: string;
   password: string;
+  isRememberMe: boolean;
 }
 
 const initValue = {
   email: "",
   password: "",
+  isRememberMe: false,
 };
 
 const Login = () => {
   const auth = useContext(AuthContext);
+  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
+
   const navigate = useNavigate();
   const SignupSchema = Yup.object().shape({
     password: Yup.string()
@@ -32,24 +36,27 @@ const Login = () => {
     email: Yup.string().email("Email không hợp lệ").required("Đây là bắt buộc"),
   });
 
-  const handleSubmitForm = (
+  const handleSubmitForm = async (
     values: Values,
     { setSubmitting }: FormikHelpers<Values>
   ) => {
-    const user = account.filter((user) => user.email === values.email);
-    if (user.length > 0) {
-      auth?.setLoggedIn(true);
-      auth?.setCart(user[0].cart.items);
-      auth?.setUserData({
-        address: user[0].address,
-        email: user[0].email,
-        phone: user[0].phone,
-        username: user[0].username,
-      });
+    const res = await LoginService.loginAccount(values);
+    if (res?.code === 200) {
+      const user: UserTransfer = {
+        address: res.account.address,
+        email: res.account.email,
+        phone: res.account.phone,
+        username: res.account.username,
+        _id: res.account._id,
+        avatar: res.account.avatar,
+      };
+      if (res.account.token != null) {
+        setCookie("token", res.account.token);
+      }
       navigate("/");
+      console.log('user ne: ', user);
+      auth?.setLoggedIn(true), auth?.setUserData(user);
       setSubmitting(false);
-    } else {
-      Swal.fire({ title: "Đăng nhập thất bại", icon: "error" });
     }
   };
 
@@ -98,6 +105,16 @@ const Login = () => {
                       {errors.password}
                     </div>
                   ) : null}
+                </div>
+                <div className="w-full mb-3">
+                  <Field
+                    type="checkbox"
+                    name="isRememberMe"
+                    id="isRememberMe"
+                  />
+                  <label htmlFor="isRememberMe" className="ml-2">
+                    Ghi nhớ đăng nhập?
+                  </label>
                 </div>
                 <button
                   type="submit"

@@ -1,12 +1,19 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import SubHeader from "../../components/subHeader/SubHeader";
 import Heading from "../../components/common/Heading";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/reducer";
 import { Pagination } from "@mui/material";
 import { ProductCart, TProduct } from "../../Types";
 import data from "../../data/data";
 import PopUp from "../../components/common/PopUp";
+import { ProductResponse } from "../../Types/ResponseType";
+import { ProductService } from "../../service/ProductService";
+import { Link } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
+import { changeQuantity } from "../../redux/action/AddProductToCart";
+import { AuthContext } from "../../context/authContext";
+import Swal from "sweetalert2";
 interface Category {
   _id: string;
   category: string;
@@ -15,36 +22,60 @@ interface Category {
   __v?: 0;
 }
 
-interface MyObject {
-  coffee: string;
-  tea: string;
-  cake: string;
-  [key: string]: string; // Thêm chỉ số cho kiểu 'string'
-}
 const MenuPage = () => {
-  const objCategory: MyObject = {
-    coffee: "Cà phê",
-    tea: "Trà",
-    cake: "Bánh ngọt",
-  };
   const cart: any = useSelector((store: RootState) => store.cart);
-  const listCategory: Category[] = [
-    { _id: "1", category: "coffee" },
-    { _id: "2", category: "tea" },
-    { _id: "3", category: "cake" },
-  ];
-  const [category, setCategory] = useState("coffee");
+  const dispatch = useDispatch();
+  const auth = useContext(AuthContext);
+  const [listCategory, setListCategory] = useState<any>([]);
+  const [selectedPage, setSelectedPage] = useState<any>(1);
+  const [totalPages, setTotalPages] = useState<any>(10);
+  const [category, setCategory] = useState({
+    category: "cà phê",
+    categoryId: "",
+  });
   const [showDetail, setShowDetail] = useState(false);
-  const [itemSelected, setItemSelected] = useState<TProduct>();
-  console.log("category: ", category);
-  const [dataMenu, setData] = useState<TProduct[]>([]);
-  console.log("data: ", dataMenu);
+  const [itemSelected, setItemSelected] = useState<ProductResponse>();
+  const [dataMenu, setData] = useState<any[]>([]);
+
+  const handleChangePage = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setSelectedPage(value);
+  };
+
+  const handleOrder = () => {
+    if (auth?.isLoggedIn) {
+    } else {
+      Swal.fire({
+        icon: "warning",
+        title: "Thông báo!",
+        text: "Bạn cần đăng nhập để đặt hàng",
+      });
+    }
+  };
 
   useEffect(() => {
-    const dataFilter = data.filter((item) => item.category === category);
-    setData(dataFilter);
+    setSelectedPage(1);
   }, [category]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const dataFilter = await ProductService.getListProduct({
+        limit: "5",
+        keyword: category.categoryId,
+        page: selectedPage,
+      });
+      console.log(dataFilter);
+      setData(dataFilter.products);
+      setTotalPages(dataFilter.pagination.totalPages);
+    };
+    fetchData();
+  }, [category, selectedPage]);
+
+  useEffect(() => {
+    ProductService.getListCategory().then((res) => setListCategory(res.data));
+  }, []);
   return (
     <div>
       <SubHeader heading="Menu" />
@@ -86,13 +117,18 @@ const MenuPage = () => {
                       <li
                         key={index}
                         className={`${
-                          category === item.category
+                          category.category === item.category
                             ? "text-primary before:bg-primary "
                             : ""
                         } list-style relative mb-6 text-black hover:text-primary  cursor-pointer hover:before:bg-primary`}
-                        onClick={() => setCategory(item.category)}
+                        onClick={() =>
+                          setCategory({
+                            category: item.category,
+                            categoryId: item._id,
+                          })
+                        }
                       >
-                        <p>{objCategory[item.category]}</p>
+                        <p>{item.category}</p>
                       </li>
                     );
                   })}
@@ -124,15 +160,27 @@ const MenuPage = () => {
                     }`}
                   >
                     <div className="flex justify-center items-center">
-                      <img src={item.img} alt="" className="w-full xl:w-20" />
+                      {(
+                        <img src={item.img} alt="" className="w-full xl:w-20" />
+                      ) || <Skeleton />}
                     </div>
-                    <div className="col-span-2 mt-2 mb-3">
-                      <p className="font-bold text-lg">{item.productName}</p>
+                    <div className="col-span-2 mb-3">
+                      <Link
+                        className="font-bold text-lg line-clamp-1"
+                        to={"/detail-product/" + item._id}
+                      >
+                        {item.productName || <Skeleton />}
+                      </Link>
                       <p className="line-clamp-3 text-sm">{item.desc}</p>
                     </div>
-                    <div className="flex justify-between xl:ml-6">
-                      <p className="font-bold text-lg">
-                        {item.inStock ? item.price + ".000đ" : "Liên hệ"}
+                    <div className="flex justify-between xl:ml-0">
+                      <p
+                        className="font-bold text-lg text-primary
+                      "
+                      >
+                        {item.inStock
+                          ? item.sizes[0].price + ".000đ"
+                          : "Liên hệ"}
                       </p>
                       {item.inStock ? (
                         <button
@@ -153,8 +201,9 @@ const MenuPage = () => {
                 <div className="flex justify-center pb-4">
                   <Pagination
                     size="small"
-                    onChange={(e) => console.log({ ...e.target })}
-                    count={100}
+                    count={totalPages}
+                    page={selectedPage}
+                    onChange={handleChangePage}
                   />
                 </div>
               </div>
@@ -189,20 +238,42 @@ const MenuPage = () => {
                           </div>
                           <div className="flex  flex-col items-end">
                             <div className="flex justify">
-                              <button className="bg-primary w-5 h-5 flex justify-center items-center rounded-md text-white">
+                              <button
+                                className="bg-primary w-5 h-5 flex justify-center items-center rounded-md text-white"
+                                onClick={() =>
+                                  dispatch(
+                                    changeQuantity({
+                                      _id: item._id,
+                                      quantity: -1,
+                                      size: item.size,
+                                    })
+                                  )
+                                }
+                              >
                                 -
                               </button>
                               <input
                                 type="text"
                                 className="w-10 text-center"
-                                value={1}
+                                value={item.quantity}
                                 disabled
                               />
-                              <button className="bg-primary w-5 h-5 flex justify-center items-center rounded-md text-white">
+                              <button
+                                className="bg-primary w-5 h-5 flex justify-center items-center rounded-md text-white"
+                                onClick={() =>
+                                  dispatch(
+                                    changeQuantity({
+                                      _id: item._id,
+                                      quantity: 1,
+                                      size: item.size,
+                                    })
+                                  )
+                                }
+                              >
                                 +
                               </button>
                             </div>
-                            <div className="fl">{item.price}.000₫</div>
+                            <div className="fl">{item.total}.000₫</div>
                           </div>
                         </li>
                       </>
@@ -214,14 +285,17 @@ const MenuPage = () => {
                   <p>Tổng cộng: </p>
                   <span className="font-bold text-xl text-red-700">
                     {cart.reduce(
-                      (acc: number, item: ProductCart) => acc + item.price,
+                      (acc: number, item: ProductCart) => acc + item.total,
                       0
                     )}
                     .000đ
                   </span>
                 </div>
                 <div className="px-6 py-4">
-                  <button className="bg-red-700 py-3 px-4 rounded-md text-white w-full uppercase font-bold hover:opacity-60 duration-200">
+                  <button
+                    className="bg-red-700 py-3 px-4 rounded-md text-white w-full uppercase font-bold hover:opacity-60 duration-200"
+                    onClick={handleOrder}
+                  >
                     Đặt hàng
                   </button>
                 </div>

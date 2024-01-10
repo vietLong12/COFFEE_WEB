@@ -7,8 +7,11 @@ import * as Yup from "yup";
 import { Field, Form, Formik } from "formik";
 import { Money } from "@mui/icons-material";
 import momo from "../assets/icon/momo_icon_square_pinkbg_RGB.png";
-import { useNavigate } from "react-router-dom";
-import data from "../data/data";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/reducer";
+import { ProductService } from "../service/ProductService";
+import { ProductPayload } from "../redux/action/AddProductToCart";
 
 interface FormRef {
   submitForm: () => void;
@@ -16,6 +19,9 @@ interface FormRef {
 
 const Order = () => {
   const auth = useContext(AuthContext);
+  const [productList, setProductList] = useState<any>([]);
+  const [cartData, setCartData] = useState<ProductPayload[]>([]);
+  const cartRedux = useSelector((store: RootState) => store.cart);
   const [city, setCity] = useState([]);
   const [citySelected, setCitySelected] = useState("");
   const [districtSelected, setDistrictSelected] = useState("");
@@ -33,6 +39,12 @@ const Order = () => {
 
   const [selectedPayment, setSelectedPayment] = useState("cod");
 
+  useEffect(() => {
+    if (auth?.isLoggedIn) {
+    } else {
+      setCartData(cartRedux);
+    }
+  }, []);
   const navigate = useNavigate();
 
   const handlePaymentChange = (e) => {
@@ -123,16 +135,36 @@ const Order = () => {
     );
   };
 
-  const getImageProductByIdProduct = (productId: number) => {
-    return data.filter((item) => item.id === productId)[0].img;
+  const getImageProductByIdProduct = (productId: string) => {
+    const c = productList.find((f) => f._id == productId);
+    console.log("c: ", c);
+    if (!c) {
+      return "";
+    }
+    return c.img;
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const productList = await ProductService.getListProduct({
+        depth: "3",
+        limit: "70",
+      });
+      setProductList(productList.products);
+    };
+    fetchData();
+  }, []);
+
   return (
     <div className="z-50 fixed top-0 left-0 bottom-0 right-0 bg-white">
       <div className="w-3/4 grid grid-cols-3 mx-auto gap-6">
         <div className="mt-6">
-          <h1 className="text-blue-600 text-3xl mb-4 font-semibold">
+          <Link
+            to="/"
+            className="text-blue-600 text-3xl mb-4 font-semibold cursor-pointer pb-0.5 block"
+          >
             Monster Coffee
-          </h1>
+          </Link>
           <div className="flex justify-between">
             <p className="font-bold">Thông tin nhận hàng</p>
             <p className="text-blue-600 font-bold">
@@ -361,18 +393,22 @@ const Order = () => {
           </div>
         </div>
         <div className="bg-zinc-50 p-6">
-          <h1>Đơn hàng ({auth?.cart?.length} sản phẩm)</h1>
+          <h1>Đơn hàng ({cartData.length} sản phẩm)</h1>
           <ul className="mt-4 border-t pt-4">
-            {auth?.cart?.map((item, index) => {
+            {cartData.map((item, index) => {
               return (
                 <li
                   className="flex items-center mb-4 border-b pb-4 w-full justify-between"
                   key={index}
                 >
                   <div className="relative mr-5">
-                    <img src={momo} alt="" width={50} />
+                    <img
+                      src={getImageProductByIdProduct(item._id)}
+                      alt=""
+                      width={50}
+                    />
                     <span className="bg-blue-600 w-5 h-5 justify-center flex items-center absolute -top-2 left-9 text-white text-xs rounded-full">
-                      1
+                      {item.quantity}
                     </span>
                   </div>
                   <div className="w-2/4">
@@ -380,7 +416,7 @@ const Order = () => {
                     <p className="text-sm uppercase">{item.size}</p>
                     <p className="text-sm ">Ghi chú: {item.note}</p>
                   </div>
-                  <div className="text-sm">{item.price}.000đ</div>
+                  <div className="text-sm">{item.total}.000đ</div>
                 </li>
               );
             })}
@@ -409,8 +445,8 @@ const Order = () => {
             <div className="flex justify-between mb-2">
               Tạm tính{" "}
               <span>
-                {auth?.cart?.reduce((acc, item) => acc + item.price, 0)
-                  ? auth?.cart?.reduce((acc, item) => acc + item.price, 0) +
+                {cartData.reduce((acc, item) => acc + item.total, 0)
+                  ? cartData.reduce((acc, item) => acc + item.total, 0) +
                     ".000đ"
                   : ""}
               </span>
@@ -424,8 +460,8 @@ const Order = () => {
             <div className="flex justify-between text-xl px-4 items-center">
               Tổng cộng{" "}
               <span className="font-bold text-2xl">
-                {auth?.cart?.reduce((acc, item) => acc + item.price, 0)
-                  ? auth?.cart?.reduce((acc, item) => acc + item.price, 0) +
+                {cartData.reduce((acc, item) => acc + item?.total, 0)
+                  ? cartData.reduce((acc, item) => acc + item?.total, 0) +
                     Number(freightCost) +
                     ".000đ"
                   : ""}
