@@ -18,30 +18,52 @@ interface ProductComment {
 }
 
 interface SubDetailProductProps {
-  desc: string;
-  rateList: {
-    listComment: ProductComment[];
-  };
+  desc: any;
+  rateList: any;
+  setShowPopup: any;
 }
 
 const ProductDesc = ({ desc }: Partial<SubDetailProductProps>) => {
   return <p>{desc}</p>;
 };
 
-const ProductReview = ({ rateList }: Partial<SubDetailProductProps>) => {
+const ProductReview = ({
+  rateList,
+  setShowPopup,
+}: Partial<SubDetailProductProps>) => {
+  function formatDateTime(inputDateString: string) {
+    const inputDate = new Date(inputDateString);
+
+    const hours = inputDate.getHours().toString().padStart(2, "0");
+    const minutes = inputDate.getMinutes().toString().padStart(2, "0");
+    const day = inputDate.getDate().toString().padStart(2, "0");
+    const month = (inputDate.getMonth() + 1).toString().padStart(2, "0"); // Tháng bắt đầu từ 0
+    const year = inputDate.getFullYear();
+
+    const formattedDateTime = `${hours}:${minutes} ${day}/${month}/${year}`;
+
+    return formattedDateTime;
+  }
   const listVote = rateList?.listComment.map((item) => item.vote);
   let rate = 1;
   if (listVote) {
     rate = listVote?.reduce((acc, item) => acc + item, 0) / listVote?.length;
     rate = parseFloat(rate.toFixed(1));
   }
+  const vote5 = rateList?.listComment.filter((item) => item.vote == 5);
+  const vote4 = rateList?.listComment.filter((item) => item.vote == 4);
+  const vote3 = rateList?.listComment.filter((item) => item.vote == 3);
+  const vote2 = rateList?.listComment.filter((item) => item.vote == 2);
+  const vote1 = rateList?.listComment.filter((item) => item.vote == 1);
 
-  const quantityRate = listVote?.length;
+  const quantityRate = rateList?.listComment.length;
   return (
     <div>
       <div className="flex pt-10 mt-6 pb-6 bg-yellow-50 border">
         <div className="text-center px-10 ">
-          <p className="text-4xl text-orange-400 font-semibold">{rate}/5</p>
+          <p className="text-4xl text-orange-400 font-semibold">
+            {rate ? `${rate}/5` : ""}
+          </p>
           <Rating
             name="half-rating-read"
             value={rate}
@@ -49,7 +71,10 @@ const ProductReview = ({ rateList }: Partial<SubDetailProductProps>) => {
             readOnly
           />
           <p>({quantityRate} đánh giá)</p>
-          <button className="text-white p-2 py-1 rounded-sm bg-orange-400">
+          <button
+            className="text-white p-2 py-1 rounded-sm bg-orange-400"
+            onClick={() => setShowPopup(true)}
+          >
             Gửi đánh giá của bạn
           </button>
         </div>
@@ -58,22 +83,19 @@ const ProductReview = ({ rateList }: Partial<SubDetailProductProps>) => {
             Tất cả
           </button>
           <button className="border border-primary mr-4 px-2 rounded-md py-1 ">
-            5 điểm(2)
+            5 điểm({vote5?.length})
           </button>
           <button className="border border-primary mr-4 px-2 rounded-md py-1 ">
-            4 điểm(0)
+            4 điểm({vote4?.length})
           </button>
           <button className="border border-primary mr-4 px-2 rounded-md py-1 ">
-            3 điểm(0)
+            3 điểm({vote3?.length})
           </button>
           <button className="border border-primary mr-4 px-2 rounded-md py-1 ">
-            2 điểm(0)
+            2 điểm({vote2?.length})
           </button>
           <button className="border border-primary mr-4 px-2 rounded-md py-1 ">
-            1 điểm(0)
-          </button>
-          <button className="border border-primary mr-4 px-2 rounded-md py-1 ">
-            Có hình ảnh(0)
+            1 điểm({vote1?.length})
           </button>
         </div>
       </div>
@@ -83,7 +105,7 @@ const ProductReview = ({ rateList }: Partial<SubDetailProductProps>) => {
             return (
               <li className="mb-6" key={index}>
                 <div className="flex items-center">
-                  {comment.name}{" "}
+                  {comment.username}{" "}
                   <Rating
                     size="small"
                     name="half-rating-read"
@@ -92,7 +114,11 @@ const ProductReview = ({ rateList }: Partial<SubDetailProductProps>) => {
                     readOnly
                     className="ml-4"
                   />
+                  <span className="text-sm ml-4 text-orange-500">
+                    {comment.isPurchased ? "*Đã từng mua hàng tại Monster" : ""}
+                  </span>
                 </div>
+
                 <p>{comment.comment}</p>
                 <div className="flex items-center mb-2">
                   <div className="cursor-pointer hover-primary duration-200 mr-2">
@@ -115,8 +141,7 @@ const ProductReview = ({ rateList }: Partial<SubDetailProductProps>) => {
                   <FiberManualRecordIcon
                     sx={{ fontSize: "10px", marginRight: "0.5rem" }}
                   />
-                  <p className="mr-2">15:36 </p>
-                  <p>19/12/2023</p>
+                  <p className="mr-2">{formatDateTime(comment.createdAt)} </p>
                 </div>
                 <hr />
               </li>
@@ -128,7 +153,11 @@ const ProductReview = ({ rateList }: Partial<SubDetailProductProps>) => {
   );
 };
 
-const SubDetailProduct = ({ desc, rateList }: SubDetailProductProps) => {
+const SubDetailProduct = ({
+  desc,
+  rateList,
+  setShowPopup,
+}: SubDetailProductProps) => {
   const [isDesc, setShowDesc] = useState(false);
 
   return (
@@ -155,7 +184,7 @@ const SubDetailProduct = ({ desc, rateList }: SubDetailProductProps) => {
         {isDesc ? (
           <ProductDesc desc={desc} />
         ) : (
-          <ProductReview rateList={rateList} />
+          <ProductReview rateList={rateList} setShowPopup={setShowPopup} />
         )}
       </div>
     </>

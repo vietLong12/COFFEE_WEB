@@ -1,9 +1,9 @@
 import Swal from "sweetalert2";
-import { GetProductListResponse } from "./../Types/ResponseType";
 import axios from "axios";
+import { BASE_URL } from "./type";
 
 const request = axios.create({
-  baseURL: "http://localhost:5500",
+  baseURL: BASE_URL,
 });
 
 interface CreateOrderRequest {
@@ -25,8 +25,13 @@ interface QuerryParamGetData {
 }
 
 export class OrderService {
-  static postOrder = async () => {
-    const response = await request.post(`/orders`);
+  static postOrder = async (req: any) => {
+    const response = await request.post(`/orders`, req);
+    return response.data;
+  };
+
+  static getOrderById = async (id: any) => {
+    const response = await request.get(`/orders/${id}`);
     return response.data;
   };
 

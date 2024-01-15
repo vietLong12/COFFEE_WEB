@@ -4,12 +4,14 @@ import { Field, Form, Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import SubHeader from "../components/subHeader/SubHeader";
 import { Link, useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../context/authContext";
 import Swal from "sweetalert2";
 import { LoginService } from "../service/LoginService";
 import { UserTransfer } from "../Types";
 import { useCookies } from "react-cookie";
+import { BASE_URL } from "../service/type";
+import axios from "axios";
 
 interface Values {
   email: string;
@@ -26,6 +28,100 @@ const initValue = {
 const Login = () => {
   const auth = useContext(AuthContext);
   const [cookies, setCookie, removeCookie] = useCookies(["token"]);
+  const handleSubmitVerifyCode = (email: string) => {
+    Swal.fire({
+      title: "Nhập mã xác nhận của bạn",
+      input: "text",
+      inputAttributes: {
+        autocapitalize: "off",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Xác nhận",
+      showLoaderOnConfirm: true,
+      preConfirm: async (verifyCode) => {
+        try {
+          const url = `${BASE_URL}/auth/password`;
+          const req = {
+            email: email,
+            verifyCode: verifyCode,
+          };
+          const response = await axios.post(url, req);
+          return;
+        } catch (error: any) {
+          if (error.response.data.code === 400) {
+            Swal.showValidationMessage(
+              "Mã xác nhận không đúng. Vui lòng kiểm tra lại."
+            );
+          }
+        }
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          icon: "success",
+          title: "Mật khẩu mới đã được gửi đến email của bạn",
+        });
+      }
+    });
+
+    // Thêm phần đếm ngược 2 phút
+    let countdown = 120; // Đếm ngược từ 120 giây (2 phút)
+    const countdownInterval = setInterval(() => {
+      countdown--;
+      if (countdown <= 0) {
+        clearInterval(countdownInterval);
+        Swal.close(); // Đóng Swal sau khi đếm ngược kết thúc
+      } else {
+        Swal.getTitle().innerHTML = `Nhập mã xác nhận của bạn  <br/> (${countdown} giây còn lại)`;
+      }
+    }, 1000);
+  };
+
+  const handleFindPassword = () => {
+    Swal.fire({
+      title: "Nhập email của bạn",
+      input: "email",
+      inputAttributes: {
+        autocapitalize: "off",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Tìm mật khẩu",
+      showLoaderOnConfirm: true,
+      preConfirm: async (emailValue) => {
+        try {
+          const url = `
+            ${BASE_URL}/auth/find
+          `;
+          const req = {
+            email: emailValue,
+          };
+          const response = await axios.post(url, req);
+          return;
+        } catch (error: any) {
+          if (error.response.data.description === "Invalid input data") {
+            Swal.showValidationMessage(`
+            Email không hợp lệ...
+          `);
+          }
+          if (error.response.data.msg == "account not found") {
+            Swal.showValidationMessage(`
+            Không tìm thấy email...
+          `);
+          }
+        }
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          icon: "success",
+          title: `Một email đã được gửi đến ${result.value} vui lòng kiểm tra`,
+        });
+        handleSubmitVerifyCode(result.value);
+      }
+    });
+  };
 
   const navigate = useNavigate();
   const SignupSchema = Yup.object().shape({
@@ -54,8 +150,8 @@ const Login = () => {
         setCookie("token", res.account.token);
       }
       navigate("/");
-      console.log('user ne: ', user);
-      auth?.setLoggedIn(true), auth?.setUserData(user);
+      auth?.setLoggedIn(true);
+      auth?.setUserData(user);
       setSubmitting(false);
     }
   };
@@ -123,9 +219,12 @@ const Login = () => {
                   {" "}
                   Đăng nhập
                 </button>
-                <a href="" className="text-sm text-center block p-4">
+                <p
+                  className="text-sm text-center block p-4"
+                  onClick={() => handleFindPassword()}
+                >
                   Quên mật khẩu
-                </a>
+                </p>
                 <p className="text-sm text-center">Hoặc đăng nhập bằng</p>
                 <div className="flex items-center justify-center mt-4">
                   <a href="" className="block w-2/5 mr-2">

@@ -34,3 +34,6 @@
   background-color: red;
 }
 
+.swal2-popup {
+  z-index: 9999;
+}

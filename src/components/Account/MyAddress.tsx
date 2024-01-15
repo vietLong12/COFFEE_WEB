@@ -5,11 +5,14 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
+// @ts-ignore
 import React, { useContext, useEffect, useState } from "react";
 import DropDown from "../common/DropDown";
 import { AddressService } from "../../service/AddressService";
 import { AuthContext } from "../../context/authContext";
 import { CropSquare } from "@mui/icons-material";
+// @ts-ignore
+
 import { Address } from "../../Types";
 import { AccountService } from "../../service/AccountService";
 import Swal from "sweetalert2";
@@ -35,6 +38,7 @@ const MyAddress = () => {
       address: auth?.userData?.address,
     };
     auth?.setUserData({ ...auth.userData, address: req.address });
+    // @ts-ignore
     const account = await AccountService.putAccount(req);
   };
 

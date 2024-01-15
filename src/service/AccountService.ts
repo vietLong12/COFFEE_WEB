@@ -1,9 +1,10 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Address } from "../Types";
+import { BASE_URL } from "./type";
 
 const request = axios.create({
-  baseURL: "http://localhost:5500",
+  baseURL: BASE_URL,
 });
 
 interface PostAccountReq {
@@ -17,6 +18,14 @@ interface PostAccountReq {
 interface PutAccount {
   user_id?: string;
   address?: Address[];
+  password?: string;
+  newPassword?: string;
+}
+interface CartRequest {
+  accountId: string;
+  productId: string;
+  sizeId: string;
+  quantity?: Number;
 }
 
 export class AccountService {
@@ -30,11 +39,19 @@ export class AccountService {
       const response = await request.put("/accounts", logReq);
       return response.data;
     } catch (error: any) {
-      Swal.fire({
-        icon: "error",
-        title: "Có lỗi xảy ra",
-        text: error.message,
-      });
+      if (error.response.data.msg === "Change password failed") {
+        Swal.fire({
+          icon: "warning",
+          title: "Có lỗi xảy ra",
+          text: "Mật khẩu sai",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Có lỗi xảy ra",
+          text: error.message,
+        });
+      }
     }
   };
 
@@ -63,6 +80,18 @@ export class AccountService {
           text: error.response.data.msg,
         });
       }
+    }
+  };
+  static addProductToCart = async (reqBody: CartRequest) => {
+    try {
+      const response = await request.post("/orders/cart", reqBody);
+      return response.data;
+    } catch (error: any) {
+      Swal.fire({
+        icon: "error",
+        title: "Có lỗi xảy ra",
+        text: error.message,
+      });
     }
   };
 }

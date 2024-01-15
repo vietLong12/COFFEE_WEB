@@ -52,14 +52,6 @@ export const publicLayout: TBaseLayout[] = [
     element: MenuPage,
   },
   {
-    path: "order",
-    element: Order,
-  },
-  {
-    path: "order/alert",
-    element: TransactionNotification,
-  },
-  {
     path: "*",
     element: NotFound,
   },

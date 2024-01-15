@@ -1,9 +1,9 @@
 import Swal from "sweetalert2";
-import { GetProductListResponse } from "./../Types/ResponseType";
 import axios from "axios";
+import { BASE_URL } from "./type";
 
 const request = axios.create({
-  baseURL: "http://localhost:5500",
+  baseURL: BASE_URL,
 });
 
 interface QuerryParamGetData {
@@ -45,5 +45,23 @@ export class ProductService {
   static getProductById = async (_id: string) => {
     const response = await request.get(`/products/${_id}`);
     return response.data;
+  };
+
+  static getListCommentById = async (_id: string) => {
+    try {
+      const response = await request.get(`/products/rate/${_id}`);
+      return response.data;
+    } catch (error: any) {
+      Swal.fire({ icon: "error", title: error.message });
+    }
+  };
+
+  static postComment = async (reqBody: any) => {
+    try {
+      const response = await request.post(`/products/rate`, reqBody);
+      return response.data;
+    } catch (error: any) {
+      Swal.fire({ icon: "error", title: error.message });
+    }
   };
 }

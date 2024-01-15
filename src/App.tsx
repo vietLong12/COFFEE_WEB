@@ -7,12 +7,12 @@ import BackToTop from "./components/common/BackToTop";
 import { useContext, useEffect } from "react";
 import { AuthContext } from "./context/authContext";
 import { privateLayout } from "./layout/private";
-import { ProductService } from "./service/ProductService";
 import { useCookies } from "react-cookie";
 import { LoginService } from "./service/LoginService";
 
 function App() {
   const auth = useContext(AuthContext);
+  // @ts-ignore
   const [cookies, setCookie, removeCookie] = useCookies(["token"]);
   useEffect(() => {
     if (cookies.token) {

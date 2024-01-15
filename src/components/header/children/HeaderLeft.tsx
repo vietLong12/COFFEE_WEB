@@ -11,18 +11,20 @@ import Cart from "./Cart/Cart";
 import AccountTopBar from "../../common/AccountTopBar";
 import NavBar from "../../menu/NavBar";
 import { AuthContext } from "../../../context/authContext";
+import { AccountService } from "../../../service/AccountService";
 
 const HeaderLeft = () => {
   const auth = useContext(AuthContext);
   const cart = useSelector((store: RootState) => store.cart);
   const isLoggedIn = auth?.isLoggedIn;
-
+  const [render, setRender] = useState(false);
   const [showSearchInput, setShowSearchInput] = useState(false);
   const showCart = auth?.showCart;
+  const [length, setLength] = useState(0);
+
   const [showAccount, setShowAccount] = useState(false);
   const [valueInputSearch, setValueInputSearch] = useState("");
   const navigate = useNavigate();
-
   const handleSearchInput = () => {
     setShowSearchInput(!showSearchInput);
     showAccount ? setShowAccount(false) : "";
@@ -51,6 +53,29 @@ const HeaderLeft = () => {
       handleSearch();
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (isLoggedIn) {
+        if (auth.userData?._id) {
+          try {
+            const accountResponse = await AccountService.getAccountById(
+              auth.userData?._id
+            );
+            const listCartRes = accountResponse.data.cart.items.reduce(
+              (acc: any, item: any) => acc + item.quantity,
+              0
+            );
+            setLength(listCartRes);
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          }
+        }
+      }
+    };
+
+    fetchData();
+  }, [render, auth]);
 
   return (
     <div className="xl:w-3/5 mx-auto flex xl:justify-end justify-between items-center py-3 relative">
@@ -99,12 +124,14 @@ const HeaderLeft = () => {
           }}
         />
         <span className="absolute top-0 right-0 rounded-full text-white bg-primary flex items-center justify-center w-5 h-5 text-xs font-semibold">
-          {cart.reduce(
-            (accumulator: number, currentValue: { quantity: number }) => {
-              return accumulator + currentValue.quantity;
-            },
-            0
-          )}
+          {isLoggedIn
+            ? length
+            : cart.reduce(
+                (accumulator: number, currentValue: { quantity: number }) => {
+                  return accumulator + currentValue.quantity;
+                },
+                0
+              )}
         </span>
 
         {showCart ? (
@@ -114,7 +141,7 @@ const HeaderLeft = () => {
               style={{ animationDuration: "0.5s" }}
               onClick={(e) => e.stopPropagation()}
             >
-              <Cart />
+              <Cart render={render} setRender={setRender} />
             </div>
           </div>
         ) : (

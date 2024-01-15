@@ -1,4 +1,3 @@
-import { ProductResponse } from "../../Types/ResponseType";
 import {
   IncreaseQuantityPayload,
   ProductPayload,

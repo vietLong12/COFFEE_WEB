@@ -1,5 +1,6 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../context/authContext";
+import { AccountService } from "../../service/AccountService";
 
 const ChangPassword = () => {
   const [oldPass, setOldPass] = useState("");
@@ -9,13 +10,28 @@ const ChangPassword = () => {
 
   const [statusChangePassword, setStatusChangePassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const handleChangePassword = () => {
+  const handleChangePassword = async () => {
     if (!(reNewPass === newPass)) {
       setStatusChangePassword(true);
       setErrorMessage("Mật khẩu mới không khớp!");
     } else {
-      setStatusChangePassword(true);
-      setErrorMessage("Đổi mật khẩu thành công!");
+      const account = await AccountService.putAccount({
+        user_id: auth?.userData?._id,
+        password: oldPass,
+        newPassword: newPass,
+      });
+
+      if (!account) {
+        setErrorMessage("Mật khẩu sai!");
+        setStatusChangePassword(true);
+      } else {
+        setErrorMessage("Đổi mật khẩu thành công!");
+        setStatusChangePassword(true);
+        setNewPass("");
+        setOldPass("");
+        setReNewPass("");
+      }
+      console.log("account: ", account);
     }
   };
 
@@ -36,6 +52,7 @@ const ChangPassword = () => {
             Mật khẩu cũ *
           </label>
           <input
+            value={oldPass}
             onChange={(e) => setOldPass(e.target.value)}
             type="password"
             className="border bg-neutral-300 xl:w-2/5 w-full px-4 py-2 text-black outline-none"
@@ -47,6 +64,7 @@ const ChangPassword = () => {
             Mật khẩu mới *
           </label>
           <input
+            value={newPass}
             onChange={(e) => setNewPass(e.target.value)}
             type="password"
             className="border bg-neutral-300 xl:w-2/5 w-full px-4 py-2 text-black outline-none"
@@ -60,6 +78,7 @@ const ChangPassword = () => {
           <input
             onChange={(e) => setReNewPass(e.target.value)}
             type="password"
+            value={reNewPass}
             className="border bg-neutral-300 xl:w-2/5 w-full px-4 py-2 text-black outline-none"
             id="reNewPassword"
           />

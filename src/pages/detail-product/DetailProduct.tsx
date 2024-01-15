@@ -1,157 +1,35 @@
 import { useLocation } from "react-router-dom";
 import SubHeader from "../../components/subHeader/SubHeader";
-import data from "../../data/data";
 import { Rating } from "@mui/material";
 import * as React from "react";
-import Box from "@mui/material/Box";
-import Tab from "@mui/material/Tab";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
 import SubDetailProduct from "./sub/SubDetailProduct";
 import ProductRelate from "./sub/ProductRelate";
 import { useEffect, useState } from "react";
 import { ProductResponse } from "../../Types/ResponseType";
 import { ProductService } from "../../service/ProductService";
+import ProductRatePopUp from "./sub/ProductRatePopUp";
 const DetailProduct = () => {
   const slug = useLocation();
   const productId = slug.pathname.split("/")[2];
   const [product, setProduct] = useState<ProductResponse>();
-
-  const listCommentProp = {
-    listComment: [
-      {
-        id: "onbmxkdd",
-        useful: 2,
-        comment: "Do an ngon",
-        email: "onbmxkdd@gmail.com",
-        name: "Nguyen Viet Long",
-        vote: 5,
-      },
-      {
-        id: "axasdzxvdf",
-        useful: 4,
-        comment: "Do uong chat luong qua",
-        email: "axasdzxvdf@gmail.com",
-        name: "Nguyen Thi Huyen",
-        vote: 4,
-      },
-      {
-        id: "axasdzxvdf",
-        useful: 10,
-        comment: "Se ung ho them",
-        email: "axasdzxvdf@gmail.com",
-        name: "Nguyen Thi Huyen",
-        vote: 1,
-      },
-      {
-        id: "onbmxkdd",
-        useful: 2,
-        comment: "Do an ngon",
-        email: "onbmxkdd@gmail.com",
-        name: "Nguyen Viet Long",
-        vote: 5,
-      },
-      {
-        id: "axasdzxvdf",
-        useful: 4,
-        comment: "Do uong chat luong qua",
-        email: "axasdzxvdf@gmail.com",
-        name: "Nguyen Thi Huyen",
-        vote: 4,
-      },
-      {
-        id: "axasdzxvdf",
-        useful: 10,
-        comment: "Se ung ho them",
-        email: "axasdzxvdf@gmail.com",
-        name: "Nguyen Thi Huyen",
-        vote: 1,
-      },
-      {
-        id: "onbmxkdd",
-        useful: 2,
-        comment: "Do an ngon",
-        email: "onbmxkdd@gmail.com",
-        name: "Nguyen Viet Long",
-        vote: 5,
-      },
-      {
-        id: "axasdzxvdf",
-        useful: 4,
-        comment: "Do uong chat luong qua",
-        email: "axasdzxvdf@gmail.com",
-        name: "Nguyen Thi Huyen",
-        vote: 4,
-      },
-      {
-        id: "axasdzxvdf",
-        useful: 10,
-        comment: "Se ung ho them",
-        email: "axasdzxvdf@gmail.com",
-        name: "Nguyen Thi Huyen",
-        vote: 1,
-      },
-      {
-        id: "onbmxkdd",
-        useful: 2,
-        comment: "Do an ngon",
-        email: "onbmxkdd@gmail.com",
-        name: "Nguyen Viet Long",
-        vote: 5,
-      },
-      {
-        id: "axasdzxvdf",
-        useful: 4,
-        comment: "Do uong chat luong qua",
-        email: "axasdzxvdf@gmail.com",
-        name: "Nguyen Thi Huyen",
-        vote: 4,
-      },
-      {
-        id: "axasdzxvdf",
-        useful: 10,
-        comment: "Se ung ho them",
-        email: "axasdzxvdf@gmail.com",
-        name: "Nguyen Thi Huyen",
-        vote: 1,
-      },
-      {
-        id: "onbmxkdd",
-        useful: 2,
-        comment: "Do an ngon",
-        email: "onbmxkdd@gmail.com",
-        name: "Nguyen Viet Long",
-        vote: 5,
-      },
-      {
-        id: "axasdzxvdf",
-        useful: 4,
-        comment: "Do uong chat luong qua",
-        email: "axasdzxvdf@gmail.com",
-        name: "Nguyen Thi Huyen",
-        vote: 4,
-      },
-      {
-        id: "axasdzxvdf",
-        useful: 10,
-        comment: "Se ung ho them",
-        email: "axasdzxvdf@gmail.com",
-        name: "Nguyen Thi Huyen",
-        vote: 1,
-      },
-    ],
-  };
+  const [showPopup, setShowPopup] = useState(false);
+  const [listComment, setListComment] = useState();
 
   useEffect(() => {
-    ProductService.getProductById(productId).then((res) =>
-      setProduct(res.product)
-    );
-  }, []);
+    ProductService.getProductById(productId).then((res) => {
+      setProduct(res.product);
+    });
+    ProductService.getListCommentById(productId).then((res: any) => {
+      setListComment(res.data);
+    });
+  }, [productId, showPopup]);
 
   return (
     <div className="">
-      <SubHeader heading={"Chi tiết sản phẩm"} productName={product?.productName}/>
+      <SubHeader
+        heading={"Chi tiết sản phẩm"}
+        productName={product?.productName}
+      />
       <div className="" style={{ backgroundColor: "#fcf3ec" }}>
         <div className="grid lg:grid-cols-2 gap-4 xl:w-3/5 mx-auto pt-14 px-6 xl:px-0">
           <div className="flex justify-center items-center">
@@ -254,11 +132,23 @@ const DetailProduct = () => {
       </div>
 
       <div className="bg-white xl:w-3/5 mx-auto mt-8 xl:px-0 px-6">
-        <SubDetailProduct desc={product?.desc} rateList={listCommentProp} />
+        <SubDetailProduct
+          desc={product?.desc}
+          rateList={listComment}
+          setShowPopup={setShowPopup}
+        />
       </div>
       <div className="bg-white">
-        <ProductRelate category={product?.category} />
+        <ProductRelate categoryId={product?.categoryId} />
       </div>
+      {showPopup ? (
+        <ProductRatePopUp
+          productId={product?._id}
+          setShowPopup={setShowPopup}
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 };

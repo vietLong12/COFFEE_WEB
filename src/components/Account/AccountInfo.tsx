@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 import { AccountService } from "../../service/AccountService";
 
@@ -9,8 +9,10 @@ const AccountInfo = () => {
   const [userData, setUserData] = useState<any>();
   useEffect(() => {
     const fetchData = async () => {
-      const account = await AccountService.getAccountById(user?._id);
-      setUserData(account.data);
+      if (user) {
+        const account = await AccountService.getAccountById(user?._id);
+        setUserData(account.data);
+      }
     };
     fetchData();
   }, []);

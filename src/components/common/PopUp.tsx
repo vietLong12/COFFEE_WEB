@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import { ProductCart, TProduct } from "../../Types";
 import { CloseOutlined } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import {
@@ -7,8 +6,7 @@ import {
   addProductToCart,
 } from "../../redux/action/AddProductToCart";
 import { ProductResponse } from "../../Types/ResponseType";
-import { ProductService } from "../../service/ProductService";
-import { AuthContext } from "../../context/authContext";
+import { AccountService } from "../../service/AccountService";
 
 interface TPopUpProps {
   item: ProductResponse | undefined;
@@ -28,13 +26,23 @@ const PopUp: React.FC<TPopUpProps> = ({ item, setShowDetail }) => {
   const dispatch = useDispatch();
   const [sizes, setSizes] = useState<SizesState | null>(null);
   const [selectedSize, setSelectedSize] = useState(item?.sizes[0]._id);
-  console.log("selectedSize: ", selectedSize);
   const [price, setPrice] = useState(item?.sizes[0].price);
 
   const handleSubmit = async () => {
     if (selectedSize) {
       if (auth?.isLoggedIn) {
-        // Xử lí khi đã đăng nhập
+        if (auth.userData?._id && item?._id) {
+          const resp = await AccountService.addProductToCart({
+            accountId: auth.userData?._id,
+            productId: item?._id,
+            sizeId: selectedSize,
+            quantity: quantity,
+          });
+          if (resp.code === 200) {
+            setShowDetail(false);
+            auth.setRender(!auth.render);
+          }
+        }
       } else {
         // Xử lí khi chưa đăng nhập
         const payload: ProductPayload = {

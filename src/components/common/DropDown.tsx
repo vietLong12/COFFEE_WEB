@@ -1,21 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   options: any[];
   onSelect: (code: Number) => void;
   label: string;
   defaultValue?: Number | null;
+  disabled?: boolean;
 }
 
-const Dropdown = ({ defaultValue, options, onSelect, label }: Props) => {
-  const [selectedOption, setSelectedOption] = useState(defaultValue);
+const Dropdown = ({
+  defaultValue,
+  options,
+  onSelect,
+  label,
+  disabled,
+}: Props) => {
+  const [selectedOption, setSelectedOption] = useState<any>(defaultValue);
 
   const handleSelect = (option: string) => {
-    console.log("option: ", option);
-
     setSelectedOption(Number(option));
     onSelect(Number(option));
   };
+
+  useEffect(() => {
+    setSelectedOption(defaultValue);
+  }, [defaultValue]);
 
   return (
     <div className="flex flex-col">
@@ -23,9 +32,10 @@ const Dropdown = ({ defaultValue, options, onSelect, label }: Props) => {
         {label}
       </label>
       <select
+        disabled={disabled || false}
         id={label}
         className="border py-2 rounded outline-none hover:border-black"
-        value={selectedOption}
+        value={selectedOption ? selectedOption : 0}
         onChange={(e) => {
           handleSelect(e.target.value);
         }}

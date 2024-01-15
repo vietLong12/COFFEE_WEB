@@ -12,148 +12,174 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/reducer";
 import { ProductService } from "../service/ProductService";
 import { ProductPayload } from "../redux/action/AddProductToCart";
+import { AccountService } from "../service/AccountService";
+import { LoginService } from "../service/LoginService";
+import { useCookies } from "react-cookie";
+import { OrderService } from "../service/OrderService";
+import Swal from "sweetalert2";
 
 interface FormRef {
   submitForm: () => void;
 }
+interface OrderReq {
+  accountId: string;
+  customer: {
+    username: string;
+    email: string;
+    address: string;
+    phone: string;
+  };
+  paymentMethod: "cod" | "momo";
+}
 
 const Order = () => {
+  const [cookies, setCookies, removeCookies] = useCookies(["token"]);
   const auth = useContext(AuthContext);
-  const [productList, setProductList] = useState<any>([]);
-  const [cartData, setCartData] = useState<ProductPayload[]>([]);
-  const cartRedux = useSelector((store: RootState) => store.cart);
-  const [city, setCity] = useState([]);
-  const [citySelected, setCitySelected] = useState("");
-  const [districtSelected, setDistrictSelected] = useState("");
-  const [district, setDistrict] = useState([]);
-  const [checkCity, setCheckCity] = useState(false);
 
-  const [wardSelected, setWardSelected] = useState("");
+  const [listAddress, setListAddress] = useState<any[]>([]);
+
+  const [cartData, setCartData] = useState<ProductPayload[]>([]);
+
+  const [homeAddress, setHomeAddress] = useState("");
+  const [wardSelected, setWardSelected] = useState<number | null>(1);
+  const [districtSelected, setDistrictSelected] = useState<number | null>(1);
+  const [citySelected, setCitySelected] = useState<number | null>(1);
+
+  const [city, setCity] = useState([]);
+  const [district, setDistrict] = useState([]);
   const [ward, setWard] = useState([]);
+
+  const [isNewAddress, setIsNewAddress] = useState(true);
+
+  const [checkCity, setCheckCity] = useState(false);
+  const [indexAddress, setIndexAddress] = useState("other");
 
   const [couponValue, setCouponValue] = useState("");
   const [freightCost, setFreightCost] = useState("");
-  const [noteValue, setNoteValue] = useState("");
-  const [bill, setBill] = useState();
-  const submitForm = useRef(null);
+  console.log("freightCost: ", freightCost);
+  const [noteValue, setNoteValue] = useState("Không có ghi chú");
+  const [selectedPayment, setSelectedPayment] = useState<"cod" | "momo">("cod");
 
-  const [selectedPayment, setSelectedPayment] = useState("cod");
+  const [addressSelected, setAddressSelected] = useState<any>();
 
-  useEffect(() => {
-    if (auth?.isLoggedIn) {
-    } else {
-      setCartData(cartRedux);
+  const handleLogout = async () => {
+    if (auth?.userData?.email) {
+      const logout = await LoginService.logoutAccount({
+        email: auth?.userData?.email,
+      });
     }
-  }, []);
+    auth?.setLoggedIn(false);
+    navigate("/");
+    removeCookies("token");
+  };
+  useEffect(() => {
+    if ((citySelected && citySelected == 1) || citySelected == 31) {
+      setFreightCost("30");
+    } else {
+      if (citySelected % 2 == 0) {
+        setFreightCost("40");
+      } else {
+        setFreightCost("50");
+      }
+    }
+  }, [citySelected]);
+
   const navigate = useNavigate();
 
   const handlePaymentChange = (e) => {
     console.log(e.target.value);
-
     setSelectedPayment(e.target.value);
   };
 
-  const handleSubmitOrder = () => {
-    if (citySelected == "") {
-      setCheckCity(true);
-    }
-    if (
-      submitForm.current != null &&
-      citySelected != "" &&
-      submitForm.current.isValid
-    ) {
-      console.log(submitForm.current.submitForm());
-      navigate("/order/alert");
-    }
-  };
-  useEffect(() => {
-    switch (citySelected.toString()) {
-      case "":
-        setFreightCost("");
-        break;
-      case "1":
-        setFreightCost("40");
-        break;
-      default:
-        setFreightCost("50");
-        break;
-    }
-  }, [citySelected, districtSelected, wardSelected]);
-
-  useEffect(() => {
-    if (citySelected != "") {
-      setCheckCity(false);
-    }
-  }, [citySelected]);
-
-  useEffect(() => {
-    AddressService.getListCity().then((listCity) => {
-      setCity(listCity);
-    });
-  }, []);
-  useEffect(() => {
-    AddressService.getDistrictByCityCode(citySelected).then((listDistrict) => {
-      let data = listDistrict.districts;
-      if (data) {
-        setDistrict(data);
+  const handleSubmitOrder = async () => {
+    try {
+      if (citySelected && districtSelected && wardSelected) {
+        const city = await AddressService.getCity(citySelected);
+        const district = await AddressService.getDistrict(districtSelected);
+        const ward = await AddressService.getWard(wardSelected);
+        const req = {
+          accountId: auth?.userData?._id,
+          customer: {
+            address: `${homeAddress} - ${ward.name} - ${district.name} - ${city.name}`,
+            email: auth?.userData?.email,
+            phone: auth?.userData?.phone,
+            username: auth?.userData?.username,
+          },
+          paymentMethod: selectedPayment,
+          note: noteValue,
+          freightCost: freightCost,
+        };
+        const resOrder = await OrderService.postOrder(req);
+        console.log("resOrder: ", resOrder);
+        if (resOrder.msg === "Cart is empty") {
+          Swal.fire({
+            icon: "warning",
+            title: "Bạn không có sản phẩm nào trong giỏ hàng",
+          });
+          navigate("/");
+          auth?.setRender(!auth.render);
+        }
+        if (resOrder.desciption === "order created") {
+          auth?.setOrderId(resOrder.order._id);
+          Swal.fire({
+            icon: "success",
+            title: "Bạn đã đặt hàng thành công",
+          });
+          navigate("/order/alert");
+        }
       }
-    });
-  }, [citySelected]);
-  useEffect(() => {
-    AddressService.getWardByDicstrictCode(districtSelected).then((listWard) => {
-      let data = listWard.wards;
-      if (data) {
-        setWard(data);
-      }
-    });
-  }, [districtSelected]);
-
-  const SignupSchema = Yup.object().shape({
-    name: Yup.string().required("*Hãy cho chúng tôi biết tên của bạn."),
-    phone: Yup.string()
-      .required("Vui lòng để lại số điện thoại")
-      .matches(
-        /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
-        "Hãy kiểm tra lại số điện thoại"
-      ),
-    email: Yup.string()
-      .email("*Email không hợp lệ")
-      .required("*Email là bắt buộc")
-      .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g, "*Email không hợp lệ"),
-    address: Yup.string().required("Hãy cho chúng tôi biết địa chỉ của bạn."),
-  });
-
-  const TextEmailInput = ({ field, form, ...props }: any) => {
-    return (
-      <TextField
-        {...field}
-        {...props}
-        className="w-full"
-        id="outlined-required"
-        label="Required"
-      />
-    );
-  };
-
-  const getImageProductByIdProduct = (productId: string) => {
-    const c = productList.find((f) => f._id == productId);
-    console.log("c: ", c);
-    if (!c) {
-      return "";
+    } catch (error) {
+      console.log(error.response.data);
     }
-    return c.img;
+    // navigate("/order/alert");
   };
+
+  useEffect(() => {
+    if (!(indexAddress === "other")) {
+      console.log(listAddress[Number(indexAddress)]);
+      setHomeAddress(listAddress[Number(indexAddress)].homeAddress);
+      setCitySelected(listAddress[Number(indexAddress)].city.code);
+      setDistrictSelected(listAddress[Number(indexAddress)].district.code);
+      setWardSelected(listAddress[Number(indexAddress)].ward.code);
+      setIsNewAddress(false);
+    } else {
+      setHomeAddress("");
+      setIsNewAddress(true);
+    }
+  }, [indexAddress]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const productList = await ProductService.getListProduct({
-        depth: "3",
-        limit: "70",
-      });
-      setProductList(productList.products);
+      if (auth?.userData?._id) {
+        const account = await AccountService.getAccountById(
+          auth?.userData?._id
+        );
+        if (account) {
+          setListAddress(account.data.address);
+        }
+      }
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const listCity = await AddressService.getAll();
+        setCity(listCity);
+        const districts = listCity.filter((c: any) => c.code === citySelected);
+        setDistrict(districts[0].districts);
+        const wards = districts[0].districts.filter(
+          (c: any) => c.code === districtSelected
+        );
+        setWard(wards[0].wards);
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+      }
+    };
+
+    fetchCities();
+  }, [citySelected, districtSelected, wardSelected, indexAddress]);
 
   return (
     <div className="z-50 fixed top-0 left-0 bottom-0 right-0 bg-white">
@@ -167,160 +193,128 @@ const Order = () => {
           </Link>
           <div className="flex justify-between">
             <p className="font-bold">Thông tin nhận hàng</p>
-            <p className="text-blue-600 font-bold">
+            <p
+              className="text-blue-600 font-bold cursor-pointer"
+              onClick={handleLogout}
+            >
               {!auth?.isLoggedIn ? "Đăng nhập" : "Đăng xuất"}
             </p>
           </div>
-          <Formik
-            innerRef={submitForm}
-            initialValues={{
-              email: "",
-              name: "",
-              phone: "",
-              address: "",
-            }}
-            validationSchema={SignupSchema}
-            onSubmit={(values) => {
-              console.log({
-                ...values,
-                name: values.name.trim(),
-                noteValue,
-                citySelected,
-                districtSelected,
-                wardSelected,
-              });
-            }}
-          >
-            {({ errors, touched }) => (
-              <Form>
-                <div>
-                  <div className="text-input mb-2 mt-4">
-                    <InputLabel
-                      color="primary"
-                      id="demo-simple-select-helper-label"
-                    >
-                      Email
-                    </InputLabel>
-                    <div className="hidden-label mt-1">
-                      <Field
-                        name="email"
-                        type="email"
-                        component={TextEmailInput}
-                      />
-                    </div>
-                    {errors.email && touched.email ? (
-                      <div className="text-sm text-red-900">{errors.email}</div>
-                    ) : null}
-                  </div>
 
-                  <div className="text-input mb-2">
-                    <InputLabel
-                      color="primary"
-                      id="demo-simple-select-helper-label"
-                    >
-                      Họ và tên
-                    </InputLabel>
-                    <div className="hidden-label mt-1">
-                      <Field
-                        name="name"
-                        type="text"
-                        component={TextEmailInput}
-                      />
-                    </div>
-                    {errors.name && touched.name ? (
-                      <div className="text-sm text-red-900">{errors.name}</div>
-                    ) : null}
-                  </div>
-                </div>
+          <div className="overflow-hidden mt-4">
+            <InputLabel color="primary" id="demo-simple-select-helper-label">
+              Danh sách địa chỉ
+            </InputLabel>
+            <select
+              name="selectAddreess"
+              id="listAddress"
+              className="overflow-hidden border-2 py-1 px-1 w-full"
+              onChange={(e) => setIndexAddress(e.target.value)}
+            >
+              <option value="other" className="">
+                1. Địa chỉ mới
+              </option>
+              {listAddress?.map((address, index) => (
+                <option value={index} key={index} className="">
+                  {`${index + 2}. ${address.homeAddress}, ${
+                    address.ward?.name
+                  }, ${address.district?.name}, ${address.city?.name}`}
+                </option>
+              ))}
+            </select>
+          </div>
 
-                <div className="text-input mb-2">
-                  <InputLabel
-                    color="primary"
-                    id="demo-simple-select-helper-label"
-                  >
-                    Số điện thoại
-                  </InputLabel>
-                  <div className="hidden-label mt-1">
-                    <Field
-                      name="phone"
-                      type="text"
-                      component={TextEmailInput}
-                    />
-                    {errors.phone && touched.phone ? (
-                      <div className="text-sm text-red-900">{errors.phone}</div>
-                    ) : null}
-                  </div>
-                </div>
+          <div className="mb-2 flex-col">
+            <label htmlFor="email">Email</label>
+            <input
+              type="text"
+              id="email"
+              value={auth?.userData?.email}
+              disabled
+              className="border w-full py-1 rounded hover:border-black px-1"
+            />
+          </div>
 
-                <div className="text-input mb-2">
-                  <InputLabel
-                    color="primary"
-                    id="demo-simple-select-helper-label"
-                  >
-                    Địa chỉ
-                  </InputLabel>
-                  <div className="hidden-label mt-1">
-                    <Field
-                      name="address"
-                      type="text"
-                      component={TextEmailInput}
-                    />
-                    {errors.address && touched.address ? (
-                      <div className="text-sm text-red-900">
-                        {errors.address}
-                      </div>
-                    ) : null}
-                  </div>
-                </div>
+          <div className="mb-2 flex-col">
+            <label htmlFor="email">Tên người dùng</label>
+            <input
+              type="text"
+              id="email"
+              value={auth?.userData?.username}
+              disabled
+              className="border w-full py-1 rounded hover:border-black px-1"
+            />
+          </div>
 
-                <div className="mb-2">
-                  <DropDown
-                    label="Tỉnh/Thành phố"
-                    setValue={setCitySelected}
-                    value={city}
-                    dataSelected={citySelected}
-                  />
-                  {checkCity ? (
-                    <div className="text-sm text-red-900">
-                      Vui lòng chọn tỉnh/thành phố
-                    </div>
-                  ) : null}
-                </div>
-                <div className="mb-2">
-                  <DropDown
-                    label="Quận/Huyện"
-                    setValue={setDistrictSelected}
-                    value={district}
-                    dataSelected={districtSelected}
-                  />
-                </div>
-                <div className="mb-2">
-                  <DropDown
-                    label="Phường/Xã"
-                    setValue={setWardSelected}
-                    value={ward}
-                    dataSelected={wardSelected}
-                  />
-                </div>
-                <div className="text-input mb-2">
-                  <InputLabel
-                    color="primary"
-                    id="demo-simple-select-helper-label"
-                  >
-                    Ghi chú
-                  </InputLabel>
-                  <div className="hidden-label mt-1">
-                    <TextField
-                      onChange={(e) => setNoteValue(e.target.value)}
-                      className="w-full"
-                      id="outlined-required"
-                      label="Required"
-                    />
-                  </div>
-                </div>
-              </Form>
-            )}
-          </Formik>
+          <div className="mb-2 flex-col">
+            <label htmlFor="email">Phone</label>
+            <input
+              type="text"
+              id="email"
+              value={auth?.userData?.phone}
+              disabled
+              className="border w-full py-1 rounded hover:border-black px-1"
+            />
+          </div>
+          <div className="mb-2 flex-col">
+            <label htmlFor="homeAddress">Địa chỉ</label>
+            <input
+              type="text"
+              id="homeAddress"
+              disabled={!isNewAddress}
+              value={homeAddress}
+              onChange={(e) => setHomeAddress(e.target.value)}
+              className="border w-full py-1 rounded hover:border-black px-1"
+            />
+          </div>
+
+          <div className="mb-2">
+            <DropDown
+              label="Tỉnh/Thành phố"
+              onSelect={(w) => setCitySelected(w)}
+              options={city}
+              disabled={!isNewAddress}
+              defaultValue={citySelected}
+            />
+            {checkCity ? (
+              <div className="text-sm text-red-900">
+                Vui lòng chọn tỉnh/thành phố
+              </div>
+            ) : null}
+          </div>
+          <div className="mb-2">
+            <DropDown
+              label="Quận/Huyện"
+              defaultValue={districtSelected}
+              disabled={!isNewAddress}
+              onSelect={(w) => setDistrictSelected(w)}
+              options={district}
+            />
+          </div>
+          <div className="mb-2">
+            <DropDown
+              disabled={!isNewAddress}
+              label="Phường/Xã"
+              onSelect={(w) => setWardSelected(w)}
+              options={ward}
+              defaultValue={wardSelected}
+            />
+          </div>
+          <div className="text-input mb-2">
+            <InputLabel color="primary" id="demo-simple-select-helper-label">
+              Ghi chú
+            </InputLabel>
+            <div className="hidden-label mt-1">
+              <TextField
+                onChange={(e) => setNoteValue(e.target.value)}
+                className="w-full"
+                defaultValue={""}
+                value={noteValue}
+                id="outlined-required"
+                label="Required"
+              />
+            </div>
+          </div>
         </div>
         <div className="mt-6">
           <h1 className="text-blue-600 text-3xl mb-4 font-semibold text-transparent">
@@ -402,11 +396,7 @@ const Order = () => {
                   key={index}
                 >
                   <div className="relative mr-5">
-                    <img
-                      src={getImageProductByIdProduct(item._id)}
-                      alt=""
-                      width={50}
-                    />
+                    <img src={""} alt="" width={50} />
                     <span className="bg-blue-600 w-5 h-5 justify-center flex items-center absolute -top-2 left-9 text-white text-xs rounded-full">
                       {item.quantity}
                     </span>

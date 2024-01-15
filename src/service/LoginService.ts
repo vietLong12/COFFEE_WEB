@@ -1,8 +1,9 @@
 import axios from "axios";
 import Swal from "sweetalert2";
+import { BASE_URL } from "./type";
 
 const request = axios.create({
-  baseURL: "http://localhost:5500",
+  baseURL: BASE_URL,
 });
 
 interface LoginRequest {
@@ -31,10 +32,10 @@ export class LoginService {
       return response.data;
     } catch (error) {
       Swal.fire({
-        icon: 'error',
+        icon: "error",
         title: "Có lỗi xảy ra",
-        text: "Đăng nhập thất bại, vui lòng kiểm tra lại thông tin"
-      })
+        text: "Đăng nhập thất bại, vui lòng kiểm tra lại thông tin",
+      });
     }
   };
 

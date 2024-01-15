@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../../context/authContext";
 import { ProductService } from "../../../../service/ProductService";
-import { ProductResponse } from "../../../../Types/ResponseType";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/reducer";
 import {
@@ -10,18 +9,21 @@ import {
   changeQuantity,
 } from "../../../../redux/action/AddProductToCart";
 import Swal from "sweetalert2";
+import { AccountService } from "../../../../service/AccountService";
 
-const Cart = ({}) => {
+interface CartProps {
+  render: any;
+  setRender: any;
+}
+
+const Cart = ({ render, setRender }: CartProps) => {
   const auth = useContext(AuthContext);
+  const accountId = auth?.userData?._id;
   const [cartData, setCartData] = useState<ProductPayload[]>([]);
   let cart = useSelector((store: RootState) => store.cart);
-  console.log("cart: ", cart);
-
   const isLoggedIn = auth?.isLoggedIn;
   let navigate = useNavigate();
   const dispatch = useDispatch();
-  const [items, setItems] = useState<any>([]);
-  const [listProduct, setListProduct] = useState([]);
   const handleOrder = () => {
     if (isLoggedIn) {
       navigate("/order");
@@ -33,30 +35,87 @@ const Cart = ({}) => {
     }
   };
 
-  const handleChangeQuantity = (
-    _id: string,
+  const handleChangeQuantity = async (
+    accountId: string | undefined,
     quantity: number,
+    sizeId: string,
+    productId: string,
     size: string
   ) => {
-    dispatch(changeQuantity({ _id, quantity, size }));
+    if (!auth?.isLoggedIn) {
+      dispatch(changeQuantity({ _id: productId, quantity, size }));
+    } else {
+      if (productId) {
+        console.log({
+          accountId: accountId,
+          quantity: quantity,
+          sizeId: sizeId,
+          productId: productId,
+        });
+        const account = await AccountService.addProductToCart({
+          accountId: accountId ? accountId : "",
+          quantity: quantity,
+          sizeId: sizeId,
+          productId: productId,
+        });
+        console.log(account);
+      }
+    }
+    setRender(!render);
   };
 
   useEffect(() => {
-    if (isLoggedIn) {
-      // Xử lí khi đã đăng nhập
-    } else {
-      setCartData(cart);
-    }
-  }, []);
+    const fetchData = async () => {
+      if (isLoggedIn) {
+        if (accountId) {
+          try {
+            const accountResponse = await AccountService.getAccountById(
+              accountId
+            );
+            const listCartRes = accountResponse.data.cart.items;
+            const listCart = await Promise.all(
+              listCartRes.map(async (item: any) => {
+                const responseProduct = await ProductService.getProductById(
+                  item.productId
+                );
+                const product = responseProduct.product;
+                const size = product.sizes.find(
+                  (s: any) => s._id === item.sizeId
+                );
 
-  useEffect(() => {
-    setCartData(cart);
-  }, [cart]);
+                const dataReturn = {
+                  _id: product._id,
+                  note: item.note,
+                  productName: product.productName,
+                  quantity: item.quantity,
+                  size: size ? size.name : "N/A",
+                  total: size.price * item.quantity,
+                  sizeId: size._id,
+                };
+                return dataReturn;
+              })
+            );
+
+            console.log("listCart: ", listCart);
+            setCartData(listCart);
+            auth.setCart(listCart);
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          }
+        }
+      } else {
+        setCartData(cart);
+      }
+    };
+
+    fetchData();
+  }, [isLoggedIn, accountId, cart, render]);
+
   return (
     <div className="p-3">
       <div className="mb-32">
         {cartData.length > 0 ? (
-          cartData.map((item, index: number) => {
+          cartData.map((item: any, index: number) => {
             return (
               <div
                 key={index}
@@ -68,7 +127,18 @@ const Cart = ({}) => {
                     <span className="uppercase">{item?.size}</span>
                   </p>
                   <p className="text-sm">{item?.note}</p>
-                  <button className="flex items-center primary mt-4">
+                  <button
+                    className="flex items-center primary mt-4"
+                    onClick={() =>
+                      handleChangeQuantity(
+                        auth?.userData?._id,
+                        item.quantity * -1,
+                        item.sizeId,
+                        item._id,
+                        item.size
+                      )
+                    }
+                  >
                     <span className="text-xs mr-1">x</span> Xóa
                   </button>
                 </div>
@@ -77,7 +147,13 @@ const Cart = ({}) => {
                     <div
                       className="cursor-pointer"
                       onClick={() =>
-                        handleChangeQuantity(item?._id, -1, item?.size)
+                        handleChangeQuantity(
+                          auth?.userData?._id,
+                          -1,
+                          item.sizeId,
+                          item._id,
+                          item.size
+                        )
                       }
                     >
                       -
@@ -91,7 +167,13 @@ const Cart = ({}) => {
                     <div
                       className="cursor-pointer"
                       onClick={() =>
-                        handleChangeQuantity(item?._id, 1, item?.size)
+                        handleChangeQuantity(
+                          auth?.userData?._id,
+                          1,
+                          item.sizeId,
+                          item._id,
+                          item.size
+                        )
                       }
                     >
                       +

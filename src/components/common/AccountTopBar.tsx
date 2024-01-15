@@ -6,11 +6,12 @@ import { useCookies } from "react-cookie";
 
 const AccountTopBar = () => {
   const auth = useContext(AuthContext);
-  console.log("auth: ", auth?.userData);
+  // @ts-ignore
   const [cookies, setCookies, removeCookies] = useCookies(["token"]);
 
   const handleLogout = async () => {
     if (auth?.userData?.email) {
+      // @ts-ignore
       const logout = await LoginService.logoutAccount({
         email: auth?.userData?.email,
       });

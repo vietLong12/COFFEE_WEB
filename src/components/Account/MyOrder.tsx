@@ -9,26 +9,28 @@ import {
 import Paper from "@mui/material/Paper";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/authContext";
-import { Address, OrderType } from "../../Types";
 import { AccountService } from "../../service/AccountService";
 import { OrderService } from "../../service/OrderService";
 
 const MyOrder = () => {
   const auth = useContext(AuthContext);
   const user = auth?.userData;
+  // @ts-ignore
   const [userData, setUserData] = useState();
-  const [orders, setOrders] = useState();
+  const [orders, setOrders] = useState<any>();
   console.log("orders: ", orders);
 
   useEffect(() => {
     const fetchData = async () => {
-      const account = await AccountService.getAccountById(user?._id);
-      setUserData(account.data);
+      if (user) {
+        const account = await AccountService.getAccountById(user?._id);
+        setUserData(account.data);
 
-      const orders = await OrderService.getListOrder({
-        keyword: account.data.email,
-      });
-      setOrders(orders.orders);
+        const orders = await OrderService.getListOrder({
+          keyword: account.data.email,
+        });
+        setOrders(orders.orders);
+      }
     };
     fetchData();
   }, []);
@@ -64,7 +66,7 @@ const MyOrder = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {orders?.map((row) => (
+            {orders?.map((row: any) => (
               <TableRow
                 key={row._id}
                 className=""
