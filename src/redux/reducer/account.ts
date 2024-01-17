@@ -8,7 +8,7 @@ const listAccountLS: Account[] = JSON.parse(
 
 const accounts = listAccountLS ? listAccountLS : [];
 
-const initValue: Account = {
+const initValue: any = {
   id: "",
   firstName: "",
   lastName: "",
@@ -28,14 +28,13 @@ export default function appReducer(
 ) {
   switch (action.type) {
     case CREATE_ACCOUNT: {
-
       for (let i = 0; i < accounts.length; i++) {
         if (accounts[i].email == action.payload.email) {
           Swal.fire({
             icon: "error",
             title: "Oops...",
             text: "Có gì đó không ổn!",
-            footer: '<a href="#">Why do I have this issue?</a>'
+            footer: '<a href="#">Why do I have this issue?</a>',
           });
           return null;
         }

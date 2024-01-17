@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import SubHeader from "../components/subHeader/SubHeader";
 import { Email, LocationOn, Phone } from "@mui/icons-material";
 import Heading from "../components/common/Heading";

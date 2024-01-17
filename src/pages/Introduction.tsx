@@ -1,4 +1,4 @@
-import React from "react";
+// @ts-nocheck
 import Header from "../components/header/Header";
 import Heading from "../components/common/Heading";
 import SubHeader from "../components/subHeader/SubHeader";

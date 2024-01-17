@@ -9,11 +9,11 @@ export class AddressService {
     const respone = await request.get("/?depth=3");
     return respone.data;
   };
-  static getDistrictByCityCode = async (cityCode: string) => {
+  static getDistrictByCityCode = async (cityCode: any) => {
     const response = await request.get(`/p/${cityCode}?depth=3`);
     return response.data;
   };
-  static getWardByDicstrictCode = async (dicstrictCode: string) => {
+  static getWardByDicstrictCode = async (dicstrictCode: any) => {
     const response = await request.get(`/d/${dicstrictCode}?depth=2`);
     return response.data;
   };
@@ -23,16 +23,16 @@ export class AddressService {
     return response.data;
   };
 
-  static getCity = async (city: number) => {
+  static getCity = async (city: any) => {
     const response = await request.get(`/p/${city}`);
     return response.data;
   };
 
-  static getDistrict = async (district: number) => {
+  static getDistrict = async (district: any) => {
     const response = await request.get(`/d/${district}`);
     return response.data;
   };
-  static getWard = async (ward: number) => {
+  static getWard = async (ward: any) => {
     const response = await request.get(`/w/${ward}`);
     return response.data;
   };

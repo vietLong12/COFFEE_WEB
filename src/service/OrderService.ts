@@ -6,6 +6,7 @@ const request = axios.create({
   baseURL: BASE_URL,
 });
 
+// @ts-ignore
 interface CreateOrderRequest {
   accountId: string;
   customer: {

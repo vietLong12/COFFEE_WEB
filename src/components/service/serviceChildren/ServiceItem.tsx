@@ -1,5 +1,4 @@
 import React from "react";
-import { dataService } from "../../../data/data";
 
 interface TServiceItemProps {
   img: string;

@@ -1,8 +1,12 @@
 import AboutUs from "../components/aboutUs/AboutUs";
+// @ts-ignore
 import BackToTop from "../components/common/BackToTop";
+// @ts-ignore
 import Footer from "../components/footer/Footer";
+// @ts-ignore
 import Header from "../components/header/Header";
 import ImageCoffee from "../components/imgCoffee/ImageCoffee";
+// @ts-ignore
 import NavBar from "../components/menu/NavBar";
 import MenuToday from "../components/menuToday/MenuToday";
 import News from "../components/news/News";

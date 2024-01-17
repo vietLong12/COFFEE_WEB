@@ -1,12 +1,9 @@
+// @ts-nocheck
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import WarningIcon from "@mui/icons-material/Warning";
-import {
-  FiberSmartRecord,
-  FiberSmartRecordRounded,
-  ThumbUpAlt,
-} from "@mui/icons-material";
+import { ThumbUpAlt } from "@mui/icons-material";
 import { Rating } from "@mui/material";
-import React, { useState } from "react";
+import { useState } from "react";
 
 interface ProductComment {
   id: string;

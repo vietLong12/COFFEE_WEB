@@ -1,4 +1,3 @@
-import React from "react";
 import Heading from "../common/Heading";
 import img1 from "../../assets/img/img-hinh-anh-1 (1).webp";
 import img2 from "../../assets/img/img-hinh-anh-2.webp";

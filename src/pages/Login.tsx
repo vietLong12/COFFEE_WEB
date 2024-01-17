@@ -1,10 +1,11 @@
+// @ts-nocheck
 import fb from "../assets/icon/fb-btn.svg";
 import gg from "../assets/icon/gp-btn.svg";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import SubHeader from "../components/subHeader/SubHeader";
 import { Link, useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { AuthContext } from "../context/authContext";
 import Swal from "sweetalert2";
 import { LoginService } from "../service/LoginService";

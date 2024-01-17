@@ -1,5 +1,5 @@
 import React from "react";
-import { TProduct } from "../../../Types";
+// @ts-nocheck
 import { Link } from "react-router-dom";
 import { ProductResponse } from "../../../Types/ResponseType";
 

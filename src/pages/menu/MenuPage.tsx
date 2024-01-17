@@ -1,11 +1,10 @@
+// @ts-nocheck
 import { useContext, useEffect, useState } from "react";
 import SubHeader from "../../components/subHeader/SubHeader";
 import Heading from "../../components/common/Heading";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/reducer";
 import { Pagination } from "@mui/material";
-import { ProductCart, TProduct } from "../../Types";
-import data from "../../data/data";
 import PopUp from "../../components/common/PopUp";
 import { ProductResponse } from "../../Types/ResponseType";
 import { ProductService } from "../../service/ProductService";
@@ -14,13 +13,6 @@ import Skeleton from "react-loading-skeleton";
 import { changeQuantity } from "../../redux/action/AddProductToCart";
 import { AuthContext } from "../../context/authContext";
 import Swal from "sweetalert2";
-interface Category {
-  _id: string;
-  category: string;
-  createdAt?: string;
-  updatedAt?: string;
-  __v?: 0;
-}
 
 const MenuPage = () => {
   const cart: any = useSelector((store: RootState) => store.cart);
@@ -38,6 +30,7 @@ const MenuPage = () => {
   const [dataMenu, setData] = useState<any[]>([]);
 
   const handleChangePage = (
+    //@ts-ignore
     event: React.ChangeEvent<unknown>,
     value: number
   ) => {

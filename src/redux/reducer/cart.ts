@@ -45,9 +45,8 @@ export default function appReducer(
 
     case CHANGE_PRODUCT_QUANTITY: {
       let temp = JSON.parse(JSON.stringify(state));
-      console.log("temp: ", temp);
       temp = temp
-        .map((item) => {
+        .map((item: any) => {
           if (
             item._id === action.payload._id &&
             item.size?.toLowerCase() === action.payload.size?.toLowerCase()
@@ -58,7 +57,7 @@ export default function appReducer(
           }
           return item;
         })
-        .filter((item) => item.quantity >= 1);
+        .filter((item: any) => item.quantity >= 1);
       if (!temp) {
         temp = [];
       }

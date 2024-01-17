@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import SubHeader from "../components/subHeader/SubHeader";
-import data from "../data/data";
 import notfound from "/clipart1533013.png";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
-import { slugify } from "../utilities";
 import { AddRounded, StarRateRounded } from "@mui/icons-material";
 import PopUp from "../components/common/PopUp";
 import { ProductService } from "../service/ProductService";

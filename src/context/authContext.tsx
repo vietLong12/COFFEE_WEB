@@ -1,12 +1,5 @@
-import {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  createContext,
-  useState,
-} from "react";
-import { Account, Cart, ProductCart, UserTransfer } from "../Types";
-import data from "../data/data";
+import { ReactNode, createContext, useState } from "react";
+import { Cart, UserTransfer } from "../Types";
 
 interface ProviderAuthContextProps {
   children: ReactNode;

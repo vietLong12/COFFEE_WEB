@@ -1,4 +1,3 @@
-import { ProductCart, TProduct } from "../../Types";
 import { ADD_PRODUCT, CHANGE_PRODUCT_QUANTITY, GET_CART } from "../constant";
 
 export interface ProductPayload {

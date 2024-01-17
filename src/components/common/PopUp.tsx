@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { CloseOutlined } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
-import {
-  ProductPayload,
-  addProductToCart,
-} from "../../redux/action/AddProductToCart";
+import { addProductToCart } from "../../redux/action/AddProductToCart";
 import { ProductResponse } from "../../Types/ResponseType";
 import { AccountService } from "../../service/AccountService";
+import { AuthContext } from "../../context/authContext";
 
 interface TPopUpProps {
   item: ProductResponse | undefined;
@@ -20,7 +18,9 @@ interface SizesState {
 
 const PopUp: React.FC<TPopUpProps> = ({ item, setShowDetail }) => {
   const auth = useContext(AuthContext);
+
   const [quantity, setQuantity] = useState(1);
+  // @ts-ignore
   const [listSize, setListSize] = useState(item?.sizes);
   const [note, setNote] = useState("Không có ghi chú");
   const dispatch = useDispatch();
@@ -45,13 +45,13 @@ const PopUp: React.FC<TPopUpProps> = ({ item, setShowDetail }) => {
         }
       } else {
         // Xử lí khi chưa đăng nhập
-        const payload: ProductPayload = {
+        const payload: any = {
           _id: item?._id,
           note: note,
           productName: item?.productName,
           quantity: quantity,
           size: sizes?.name,
-          total: sizes?.price * quantity,
+          total: sizes?.price || 1 * quantity,
         };
         console.log("payload: ", payload);
         dispatch(addProductToCart(payload));
@@ -153,7 +153,9 @@ const PopUp: React.FC<TPopUpProps> = ({ item, setShowDetail }) => {
               className="bg-red-500 text-white px-3 py-1 text-lg"
             >
               Thêm vào giỏ{" "}
-              <span className="font-bold text-xl">{price * quantity}.000đ</span>
+              <span className="font-bold text-xl">
+                {price ? price : 1 * quantity}.000đ
+              </span>
             </button>
           </div>
         </div>

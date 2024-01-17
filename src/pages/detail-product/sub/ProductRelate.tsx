@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
+// @ts-nocheck
+import { useEffect, useState } from "react";
 import Heading from "../../../components/common/Heading";
-import data from "../../../data/data";
-import { getRandomNumber } from "../../../utilities";
-import { Rating } from "@mui/material";
 import { Link } from "react-router-dom";
 import PopUp from "../../../components/common/PopUp";
 import { TProduct } from "../../../Types";

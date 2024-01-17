@@ -14,7 +14,7 @@ const ProductRatePopUp = ({ productId, setShowPopup }: any) => {
   const [rate, setRate] = React.useState<number | null>(1);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!auth?.isLoggedIn) {
       Swal.fire({
@@ -65,6 +65,7 @@ const ProductRatePopUp = ({ productId, setShowPopup }: any) => {
               <Rating
                 name="simple-controlled"
                 value={rate}
+                //@ts-ignore
                 onChange={(event, newValue) => {
                   setRate(newValue);
                 }}

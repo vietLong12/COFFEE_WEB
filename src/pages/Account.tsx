@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useContext, useEffect, useState } from "react";
 import SubHeader from "../components/subHeader/SubHeader";
 import { AuthContext } from "../context/authContext";

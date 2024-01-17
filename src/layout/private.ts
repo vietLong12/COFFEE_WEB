@@ -1,9 +1,6 @@
-import { register } from "swiper/element";
 import Home from "../pages/Home";
 import DetailProduct from "../pages/detail-product/DetailProduct";
-import Login from "../pages/Login";
-import Register from "../pages/Register";
-import Introduction from "../pages/introduction";
+import Introduction from "../pages/Introduction";
 import News from "../pages/News";
 import Contact from "../pages/Contact";
 import MenuPage from "../pages/menu/MenuPage";

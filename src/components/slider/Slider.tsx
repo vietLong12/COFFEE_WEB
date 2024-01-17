@@ -1,9 +1,7 @@
+// @ts-nocheck
 import { useEffect, useState } from "react";
 import { AddRounded, StarRateRounded } from "@mui/icons-material";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
-import data from "../../data/data";
-import { getRandomNumber } from "../../utilities";
-import { TProduct } from "../../Types";
 import PopUp from "../common/PopUp";
 import { Link, useNavigate } from "react-router-dom";
 import { ProductService } from "../../service/ProductService";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Close, Menu } from "@mui/icons-material";
 import { useContext, useState } from "react";
 import NavBarList from "./navbarList/NavBarList";

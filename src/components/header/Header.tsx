@@ -1,4 +1,3 @@
-import NavBar from "../menu/NavBar";
 import HeaderLeft from "./children/HeaderLeft";
 
 const Header = () => {

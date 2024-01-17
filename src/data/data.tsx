@@ -1,4 +1,4 @@
-import { Account } from "../Types";
+// @ts-nocheck
 import { getRandomNumber } from "../utilities";
 
 const data = [
@@ -353,7 +353,7 @@ export const dataUserReview = [
   // Thêm các đối tượng khác ở đây...
 ];
 
-export const account: Account[] = [
+export const account: any[] = [
   {
     cart: {
       items: [

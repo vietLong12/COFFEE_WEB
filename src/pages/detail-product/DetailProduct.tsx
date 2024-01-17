@@ -1,7 +1,6 @@
 import { useLocation } from "react-router-dom";
 import SubHeader from "../../components/subHeader/SubHeader";
 import { Rating } from "@mui/material";
-import * as React from "react";
 import SubDetailProduct from "./sub/SubDetailProduct";
 import ProductRelate from "./sub/ProductRelate";
 import { useEffect, useState } from "react";

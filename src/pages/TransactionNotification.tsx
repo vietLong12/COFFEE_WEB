@@ -1,11 +1,22 @@
+// @ts-nocheck
 import { useEffect, useState, forwardRef, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+// @ts-ignore
+
 import checked from "../assets/icon/yes.png";
+// @ts-ignore
+
 import data from "../data/data";
+// @ts-ignore
+
 import { AddressService } from "../service/AddressService";
 import { CheckCircle, Print } from "@mui/icons-material";
 import { useRef } from "react";
+// @ts-ignore
+
 import ReactToPrint, { useReactToPrint } from "react-to-print";
+// @ts-ignore
+
 import { OrderService } from "../service/OrderService";
 import { ProductService } from "../service/ProductService";
 import { AuthContext } from "../context/authContext";
@@ -66,15 +77,15 @@ const PrintComponent = forwardRef((props: any, ref) => {
 });
 
 const TransactionNotification = () => {
-  const componentRef = useRef<HTMLDivElement>();
+  const componentRef = useRef<HTMLDivElement | any>();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
   const auth = useContext(AuthContext);
   const orderId = auth?.orderId || "";
   const navigate = useNavigate();
-  const [customer, setCustomer] = useState();
-  const [orderInfo, setOrderInfor] = useState();
+  const [customer, setCustomer] = useState<any>();
+  const [orderInfo, setOrderInfor] = useState<any>();
   useEffect(() => {
     if (orderId != "") {
       const fetchData = async () => {
@@ -83,13 +94,15 @@ const TransactionNotification = () => {
 
           // Sử dụng Promise.all để đợi tất cả các promise giải quyết
           const order = await Promise.all(
-            (orderRes.order.items = orderRes.order.items.map(async (item) => {
-              const res = await ProductService.getProductById(item.productId);
-              const fil = res.product.sizes.filter(
-                (s) => s._id === item.sizeId
-              );
-              return { ...item, product: res.product, size: fil[0].name };
-            }))
+            (orderRes.order.items = orderRes.order.items.map(
+              async (item: any) => {
+                const res = await ProductService.getProductById(item.productId);
+                const fil = res.product.sizes.filter(
+                  (s: any) => s._id === item.sizeId
+                );
+                return { ...item, product: res.product, size: fil[0].name };
+              }
+            ))
           );
           setCustomer(orderRes.order);
           setOrderInfor(order);
@@ -169,7 +182,7 @@ const TransactionNotification = () => {
           <div className="bg-zinc-50 p-6">
             <h6 className="font-bold">Đơn hàng #{customer?.orderNumber} (</h6>
             <ul className="mt-4 border-t pt-4">
-              {orderInfo?.map((item, index) => {
+              {orderInfo?.map((item: any, index: any) => {
                 return (
                   <li
                     className="flex items-center mb-4 border-b pb-4 w-full justify-between"
