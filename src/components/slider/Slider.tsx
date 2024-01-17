@@ -56,7 +56,7 @@ const Slider = () => {
          font-medium"
       >
         <p className="bg-white text-black hover-primary font-bold uppercase text-3xl px-4 py-2 cursor-pointer slider-left w-96 text-center mb-4 duration-200 relative">
-          Deal hot trong ngày
+          Deal hot trong ngày test update
         </p>
         <p>
           Mua <span className="font-bold">1 phần nước</span> bất kì
