@@ -5,9 +5,13 @@ const OpeningTime = () => {
   return (
     <div className="bg-image pt-32">
       <div className="lg:w-3/5 mx-auto flex justify-center">
-        <div className="bg-inner font-bold">
+        <div className="bg-inner font-bold ">
           <div className="mt-6 tracking-tighter">
-            <Heading href="#" title="thời gian hoạt động" className="lg:text-3xl text-xl " />
+            <Heading
+              href="#"
+              title="thời gian hoạt động"
+              className="lg:text-3xl text-xl "
+            />
           </div>
           <p className="font-normal mt-14 text-lg lg:text-start text-center">
             Monster Coffee là quán cà phê với những hương vị cà phê thơm ngon
@@ -34,14 +38,14 @@ const OpeningTime = () => {
               <p className="text-2xl mb-2">Hotline đặt hàng</p>
               <a
                 href="tel:+4733378901"
-                className="text-4xl tracking-wide hotline duration-200"
+                className="text-4xl tracking-wide hotline duration-200 block"
               >
                 19006750
               </a>
             </div>
           </div>
-          <div className="text-center mt-4">
-            <button className="border-2 px-8 py-1 text-white uppercase text-xl rounded-xl hover:text-black hover:border-black duration-200">
+          <div className="text-center mt-4 lg:block hidden">
+            <button className="border-2 px-8 py-1 xl:text-white text-primary xl:bg-transparent bg-white uppercase text-xl rounded-xl hover:text-black hover:border-black duration-200 ">
               Đặt hàng ngay
             </button>
           </div>

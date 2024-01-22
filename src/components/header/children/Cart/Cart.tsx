@@ -91,6 +91,7 @@ const Cart = ({ render, setRender }: CartProps) => {
                   size: size ? size.name : "N/A",
                   total: size.price * item.quantity,
                   sizeId: size._id,
+                  img: product.img,
                 };
                 return dataReturn;
               })
@@ -201,7 +202,7 @@ const Cart = ({ render, setRender }: CartProps) => {
           </div>
           <button
             onClick={handleOrder}
-            className="uppercase w-full py-2 text-center bg-red-600 text-white font-bold"
+            className="uppercase w-full py-2 text-center bg-red-600 text-white font-bold rounded-md"
           >
             đặt hàng
           </button>
@@ -209,7 +210,7 @@ const Cart = ({ render, setRender }: CartProps) => {
       ) : (
         <button
           disabled
-          className="uppercase w-full py-2 text-center bg-gray-400 text-white font-bold "
+          className="uppercase w-full py-2 text-center bg-gray-400 text-white font-bold rounded-md"
           onClick={() => handleOrder()}
         >
           đặt hàng

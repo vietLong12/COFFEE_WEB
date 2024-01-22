@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/authContext";
 import DropDown from "../components/common/DropDown";
@@ -18,6 +17,7 @@ import { LoginService } from "../service/LoginService";
 import { useCookies } from "react-cookie";
 import { OrderService } from "../service/OrderService";
 import Swal from "sweetalert2";
+import SubHeader from "../components/subHeader/SubHeader";
 
 interface FormRef {
   submitForm: () => void;
@@ -40,6 +40,7 @@ const Order = () => {
   const [listAddress, setListAddress] = useState<any[]>([]);
 
   const [cartData, setCartData] = useState<ProductPayload[]>([]);
+  console.log("cartData: ", cartData);
 
   const [homeAddress, setHomeAddress] = useState("");
   const [wardSelected, setWardSelected] = useState<number | null>(1);
@@ -57,7 +58,6 @@ const Order = () => {
 
   const [couponValue, setCouponValue] = useState("");
   const [freightCost, setFreightCost] = useState("");
-  console.log("freightCost: ", freightCost);
   const [noteValue, setNoteValue] = useState("Không có ghi chú");
   const [selectedPayment, setSelectedPayment] = useState<"cod" | "momo">("cod");
 
@@ -121,7 +121,7 @@ const Order = () => {
           auth?.setRender(!auth.render);
         }
         if (resOrder.desciption === "order created") {
-          auth?.setOrderId(resOrder.order._id);
+          auth?.setOrderInfor(resOrder.order);
           Swal.fire({
             icon: "success",
             title: "Bạn đã đặt hàng thành công",
@@ -157,6 +157,7 @@ const Order = () => {
         );
         if (account) {
           setListAddress(account.data.address);
+          setCartData(auth?.cart);
         }
       }
     };
@@ -173,7 +174,7 @@ const Order = () => {
         const wards = districts[0].districts.filter(
           (c: any) => c.code === districtSelected
         );
-        setWard(wards[0].wards);
+        setWard(wards[0]?.wards);
       } catch (error) {
         console.error("Error fetching cities:", error);
       }
@@ -183,296 +184,292 @@ const Order = () => {
   }, [citySelected, districtSelected, wardSelected, indexAddress]);
 
   return (
-    <div className="z-50 fixed top-0 left-0 bottom-0 right-0 bg-white">
-      <div className="w-3/4 grid grid-cols-3 mx-auto gap-6">
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="text-blue-600 text-3xl mb-4 font-semibold cursor-pointer pb-0.5 block"
-          >
-            Monster Coffee
-          </Link>
-          <div className="flex justify-between">
-            <p className="font-bold">Thông tin nhận hàng</p>
-            <p
-              className="text-blue-600 font-bold cursor-pointer"
-              onClick={handleLogout}
-            >
-              {!auth?.isLoggedIn ? "Đăng nhập" : "Đăng xuất"}
-            </p>
-          </div>
-
-          <div className="overflow-hidden mt-4">
-            <InputLabel color="primary" id="demo-simple-select-helper-label">
-              Danh sách địa chỉ
-            </InputLabel>
-            <select
-              name="selectAddreess"
-              id="listAddress"
-              className="overflow-hidden border-2 py-1 px-1 w-full"
-              onChange={(e) => setIndexAddress(e.target.value)}
-            >
-              <option value="other" className="">
-                1. Địa chỉ mới
-              </option>
-              {listAddress?.map((address, index) => (
-                <option value={index} key={index} className="">
-                  {`${index + 2}. ${address.homeAddress}, ${
-                    address.ward?.name
-                  }, ${address.district?.name}, ${address.city?.name}`}
+    <div className="">
+      <SubHeader heading="Đặt hàng" />
+      <div className="w-full px-8 mx-auto gap-6 py-10 mb-4">
+        <div className="">
+          <p className="font-bold text-center text-2xl uppercase">
+            Thông tin nhận hàng
+          </p>
+        </div>
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mt-6">
+          <div className="">
+            <h6 className="font-bold text-lg mb-2">1. Thông tin cá nhân</h6>
+            <div className="overflow-hidden">
+              <InputLabel color="primary" id="demo-simple-select-helper-label">
+                Danh sách địa chỉ
+              </InputLabel>
+              <select
+                name="selectAddreess"
+                id="listAddress"
+                className="overflow-hidden border-2 py-1 px-1 w-full"
+                onChange={(e) => setIndexAddress(e.target.value)}
+              >
+                <option value="other" className="">
+                  1. Địa chỉ mới
                 </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="mb-2 flex-col">
-            <label htmlFor="email">Email</label>
-            <input
-              type="text"
-              id="email"
-              value={auth?.userData?.email}
-              disabled
-              className="border w-full py-1 rounded hover:border-black px-1"
-            />
-          </div>
-
-          <div className="mb-2 flex-col">
-            <label htmlFor="email">Tên người dùng</label>
-            <input
-              type="text"
-              id="email"
-              value={auth?.userData?.username}
-              disabled
-              className="border w-full py-1 rounded hover:border-black px-1"
-            />
-          </div>
-
-          <div className="mb-2 flex-col">
-            <label htmlFor="email">Phone</label>
-            <input
-              type="text"
-              id="email"
-              value={auth?.userData?.phone}
-              disabled
-              className="border w-full py-1 rounded hover:border-black px-1"
-            />
-          </div>
-          <div className="mb-2 flex-col">
-            <label htmlFor="homeAddress">Địa chỉ</label>
-            <input
-              type="text"
-              id="homeAddress"
-              disabled={!isNewAddress}
-              value={homeAddress}
-              onChange={(e) => setHomeAddress(e.target.value)}
-              className="border w-full py-1 rounded hover:border-black px-1"
-            />
-          </div>
-
-          <div className="mb-2">
-            <DropDown
-              label="Tỉnh/Thành phố"
-              onSelect={(w) => setCitySelected(w)}
-              options={city}
-              disabled={!isNewAddress}
-              defaultValue={citySelected}
-            />
-            {checkCity ? (
-              <div className="text-sm text-red-900">
-                Vui lòng chọn tỉnh/thành phố
-              </div>
-            ) : null}
-          </div>
-          <div className="mb-2">
-            <DropDown
-              label="Quận/Huyện"
-              defaultValue={districtSelected}
-              disabled={!isNewAddress}
-              onSelect={(w) => setDistrictSelected(w)}
-              options={district}
-            />
-          </div>
-          <div className="mb-2">
-            <DropDown
-              disabled={!isNewAddress}
-              label="Phường/Xã"
-              onSelect={(w) => setWardSelected(w)}
-              options={ward}
-              defaultValue={wardSelected}
-            />
-          </div>
-          <div className="text-input mb-2">
-            <InputLabel color="primary" id="demo-simple-select-helper-label">
-              Ghi chú
-            </InputLabel>
-            <div className="hidden-label mt-1">
-              <TextField
-                onChange={(e) => setNoteValue(e.target.value)}
-                className="w-full"
-                defaultValue={""}
-                value={noteValue}
-                id="outlined-required"
-                label="Required"
-              />
+                {listAddress?.map((address, index) => (
+                  <option value={index} key={index} className="">
+                    {`${index + 2}. ${address.homeAddress}, ${
+                      address.ward?.name
+                    }, ${address.district?.name}, ${address.city?.name}`}
+                  </option>
+                ))}
+              </select>
             </div>
-          </div>
-        </div>
-        <div className="mt-6">
-          <h1 className="text-blue-600 text-3xl mb-4 font-semibold text-transparent">
-            transparent
-          </h1>
-          <div>
-            <div className="mb-6">
-              <p className="font-bold mb-4">Vận chuyển</p>
-              <div className="bg-blue-100 p-4">
-                {freightCost ? (
-                  <div className="flex items-center">
-                    <input
-                      type="radio"
-                      name="freightCost"
-                      className="mr-2"
-                      id="freight-cost"
-                      defaultChecked={true}
-                    />
-                    <div className="flex justify-between w-full">
-                      <label htmlFor="freight-cost" className="w-fit">
-                        Giao hàng tận nơi
-                      </label>
-                      <p className="mr-4">{freightCost}.000đ</p>
-                    </div>
-                  </div>
-                ) : (
-                  "Vui lòng nhập thông tin giao hàng"
-                )}
-              </div>
-            </div>
-            <div>
-              <p className="font-bold mb-4">Thanh toán</p>
-              <div className="flex border p-4 pe-8 mb-4 border-blue-600">
-                <input
-                  type="radio"
-                  name="radio-pay"
-                  id="radio-pay-1"
-                  className="mr-2 w-3"
-                  value="cod"
-                  checked={selectedPayment === "cod"}
-                  onChange={(e) => handlePaymentChange(e)}
-                />
-                <label
-                  htmlFor="radio-pay-1"
-                  className="flex justify-between w-full"
-                >
-                  Thanh toán khi giao hàng (COD)
-                  <Money />
-                </label>
-              </div>
-              <div className="flex border p-4 pe-8 border-blue-600">
-                <input
-                  type="radio"
-                  name="radio-pay"
-                  id="radio-pay-2"
-                  className="mr-2 w-3"
-                  value="momo"
-                  checked={selectedPayment === "momo"}
-                  onChange={(e) => handlePaymentChange(e)}
-                />
-                <label
-                  htmlFor="radio-pay-2"
-                  className="flex items-center justify-between w-full"
-                >
-                  Thanh toán qua Momo
-                  <img src={momo} alt="" width={20} />
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="bg-zinc-50 p-6">
-          <h1>Đơn hàng ({cartData.length} sản phẩm)</h1>
-          <ul className="mt-4 border-t pt-4">
-            {cartData.map((item, index) => {
-              return (
-                <li
-                  className="flex items-center mb-4 border-b pb-4 w-full justify-between"
-                  key={index}
-                >
-                  <div className="relative mr-5">
-                    <img src={""} alt="" width={50} />
-                    <span className="bg-blue-600 w-5 h-5 justify-center flex items-center absolute -top-2 left-9 text-white text-xs rounded-full">
-                      {item.quantity}
-                    </span>
-                  </div>
-                  <div className="w-2/4">
-                    <p className="font-semibold">{item.productName}</p>
-                    <p className="text-sm uppercase">{item.size}</p>
-                    <p className="text-sm ">Ghi chú: {item.note}</p>
-                  </div>
-                  <div className="text-sm">{item.total}.000đ</div>
-                </li>
-              );
-            })}
-          </ul>
-          <div className="grid grid-cols-4 gap-4 pb-4 border-b">
-            <div className="col-span-3 ">
+
+            <div className="mb-2 flex-col">
+              <label htmlFor="email">Email</label>
               <input
                 type="text"
-                placeholder="Nhập mã giảm giá"
-                className="w-full p-2 outline-blue-500 rounded-md  border"
-                onChange={(e) => setCouponValue(e.target.value)}
+                id="email"
+                value={auth?.userData?.email}
+                disabled
+                className="border w-full py-1 rounded hover:border-black px-1"
               />
             </div>
-            <button
-              className={`${
-                couponValue != ""
-                  ? " bg-blue-500 hover:bg-blue-300"
-                  : "bg-blue-200"
-              } duration-200 rounded-md text-white`}
-              disabled={couponValue == ""}
-            >
-              Áp dụng
-            </button>
-          </div>
-          <div className="pb-4 border-b pt-2">
-            <div className="flex justify-between mb-2">
-              Tạm tính{" "}
-              <span>
-                {cartData.reduce((acc, item) => acc + item.total, 0)
-                  ? cartData.reduce((acc, item) => acc + item.total, 0) +
-                    ".000đ"
-                  : ""}
-              </span>
+
+            <div className="mb-2 flex-col">
+              <label htmlFor="email">Tên người dùng</label>
+              <input
+                type="text"
+                id="email"
+                value={auth?.userData?.username}
+                disabled
+                className="border w-full py-1 rounded hover:border-black px-1"
+              />
             </div>
-            <div className="flex justify-between">
-              Phí vận chuyển{" "}
-              {freightCost != "" ? <span>{freightCost}.000đ</span> : ""}
+
+            <div className="mb-2 flex-col">
+              <label htmlFor="email">Phone</label>
+              <input
+                type="text"
+                id="email"
+                value={auth?.userData?.phone}
+                disabled
+                className="border w-full py-1 rounded hover:border-black px-1"
+              />
+            </div>
+            <div className="mb-2 flex-col">
+              <label htmlFor="homeAddress">Địa chỉ</label>
+              <input
+                type="text"
+                id="homeAddress"
+                disabled={!isNewAddress}
+                value={homeAddress}
+                onChange={(e) => setHomeAddress(e.target.value)}
+                className="border w-full py-1 rounded hover:border-black px-1"
+              />
+            </div>
+
+            <div className="mb-2">
+              <DropDown
+                label="Tỉnh/Thành phố"
+                onSelect={(w) => setCitySelected(w)}
+                options={city}
+                disabled={!isNewAddress}
+                defaultValue={citySelected}
+              />
+              {checkCity ? (
+                <div className="text-sm text-red-900">
+                  Vui lòng chọn tỉnh/thành phố
+                </div>
+              ) : null}
+            </div>
+            <div className="mb-2">
+              <DropDown
+                label="Quận/Huyện"
+                defaultValue={districtSelected}
+                disabled={!isNewAddress}
+                onSelect={(w) => setDistrictSelected(w)}
+                options={district}
+              />
+            </div>
+            <div className="mb-2">
+              <DropDown
+                disabled={!isNewAddress}
+                label="Phường/Xã"
+                onSelect={(w) => setWardSelected(w)}
+                options={ward}
+                defaultValue={wardSelected}
+              />
+            </div>
+            <div className="text-input mb-2">
+              <InputLabel color="primary" id="demo-simple-select-helper-label">
+                Ghi chú
+              </InputLabel>
+              <div className="hidden-label mt-1">
+                <TextField
+                  onChange={(e) => setNoteValue(e.target.value)}
+                  className="w-full"
+                  defaultValue={""}
+                  value={noteValue}
+                  id="outlined-required"
+                  label="Required"
+                />
+              </div>
             </div>
           </div>
-          <div className="py-4">
-            <div className="flex justify-between text-xl px-4 items-center">
-              Tổng cộng{" "}
-              <span className="font-bold text-2xl">
-                {cartData.reduce((acc, item) => acc + item?.total, 0)
-                  ? cartData.reduce((acc, item) => acc + item?.total, 0) +
-                    Number(freightCost) +
-                    ".000đ"
-                  : ""}
-              </span>
+          <div className="">
+            <h6 className="font-bold text-lg mb-2">
+              2. Vận chuyển và thanh toán
+            </h6>
+            <div>
+              <div className="mb-6">
+                <p className="font-bold mb-4">Vận chuyển</p>
+                <div className="bg-blue-100 p-4">
+                  {freightCost ? (
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        name="freightCost"
+                        className="mr-2"
+                        id="freight-cost"
+                        defaultChecked={true}
+                      />
+                      <div className="flex justify-between w-full">
+                        <label htmlFor="freight-cost" className="w-fit">
+                          Giao hàng tận nơi
+                        </label>
+                        <p className="mr-4">{freightCost}.000đ</p>
+                      </div>
+                    </div>
+                  ) : (
+                    "Vui lòng nhập thông tin giao hàng"
+                  )}
+                </div>
+              </div>
+              <div>
+                <p className="font-bold mb-4">Thanh toán</p>
+                <div className="flex border p-4 pe-8 mb-4 border-blue-600">
+                  <input
+                    type="radio"
+                    name="radio-pay"
+                    id="radio-pay-1"
+                    className="mr-2 w-3"
+                    value="cod"
+                    checked={selectedPayment === "cod"}
+                    onChange={(e) => handlePaymentChange(e)}
+                  />
+                  <label
+                    htmlFor="radio-pay-1"
+                    className="flex justify-between w-full"
+                  >
+                    Thanh toán khi giao hàng (COD)
+                    <Money />
+                  </label>
+                </div>
+                <div className="flex border p-4 pe-8 border-blue-600">
+                  <input
+                    type="radio"
+                    name="radio-pay"
+                    id="radio-pay-2"
+                    className="mr-2 w-3"
+                    value="momo"
+                    checked={selectedPayment === "momo"}
+                    onChange={(e) => handlePaymentChange(e)}
+                  />
+                  <label
+                    htmlFor="radio-pay-2"
+                    className="flex items-center justify-between w-full"
+                  >
+                    Thanh toán qua Momo
+                    <img src={momo} alt="" width={20} />
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="flex justify-between items-center">
-            <p
-              className="text-blue-500 font-semibold cursor-pointer"
-              onClick={() => navigate("/")}
-            >
-              {"<"} Quay về trang chủ
-            </p>
-            <button
-              type="submit"
-              className="bg-blue-700 rounded-md text-white py-3 px-5 hover:bg-blue-900 duration-200"
-              onClick={() => handleSubmitOrder()}
-            >
-              Đặt hàng
-            </button>
+          <div>
+            <h6 className="font-bold text-lg mb-2">3. Thông tin đơn hàng</h6>
+            <div className="bg-zinc-50 p-6">
+              <h1>Đơn hàng ({cartData?.length} sản phẩm)</h1>
+              <ul className="mt-4 border-t pt-4">
+                {cartData?.map((item, index) => {
+                  return (
+                    <li
+                      className="flex items-center mb-4 border-b pb-4 w-full justify-between"
+                      key={index}
+                    >
+                      <div className="relative mr-5">
+                        <img src={item.img} alt="" width={50} />
+                        <span className="bg-blue-600 w-5 h-5 justify-center flex items-center absolute -top-2 left-9 text-white text-xs rounded-full">
+                          {item.quantity}
+                        </span>
+                      </div>
+                      <div className="w-2/4">
+                        <p className="font-semibold">{item.productName}</p>
+                        <p className="text-sm uppercase">{item.size}</p>
+                        <p className="text-sm ">Ghi chú: {item.note}</p>
+                      </div>
+                      <div className="text-sm">{item.total}.000đ</div>
+                    </li>
+                  );
+                })}
+              </ul>
+              <div className="grid grid-cols-4 gap-4 pb-4 border-b">
+                <div className="col-span-3 ">
+                  <input
+                    type="text"
+                    placeholder="Nhập mã giảm giá"
+                    className="w-full p-2 outline-blue-500 rounded-md  border"
+                    onChange={(e) => setCouponValue(e.target.value)}
+                  />
+                </div>
+                <button
+                  className={`${
+                    couponValue != ""
+                      ? " bg-blue-500 hover:bg-blue-300"
+                      : "bg-blue-200"
+                  } duration-200 rounded-md text-white`}
+                  disabled={couponValue == ""}
+                >
+                  Áp dụng
+                </button>
+              </div>
+              <div className="pb-4 border-b pt-2">
+                <div className="flex justify-between mb-2">
+                  Tạm tính{" "}
+                  <span>
+                    {cartData.reduce((acc, item) => acc + item.total, 0)
+                      ? cartData.reduce((acc, item) => acc + item.total, 0) +
+                        ".000đ"
+                      : ""}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  Phí vận chuyển{" "}
+                  {freightCost != "" ? <span>{freightCost}.000đ</span> : ""}
+                </div>
+              </div>
+              <div className="py-4">
+                <div className="flex justify-between text-xl px-4 items-center">
+                  Tổng cộng{" "}
+                  <span className="font-bold text-2xl">
+                    {cartData.reduce((acc, item) => acc + item?.total, 0)
+                      ? cartData.reduce((acc, item) => acc + item?.total, 0) +
+                        Number(freightCost) +
+                        ".000đ"
+                      : ""}
+                  </span>
+                </div>
+              </div>
+              <div className="flex justify-between items-center">
+                <p
+                  className="text-blue-500 font-semibold cursor-pointer"
+                  onClick={() => navigate("/")}
+                >
+                  {"<"} Quay về trang chủ
+                </p>
+                <button
+                  type="submit"
+                  className="bg-blue-700 rounded-md text-white py-3 px-5 hover:bg-blue-900 duration-200"
+                  onClick={() => handleSubmitOrder()}
+                >
+                  Đặt hàng
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

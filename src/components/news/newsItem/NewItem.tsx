@@ -13,7 +13,7 @@ const NewItem = () => {
       <div className="w-full h-fit absolute bottom-0 left-0 bg-opacity-60 bg-black text-white px-4 py-2">
         <h5 className="truncate font-bold text-2xl mb-2">{title}</h5>
         <p className="line-clamp-2 text mb-1">{text}</p>
-        <a href="" className="uppercase underline underline-offset-4 text-lg">Xem tất cả</a>
+        <a href="#" className="uppercase underline underline-offset-4 text-lg">Xem tất cả</a>
       </div>
     </div>
   );

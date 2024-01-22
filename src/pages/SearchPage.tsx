@@ -22,10 +22,7 @@ const SearchPage = () => {
   const searchParams = new URLSearchParams(location.search)
     .get("q")
     ?.toLowerCase();
-  console.log("searchParams: ", searchParams);
   const [listFilter, setListFilter] = useState<ProductResponse[]>([]);
-
-  console.log("listFilter: ", listFilter);
 
   const handleChangePage = (
     _event: React.ChangeEvent<unknown>,
@@ -49,32 +46,27 @@ const SearchPage = () => {
       const productList = await ProductService.getListProduct({
         depth: "3",
         keyword: searchParams,
-        limit: "6",
+        limit: "10",
         page: pagination.currentPage.toString(),
       });
       if (productList) {
         setListFilter(productList.products);
         setPagination(productList.pagination);
       }
-
-      console.log("productList: ", productList);
     };
     fetchData();
   }, [changePage, searchParams]);
   return (
     <div>
       <SubHeader heading="tìm kiếm" />
-      <div className="xl:w-3/5 mx-auto xl:px-0 px-2 pb-10">
+      <div className="xl:w-full mx-auto xl:px-0 px-2 pb-10">
         {listFilter.length === 0 ? (
           <>
             <p className="pt-10 pb-20 text-center text-lg font-semibold">
               Không tìm thấy bất kỳ kết quả nào với từ khóa trên.
             </p>
             <div className="flex justify-center mb-20">
-              <img
-                src={notfound}
-                alt="Sorry No Results Found@clipartmax.com"
-              ></img>
+              <img src={notfound} alt="Sorry No Results Found@clipartmax.com" />
             </div>
           </>
         ) : (
@@ -83,11 +75,14 @@ const SearchPage = () => {
               Có {pagination.totalDocuments} kết quả phù hợp với từ khoá: "
               {searchParams}"
             </p>
-            <ul className="xl:grid xl:grid-cols-2 gap-4">
+            <ul className="xl:grid xl:grid-cols-2 gap-6  p-6 xl:w-3/5 mx-auto  rounded-md">
               {listFilter.map((item, i) => (
-                <li key={i} className="flex bg-blur mb-4 p-2">
+                <li
+                  key={i}
+                  className="flex bg-blur p-2 rounded-md border border-primary"
+                >
                   <img
-                    className="mr-4 cursor-pointer"
+                    className="mr-4 cursor-pointer rounded-md"
                     src={item.img}
                     alt=""
                     width={80}

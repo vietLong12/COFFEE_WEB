@@ -8,23 +8,27 @@ const ImageCoffee = () => {
   return (
     <div>
       <div className="font-bold tracking-tighter">
-        <Heading title="Hình ảnh monster quán" href="/hinh-anh-monster-coffee" />
+        <Heading
+          title="Hình ảnh monster quán"
+          href="/hinh-anh-monster-coffee"
+          className="lg:text-2xl text-xl"
+        />
       </div>
-      <div>
-        <div className="flex  flex-row text-center mt-20 justify-between">
-          <a href="#" className="block basis-2/3">
-            <img src={img1} className="max-w-none" alt="" />
+      <div className="px-4 lg:px-0">
+        <div className="lg:grid grid-cols-3 text-center gap-4  lg:mt-20 mt-10 justify-between">
+          <a href="#" className="block col-span-2 mb-2 lg:mb-0  ">
+            <img src={img1} className="w-full h-full" alt="" />
           </a>
-          <a href="#" className="block basis-1/3">
-            <img src={img2} className="max-w-none" alt="" />
+          <a href="#" className="hidden col-span-1 lg:block ">
+            <img src={img2} className="w-full h-full" alt="" />
           </a>
         </div>
-        <div className="flex justify-between mt-4">
-          <a href="#" className="block basis-1/3 mr-4">
-            <img src={img3} className="max-w-none" alt="" />
+        <div className="lg:grid grid-cols-3 gap-4 text-center mt-4 lg:mb-0 mb-4">
+          <a href="#" className="hidden col-span-1 lg:block  ">
+            <img src={img3} className="w-full h-full" alt="" />
           </a>
-          <a href="#" className="block basis-2/3">
-            <img src={img4} className="max-w-none" alt="" />
+          <a href="#" className="block col-span-2">
+            <img src={img4} className="w-full h-full" alt="" />
           </a>
         </div>
       </div>

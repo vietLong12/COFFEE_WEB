@@ -17,11 +17,19 @@ const NavBar = () => {
           onClick={handleOpen}
           className=" cursor-pointer flex items-center  px-2"
         >
-          <span className="mr-4 uppercase font-bold text-2xl xl:block hidden">
-            Monster Coffee
-          </span>
-          <div className="xl:bg-transparent bg-black xl:text-primary text-white rounded">
-            <Menu className="" sx={{ fontSize: "36px" }} />
+          <div className="xl:bg-transparent bg-black text-primary  rounded border border-yellow-200 shadow-2xl hover:border-primary-same">
+            <Menu
+              className="hover:text-primary-same"
+              sx={{
+                fontSize: "50px",
+                "@media screen and (max-width: 768px)": {
+                  fontSize: "40px",
+                },
+                "@media screen and (max-width: 480px)": {
+                  fontSize: "30px",
+                },
+              }}
+            />
           </div>
         </div>
       </div>

@@ -53,11 +53,11 @@ export const publicLayout: TBaseLayout[] = [
     element: MenuPage,
   },
   {
-    path: "*",
-    element: NotFound,
-  },
-  {
     path: "/search",
     element: SearchPage,
+  },
+  {
+    path: "*",
+    element: NotFound,
   },
 ];

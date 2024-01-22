@@ -12,6 +12,7 @@ import AccountInfo from "../components/Account/AccountInfo";
 import MyOrder from "../components/Account/MyOrder";
 import ChangPassword from "../components/Account/ChangPassword";
 import MyAddress from "../components/Account/MyAddress";
+import SearchPage from "../pages/SearchPage";
 
 interface TBaseLayout {
   path: string;
@@ -59,6 +60,11 @@ export const privateLayout: TBaseLayout[] = [
   {
     path: "order/alert",
     element: TransactionNotification,
+    childRoute: [],
+  },
+  {
+    path: "/search",
+    element: SearchPage,
     childRoute: [],
   },
   {

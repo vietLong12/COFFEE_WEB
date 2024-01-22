@@ -28,7 +28,7 @@ const BackToTop = () => {
 
   return (
     <button
-      className={`fixed bottom-10 right-10 border-black border-2 bg-red-600 rounded-full bg-primary text-white ${
+      className={`fixed bottom-10 right-10 border rounded-full bg-primary text-white hover:bg-white hover:text-primary duration-200 hover:border-primary hover:border ${
         show ? "" : "hidden"
       }`}
       onClick={handleBackToTop}

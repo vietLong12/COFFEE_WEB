@@ -214,3 +214,6 @@ input.MuiInputBase-input {
   background-color: #c19977;
 }
 
+.swal2-container.swal2-center.swal2-backdrop-show {
+  z-index: 9999;
+}

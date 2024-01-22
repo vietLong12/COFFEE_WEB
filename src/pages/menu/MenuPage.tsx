@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useContext, useEffect, useState } from "react";
 import SubHeader from "../../components/subHeader/SubHeader";
 import Heading from "../../components/common/Heading";
@@ -55,11 +54,10 @@ const MenuPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       const dataFilter = await ProductService.getListProduct({
-        limit: "5",
+        limit: "6",
         keyword: category.categoryId,
         page: selectedPage,
       });
-      console.log(dataFilter);
       setData(dataFilter.products);
       setTotalPages(dataFilter.pagination.totalPages);
     };
@@ -99,8 +97,8 @@ const MenuPage = () => {
         </div>
       </div>
 
-      <div className="bg-primary-100 py-12">
-        <div className="xl:w-3/5 xl:px-20 px-4 sm:px-6 mx-auto w-full">
+      <div className="bg-primary-100 lg:py-12 py-0">
+        <div className="xl:px-20 px-4 sm:px-6 mx-auto w-full xl:w-4/5">
           <div className="xl:grid grid-cols-10 gap-4">
             <div className="col-span-2 xl:mb-0 mb-4">
               <div className="bg-white rounded-xl py-4 px-6">
@@ -144,29 +142,31 @@ const MenuPage = () => {
               </div>
             </div>
 
-            <div className="col-span-5 border bg-white">
-              <div>
+            <div className="col-span-5">
+              <div className="xl:block grid lg:grid-cols-3 grid-cols-1 md:grid-cols-2  gap-8 lg:p-4 xl:p-0 lg:mb-10">
                 {dataMenu.map((item, index) => (
                   <div
-                    className={`xl:grid grid-cols-4 px-4 py-6 border-black  ${
-                      index + 1 == dataMenu.length ? "border-0" : "border-b"
-                    }`}
+                    className={`xl:grid grid-cols-4 px-4 py-6 border-b lg:border mb-2 rounded-md shadow-sm bg-white`}
                   >
                     <div className="flex justify-center items-center">
                       {(
-                        <img src={item.img} alt="" className="w-full xl:w-20" />
+                        <img
+                          src={item.img}
+                          alt=""
+                          className="h-32 sm:w-auto xl:w-32"
+                        />
                       ) || <Skeleton />}
                     </div>
-                    <div className="col-span-2 mb-3">
+                    <div className="col-span-2 mb-2 xl:ps-4 lg:block flex flex-col items-center lg:mt-0 mt-4">
                       <Link
                         className="font-bold text-lg line-clamp-1"
                         to={"/detail-product/" + item._id}
                       >
                         {item.productName || <Skeleton />}
                       </Link>
-                      <p className="line-clamp-3 text-sm">{item.desc}</p>
+                      <p className="line-clamp-3">{item.desc}</p>
                     </div>
-                    <div className="flex justify-between xl:ml-0">
+                    <div className="flex justify-between xl:ml-0 lg:px-0 px-4">
                       <p
                         className="font-bold text-lg text-primary
                       "
@@ -191,14 +191,14 @@ const MenuPage = () => {
                     </div>
                   </div>
                 ))}
-                <div className="flex justify-center pb-4">
-                  <Pagination
-                    size="small"
-                    count={totalPages}
-                    page={selectedPage}
-                    onChange={handleChangePage}
-                  />
-                </div>
+              </div>
+              <div className="flex justify-center pb-4 ">
+                <Pagination
+                  size="small"
+                  count={totalPages}
+                  page={selectedPage}
+                  onChange={handleChangePage}
+                />
               </div>
               {showDetail ? (
                 <PopUp item={itemSelected} setShowDetail={setShowDetail} />

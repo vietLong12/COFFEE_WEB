@@ -37,6 +37,7 @@ const PopUp: React.FC<TPopUpProps> = ({ item, setShowDetail }) => {
             productId: item?._id,
             sizeId: selectedSize,
             quantity: quantity,
+            note: note,
           });
           if (resp.code === 200) {
             setShowDetail(false);
@@ -130,7 +131,7 @@ const PopUp: React.FC<TPopUpProps> = ({ item, setShowDetail }) => {
           <div className="xl:flex block justify-around pt-4">
             <div className="flex items-center mb-8 xl:mb-0">
               <button
-                className="mr-1 p-0 w-6 h-6 bg-green-600 text-center text-xl inline-flex justify-center items-center text-white"
+                className="rounded-md mr-1 p-0 w-6 h-6 bg-green-600 text-center text-xl inline-flex justify-center items-center text-white"
                 onClick={() => (quantity <= 1 ? 1 : setQuantity(quantity - 1))}
               >
                 -
@@ -142,7 +143,7 @@ const PopUp: React.FC<TPopUpProps> = ({ item, setShowDetail }) => {
                 className="outline-none w-10 border h-6 rounded-md text-center"
               />
               <button
-                className="ml-1 p-0 w-6 h-6 bg-green-600 text-center text-xl inline-flex justify-center items-center text-white"
+                className="rounded-md ml-1 p-0 w-6 h-6 bg-green-600 text-center text-xl inline-flex justify-center items-center text-white"
                 onClick={() => setQuantity(quantity + 1)}
               >
                 +
@@ -150,7 +151,7 @@ const PopUp: React.FC<TPopUpProps> = ({ item, setShowDetail }) => {
             </div>
             <button
               onClick={() => handleSubmit()}
-              className="bg-red-500 text-white px-3 py-1 text-lg"
+              className="bg-red-500 text-white px-3 py-1 text-lg rounded"
             >
               Thêm vào giỏ{" "}
               <span className="font-bold text-xl">

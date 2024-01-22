@@ -26,6 +26,7 @@ interface CartRequest {
   productId: string;
   sizeId: string;
   quantity?: Number;
+  note?: string;
 }
 
 export class AccountService {
@@ -40,6 +41,13 @@ export class AccountService {
       return response.data;
     } catch (error: any) {
       if (error.response.data.msg === "Change password failed") {
+        Swal.fire({
+          icon: "warning",
+          title: "Có lỗi xảy ra",
+          text: "Mật khẩu sai",
+        });
+      }
+      if (error.response.data.msg === "Password is wrong") {
         Swal.fire({
           icon: "warning",
           title: "Có lỗi xảy ra",

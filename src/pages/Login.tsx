@@ -5,7 +5,7 @@ import { Field, Form, Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import SubHeader from "../components/subHeader/SubHeader";
 import { Link, useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { AuthContext } from "../context/authContext";
 import Swal from "sweetalert2";
 import { LoginService } from "../service/LoginService";
@@ -29,6 +29,7 @@ const initValue = {
 const Login = () => {
   const auth = useContext(AuthContext);
   const [cookies, setCookie, removeCookie] = useCookies(["token"]);
+  const inputEmailRef = useRef(null);
   const handleSubmitVerifyCode = (email: string) => {
     Swal.fire({
       title: "Nhập mã xác nhận của bạn",
@@ -127,10 +128,12 @@ const Login = () => {
   const navigate = useNavigate();
   const SignupSchema = Yup.object().shape({
     password: Yup.string()
-      .min(6, "Mật khẩu tối thiểu phải là 6 kí tự")
-      .max(12, "Mật khẩu phải nhỏ hơn 12 kí tự")
-      .required("Đây là bắt buộc"),
-    email: Yup.string().email("Email không hợp lệ").required("Đây là bắt buộc"),
+      .min(6, "* Mật khẩu tối thiểu phải là 6 kí tự")
+      .max(12, "* Mật khẩu phải nhỏ hơn 12 kí tự")
+      .required("* Đây là bắt buộc"),
+    email: Yup.string()
+      .email("* Email không hợp lệ")
+      .required("* Đây là bắt buộc"),
   });
 
   const handleSubmitForm = async (
@@ -160,13 +163,18 @@ const Login = () => {
   return (
     <div className="bg-black">
       <SubHeader heading={"Đăng nhập"} />
-      <div className="bg-white mt-20 py-10">
+      <div className="bg-white py-10">
         <Formik
           initialValues={initValue}
           onSubmit={handleSubmitForm}
           validationSchema={SignupSchema}
         >
           {({ errors, touched }) => {
+            useEffect(() => {
+              if (errors.email && touched.email) {
+                inputEmailRef.current.focus();
+              }
+            }, [errors.email, touched.email]);
             return (
               <Form className="bg-white xl:w-1/5 lg:w-2/5 mx-auto p-7 shadow-2xl">
                 <h2 className="uppercase text-2xl font-medium text-center mt-10">
@@ -181,10 +189,15 @@ const Login = () => {
                 </p>
                 <div className="w-full mb-3">
                   <Field
-                    className="bg-green-50 px-2 py-3 w-full outline-none"
+                    className={`bg-green-50 px-2 py-3 w-full outline-none rounded ${
+                      errors.email && touched.email
+                        ? "border border-red-600"
+                        : ""
+                    }`}
                     type="text"
                     name="email"
                     placeholder="Email"
+                    innerRef={inputEmailRef}
                   />
                   {errors.email && touched.email ? (
                     <div className="text-sm text-red-700">{errors.email}</div>
@@ -192,7 +205,11 @@ const Login = () => {
                 </div>
                 <div className="w-full mb-3">
                   <Field
-                    className="bg-green-50 px-2 py-3 w-full outline-none"
+                    className={`bg-green-50 px-2 py-3 w-full outline-none rounded ${
+                      errors.email && touched.email
+                        ? "border border-red-600"
+                        : ""
+                    }`}
                     type="password"
                     name="password"
                     placeholder="Mật khẩu"
@@ -209,25 +226,33 @@ const Login = () => {
                     name="isRememberMe"
                     id="isRememberMe"
                   />
-                  <label htmlFor="isRememberMe" className="ml-2">
+                  <label htmlFor="isRememberMe" className="ml-2 select-none">
                     Ghi nhớ đăng nhập?
                   </label>
                 </div>
                 <button
                   type="submit"
-                  className="mb-4 bg-black text-white w-full py-2 font-semibold duration-100 border hover:bg-white hover:border-black hover:text-black"
+                  className="mb-4 bg-black text-white w-full py-2 font-semibold duration-100 border hover:bg-white hover:border-black hover:text-black rounded"
+                  onClick={() => {
+                    if (errors) {
+                      inputEmailRef.current.focus();
+                    }
+                  }}
                 >
                   {" "}
                   Đăng nhập
                 </button>
-                <p
-                  className="text-sm text-center block p-4"
-                  onClick={() => handleFindPassword()}
-                >
-                  Quên mật khẩu
-                </p>
+                <div className="text-sm text-center block p-4 ">
+                  Quên mật khẩu?{" "}
+                  <span
+                    className="cursor-pointer underline hover:text-primary duration-200"
+                    onClick={() => handleFindPassword()}
+                  >
+                    Tìm lại tại đây
+                  </span>
+                </div>
                 <p className="text-sm text-center">Hoặc đăng nhập bằng</p>
-                <div className="flex items-center justify-center mt-4">
+                <div className="flex items-center justify-center mt-4 w-full sm:w-60  mx-auto">
                   <a href="" className="block w-2/5 mr-2">
                     <img src={fb} alt="" />
                   </a>

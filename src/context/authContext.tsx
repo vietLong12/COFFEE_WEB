@@ -18,8 +18,8 @@ interface AuthValue {
   setListProduct: any;
   render: boolean;
   setRender: any;
-  orderId: string;
-  setOrderId: any;
+  orderInfor: string;
+  setOrderInfor: any;
 }
 
 export const AuthContext = createContext<AuthValue | null>(null);
@@ -28,7 +28,7 @@ const ProviderAuthContext = ({ children }: ProviderAuthContextProps) => {
   const [isLoggedIn, setLoggedIn] = useState<boolean>(false);
   const [listProduct, setListProduct] = useState();
   const [userData, setUserData] = useState<UserTransfer | null>(null);
-  const [orderId, setOrderId] = useState<string>("");
+  const [orderInfor, setOrderInfor] = useState<any>("");
   const [showCart, setShowCart] = useState<boolean>(false);
   const [cart, setCart] = useState<Cart>({
     items: [],
@@ -47,8 +47,8 @@ const ProviderAuthContext = ({ children }: ProviderAuthContextProps) => {
     setListProduct,
     render,
     setRender,
-    orderId,
-    setOrderId,
+    orderInfor,
+    setOrderInfor,
   };
 
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;

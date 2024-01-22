@@ -3,7 +3,8 @@ import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import WarningIcon from "@mui/icons-material/Warning";
 import { ThumbUpAlt } from "@mui/icons-material";
 import { Rating } from "@mui/material";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../../context/authContext";
 
 interface ProductComment {
   id: string;
@@ -27,7 +28,9 @@ const ProductDesc = ({ desc }: Partial<SubDetailProductProps>) => {
 const ProductReview = ({
   rateList,
   setShowPopup,
+  setVote,
 }: Partial<SubDetailProductProps>) => {
+  const auth = useContext(AuthContext);
   function formatDateTime(inputDateString: string) {
     const inputDate = new Date(inputDateString);
 
@@ -41,19 +44,35 @@ const ProductReview = ({
 
     return formattedDateTime;
   }
-  const listVote = rateList?.listComment.map((item) => item.vote);
-  let rate = 1;
-  if (listVote) {
-    rate = listVote?.reduce((acc, item) => acc + item, 0) / listVote?.length;
-    rate = parseFloat(rate.toFixed(1));
-  }
-  const vote5 = rateList?.listComment.filter((item) => item.vote == 5);
-  const vote4 = rateList?.listComment.filter((item) => item.vote == 4);
-  const vote3 = rateList?.listComment.filter((item) => item.vote == 3);
-  const vote2 = rateList?.listComment.filter((item) => item.vote == 2);
-  const vote1 = rateList?.listComment.filter((item) => item.vote == 1);
-
-  const quantityRate = rateList?.listComment.length;
+  const [rate, setRate] = useState(1);
+  const [vote1, setVote1] = useState(0);
+  const [vote2, setVote2] = useState(0);
+  const [vote3, setVote3] = useState(0);
+  const [vote4, setVote4] = useState(0);
+  const [vote5, setVote5] = useState(0);
+  const [quantityRate, setVote6] = useState(0);
+  useEffect(() => {
+    const listVote = rateList?.listComment.map((item) => item.vote);
+    let rate = 1;
+    if (listVote) {
+      rate = listVote?.reduce((acc, item) => acc + item, 0) / listVote?.length;
+      rate = parseFloat(rate.toFixed(1));
+      setRate(rate);
+      setVote(rate);
+    }
+    const vote5 = rateList?.listComment.filter((item) => item.vote == 5);
+    const vote4 = rateList?.listComment.filter((item) => item.vote == 4);
+    const vote3 = rateList?.listComment.filter((item) => item.vote == 3);
+    const vote2 = rateList?.listComment.filter((item) => item.vote == 2);
+    const vote1 = rateList?.listComment.filter((item) => item.vote == 1);
+    setVote1(vote1);
+    setVote2(vote2);
+    setVote3(vote3);
+    setVote4(vote4);
+    setVote5(vote5);
+    const quantityRate = rateList?.listComment.length;
+    setVote(quantityRate);
+  }, [rateList]);
   return (
     <div>
       <div className="flex pt-10 mt-6 pb-6 bg-yellow-50 border">
@@ -67,9 +86,9 @@ const ProductReview = ({
             precision={0.5}
             readOnly
           />
-          <p>({quantityRate} đánh giá)</p>
+          <p>({rateList?.listComment.length} đánh giá)</p>
           <button
-            className="text-white p-2 py-1 rounded-sm bg-orange-400"
+            className="text-white p-2 py-1 rounded bg-orange-400"
             onClick={() => setShowPopup(true)}
           >
             Gửi đánh giá của bạn
@@ -102,7 +121,7 @@ const ProductReview = ({
             return (
               <li className="mb-6" key={index}>
                 <div className="flex items-center">
-                  {comment.username}{" "}
+                  <p className="font-bold">{comment.username} </p>
                   <Rating
                     size="small"
                     name="half-rating-read"
@@ -146,6 +165,8 @@ const ProductReview = ({
           })}
         </ul>
       </div>
+      <br />
+      <hr />
     </div>
   );
 };
@@ -154,6 +175,7 @@ const SubDetailProduct = ({
   desc,
   rateList,
   setShowPopup,
+  setVote,
 }: SubDetailProductProps) => {
   const [isDesc, setShowDesc] = useState(false);
 
@@ -181,7 +203,11 @@ const SubDetailProduct = ({
         {isDesc ? (
           <ProductDesc desc={desc} />
         ) : (
-          <ProductReview rateList={rateList} setShowPopup={setShowPopup} />
+          <ProductReview
+            rateList={rateList}
+            setShowPopup={setShowPopup}
+            setVote={setVote}
+          />
         )}
       </div>
     </>

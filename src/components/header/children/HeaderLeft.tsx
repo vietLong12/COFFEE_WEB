@@ -92,7 +92,7 @@ const HeaderLeft = () => {
 
         <div
           onClick={(e) => e.stopPropagation()}
-          className="bg-white absolute top-12 xl:right-0 p-2 hidden items-center animate__animated animate__bounceIn group-hover:flex before:absolute before:-top-4 before:right-0 before:w-20 before:h-4"
+          className="rounded bg-white absolute top-12 xl:right-0 p-2 hidden items-center animate__animated animate__bounceIn group-hover:flex before:absolute before:-top-4 before:right-0 before:w-20 before:h-4"
           style={{ animationDuration: ".5s" }}
         >
           <form action="" onSubmit={(e) => handleSearchProduct(e)}>
@@ -163,14 +163,18 @@ const HeaderLeft = () => {
           />
           <div
             onClick={(e) => e.stopPropagation()}
-            className="bg-white absolute xl:top-12 xl:left-4 top-12 right-0 p-2 hidden items-center animate__animated animate__bounceIn  w-32 group-hover:flex before:absolute before:-top-4 before:left-0 before:w-20 before:h-4 "
+            className="rounded bg-white absolute xl:top-12 xl:left-4 top-12 right-0 hidden items-center animate__animated animate__bounceIn  w-32 group-hover:flex before:absolute before:-top-4 before:left-0 before:w-20 before:h-4 "
           >
-            <ul>
-              <li>
-                <Link to="/login">Đăng nhập</Link>
+            <ul className="w-full">
+              <li className="hover:bg-primary hover:text-white w-full rounded-t px-2 py-1 duration-200">
+                <Link to="/login" className="hover:text-white rounded">
+                  Đăng nhập
+                </Link>
               </li>
-              <li>
-                <Link to="/register">Đăng ký</Link>
+              <li className="hover:bg-primary hover:text-white w-full rounded-b px-2 py-1 duration-200">
+                <Link to="/register" className="hover:text-white rounded">
+                  Đăng ký
+                </Link>
               </li>
             </ul>
           </div>

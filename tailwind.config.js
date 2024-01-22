@@ -21,6 +21,7 @@ module.exports = {
       minHeight: {
         "custom-h-60px": "60px",
         "140px": "140px",
+        "400px": "400px"
       }, screens: {
         "laptop-small": "1500px"
       }

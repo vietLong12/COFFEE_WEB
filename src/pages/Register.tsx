@@ -4,7 +4,7 @@ import gg from "../assets/icon/gp-btn.svg";
 import { FormikHelpers } from "formik/dist/types";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AccountService } from "../service/AccountService";
 import SubHeader from "../components/subHeader/SubHeader";
 
@@ -46,6 +46,7 @@ const SignupSchema = Yup.object().shape({
 });
 
 const Login = () => {
+  const inputFirstName = useRef(null);
   const [showPass, setShowPass] = useState(false);
   const navigate = useNavigate();
   const handleSubmitForm = async (
@@ -69,7 +70,7 @@ const Login = () => {
   return (
     <div className="bg-black">
       <SubHeader heading="Đăng ký tài khoản" />
-      <div className="bg-white mt-20 py-10">
+      <div className="bg-white py-10">
         <Formik
           initialValues={initValue}
           onSubmit={handleSubmitForm}
@@ -93,6 +94,7 @@ const Login = () => {
               </p>
               <div className="w-full mb-3">
                 <Field
+                  innerRef={inputFirstName}
                   className="bg-green-50 px-2 py-3 w-full outline-none"
                   type="text"
                   name="firstName"
@@ -164,6 +166,11 @@ const Login = () => {
               <button
                 type="submit"
                 className="mb-4 bg-black text-white w-full py-2 font-semibold duration-100 border hover:bg-white hover:border-black hover:text-black"
+                onClick={() => {
+                  if (errors) {
+                    inputFirstName.current.focus();
+                  }
+                }}
               >
                 {" "}
                 Đăng ký

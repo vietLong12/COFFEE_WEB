@@ -30,7 +30,7 @@ function App() {
     } else {
       auth?.setLoggedIn(false);
     }
-  }, []);
+  }, [auth?.render]);
   return (
     <div>
       <Header />

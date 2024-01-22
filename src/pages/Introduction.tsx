@@ -7,8 +7,8 @@ const Introduction = () => {
   return (
     <div className="mb-10">
       <SubHeader heading="Giới thiệu" />
-      <div className="w-3/5 mx-auto my-2 mt-4">
-        <h3 className="font-semibold text-4xl">Giới thiệu</h3>
+      <div className="lg:w-3/5 w-full lg:px-0 px-4 mx-auto my-2 mt-4">
+        <h3 className="font-semibold text-4xl text-center">Lời mở đầu</h3>
         <p className="mt-2">
           Cửa hàng cà phê Monster là điểm đến lý tưởng cho những người yêu
           thưởng thức hương vị cà phê độc đáo và không gian thoải mái.
@@ -17,7 +17,7 @@ const Introduction = () => {
           <img
             src="https://i.pinimg.com/564x/b4/d2/4e/b4d24ec5871681f6ae8b0029c5a09c71.jpg"
             alt=""
-            width={200}
+            width={350}
           />
         </div>
         <p>

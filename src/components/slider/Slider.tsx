@@ -50,12 +50,12 @@ const Slider = () => {
     fetchData();
   }, []);
   return (
-    <div className="text-white flex justify-between pt-40 h-auto">
+    <div className="text-white flex justify-between pt-20 h-auto">
       <div
         className="hidden xl:flex flex-col items-center mx-auto w-5/12 justify-center  text-2xl
          font-medium"
       >
-        <p className="bg-white text-black hover-primary font-bold uppercase text-3xl px-4 py-2 cursor-pointer slider-left w-96 text-center mb-4 duration-200 relative">
+        <p className="bg-white text-black hover-primary font-bold uppercase text-3xl px-4 py-2 cursor-pointer slider-left w-96 text-center mb-4 duration-200 relative rounded">
           Deal hot trong ngày
         </p>
         <p>
@@ -78,14 +78,19 @@ const Slider = () => {
       <ul className="xl:w-6/12 w-full mt-5 lg:mt-0">
         {list?.map((item, i) => {
           return (
-            <li key={i} className="flex bg-blur mb-4 p-2">
-              <img
-                className="mr-4 cursor-pointer"
-                src={item.img}
-                alt=""
-                width={80}
-                height={80}
-              />
+            <li
+              key={i}
+              className="flex bg-blur mb-4 p-2 rounded-lg border border-white shadow-md"
+            >
+              <div className="mr-4 cursor-pointer flex">
+                <img
+                  src={item.img}
+                  alt=""
+                  className="rounded-lg"
+                  width={80}
+                  height={80}
+                />
+              </div>
               <div className="w-full">
                 <div className="primary flex justify-between text-xl font-bold items-center">
                   <Link

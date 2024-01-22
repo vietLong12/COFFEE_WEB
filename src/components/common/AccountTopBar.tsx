@@ -33,15 +33,21 @@ const AccountTopBar = () => {
 
       <div
         onClick={(e) => e.stopPropagation()}
-        className=" bg-white absolute top-12 right-0 p-2 hidden items-center w-28 animate__animated animate__bounceIn group-hover:flex before:absolute before:-top-4 before:right-0 before:w-20 before:h-4 "
+        className=" rounded bg-white absolute top-12 right-0 hidden items-center w-28 animate__animated animate__bounceIn group-hover:flex before:absolute before:-top-4 before:right-0 before:w-20 before:h-4 "
         style={{ animationDuration: ".5s" }}
       >
-        <ul>
-          <li>
-            <Link to="/account">Tài khoản</Link>
+        <ul className="w-full">
+          <li className="hover:bg-primary hover:text-white w-full rounded-t px-2 py-1 duration-200">
+            <Link to="/account" className="hover:text-white rounded">
+              Tài khoản
+            </Link>
           </li>
-          <li>
-            <Link to={"/"} onClick={handleLogout}>
+          <li className="hover:bg-primary hover:text-white w-full rounded-b px-2 py-1 duration-200">
+            <Link
+              to="/"
+              className="hover:text-white rounded"
+              onClick={handleLogout}
+            >
               Đăng xuất
             </Link>
           </li>
