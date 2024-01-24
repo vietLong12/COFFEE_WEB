@@ -119,9 +119,9 @@ const DetailProduct = () => {
                 <label htmlFor="note" className="block mb-1 mr-4">
                   Ghi chú:
                 </label>
-                <div className="input-detailt-product relative w-4/5">
+                <div className="input-detailt-product relative w-4/5 rounded-md outline-none">
                   <input
-                    className="outline-none"
+                    className="outline-none border border-primary rounded-md"
                     type="text"
                     id="note"
                     placeholder="Thêm ghi chú món này"

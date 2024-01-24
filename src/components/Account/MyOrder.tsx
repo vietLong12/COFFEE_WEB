@@ -1,4 +1,5 @@
 import {
+  Pagination,
   Table,
   TableBody,
   TableCell,
@@ -11,6 +12,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/authContext";
 import { AccountService } from "../../service/AccountService";
 import { OrderService } from "../../service/OrderService";
+import { Link } from "react-router-dom";
 
 const MyOrder = () => {
   const auth = useContext(AuthContext);
@@ -18,7 +20,16 @@ const MyOrder = () => {
   // @ts-ignore
   const [userData, setUserData] = useState();
   const [orders, setOrders] = useState<any>();
-  console.log("orders: ", orders);
+  const [selectedPage, setSelectedPage] = useState<any>(1);
+  const [totalPages, setTotalPages] = useState<any>(3);
+
+  const handleChangePage = (
+    //@ts-ignore
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setSelectedPage(value);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,13 +38,17 @@ const MyOrder = () => {
         setUserData(account.data);
 
         const orders = await OrderService.getListOrder({
+          page: selectedPage,
+          limit: "5",
           keyword: account.data.email,
         });
+        console.log(orders);
+        setTotalPages(orders.pagination.totalPages);
         setOrders(orders.orders);
       }
     };
     fetchData();
-  }, []);
+  }, [selectedPage]);
   return (
     <div>
       <h2 className="text-2xl uppercase mb-4">đơn hàng của bạn</h2>
@@ -69,7 +84,7 @@ const MyOrder = () => {
             {orders?.map((row: any) => (
               <TableRow
                 key={row._id}
-                className=""
+                className="overflow-hidden"
                 sx={{ "&:last-child td, &:last-child th": {} }}
               >
                 <TableCell
@@ -77,7 +92,9 @@ const MyOrder = () => {
                   scope="row"
                   sx={{ color: "blueviolet" }}
                 >
-                  {"#" + row.orderNumber}
+                  <Link to={"/account/don-hang/" + row.orderNumber}>
+                    {"#" + row.orderNumber}
+                  </Link>
                 </TableCell>
                 <TableCell align="center">
                   {new Date(row.createdAt).toLocaleDateString()}
@@ -99,6 +116,14 @@ const MyOrder = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <div className="flex justify-center pb-4 mt-4">
+        <Pagination
+          size="small"
+          count={totalPages}
+          page={selectedPage}
+          onChange={handleChangePage}
+        />
+      </div>
     </div>
   );
 };

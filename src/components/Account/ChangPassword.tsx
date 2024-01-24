@@ -55,7 +55,7 @@ const ChangPassword = () => {
             value={oldPass}
             onChange={(e) => setOldPass(e.target.value)}
             type="password"
-            className="border bg-neutral-300 xl:w-2/5 w-full px-4 py-2 text-black outline-none"
+            className="border rounded bg-neutral-300 xl:w-2/5 w-full px-4 py-2 text-black outline-none"
             id="password"
           />
         </div>
@@ -67,7 +67,7 @@ const ChangPassword = () => {
             value={newPass}
             onChange={(e) => setNewPass(e.target.value)}
             type="password"
-            className="border bg-neutral-300 xl:w-2/5 w-full px-4 py-2 text-black outline-none"
+            className="border rounded bg-neutral-300 xl:w-2/5 w-full px-4 py-2 text-black outline-none"
             id="newPassword"
           />
         </div>
@@ -79,13 +79,13 @@ const ChangPassword = () => {
             onChange={(e) => setReNewPass(e.target.value)}
             type="password"
             value={reNewPass}
-            className="border bg-neutral-300 xl:w-2/5 w-full px-4 py-2 text-black outline-none"
+            className="border rounded bg-neutral-300 xl:w-2/5 w-full px-4 py-2 text-black outline-none"
             id="reNewPassword"
           />
         </div>
         <button
           onClick={handleChangePassword}
-          className="bg-primary text-white text-sm font-bold p-4 py-3 mt-3 hover:bg-white hover:text-primary border border-primary duration-200"
+          className="bg-primary text-white text-sm font-bold p-4 py-3 mt-3 hover:bg-white hover:text-primary border border-primary duration-200 rounded"
         >
           Đặt lại mật khẩu
         </button>

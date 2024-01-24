@@ -50,7 +50,7 @@ const SubHeader = ({ heading, productName, custom }: SubHeaderProps) => {
         <h3 className="xl:text-4xl text-2xl bg-black">{heading}</h3>
       </div>
       <div className="xl:text-start xl:mx-auto font-bold py-3 bg-primary-100 border">
-        <span className="xl:text-base text-xs text-black normal-case  border  py-1 px-4 rounded xl:w-3/5 mx-auto block shadow-md">
+        <span className="xl:text-base text-xs text-black normal-case  border  py-1 px-4 rounded xl:w-3/5 mx-auto block">
           <Link to="/" className="hover:opacity-60 uppercase">
             Trang chủ
           </Link>

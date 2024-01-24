@@ -186,7 +186,7 @@ const Order = () => {
   return (
     <div className="">
       <SubHeader heading="Đặt hàng" />
-      <div className="w-full px-8 mx-auto gap-6 py-10 mb-4">
+      <div className="w-8/12 px-0 mx-auto gap-6 py-10 mb-4">
         <div className="">
           <p className="font-bold text-center text-2xl uppercase">
             Thông tin nhận hàng

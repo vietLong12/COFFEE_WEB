@@ -13,6 +13,7 @@ import MyOrder from "../components/Account/MyOrder";
 import ChangPassword from "../components/Account/ChangPassword";
 import MyAddress from "../components/Account/MyAddress";
 import SearchPage from "../pages/SearchPage";
+import DetailOrder from "../components/Account/DetailOrder";
 
 interface TBaseLayout {
   path: string;
@@ -75,6 +76,7 @@ export const privateLayout: TBaseLayout[] = [
       { path: "don-hang", element: MyOrder },
       { path: "doi-mat-khau", element: ChangPassword },
       { path: "so-dia-chi", element: MyAddress },
+      { path: "don-hang/:slug", element: DetailOrder },
     ],
   },
   {

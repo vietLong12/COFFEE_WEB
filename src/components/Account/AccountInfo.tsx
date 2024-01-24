@@ -6,6 +6,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
 import { ImageUploadService } from "../../service/ImageUploadService";
+import { FileUpload } from "@mui/icons-material";
 
 const AccountInfo = () => {
   const auth = useContext(AuthContext);
@@ -136,7 +137,7 @@ const AccountInfo = () => {
             Điện thoại: <span className="font-normal">{userData?.phone}</span>
           </div>
           <button
-            className="mt-3 border border-primary px-3 py-1 rounded-md hover:bg-white hover:text-primary duration-200 bg-primary text-white font-normal"
+            className="mt-3 border border-primary px-3 py-1 rounded hover:bg-white hover:text-primary duration-200 bg-primary text-white font-normal"
             onClick={handleOpen}
           >
             Chỉnh sửa thông tin
@@ -162,121 +163,138 @@ const AccountInfo = () => {
           <h1 className="text-2xl uppercase text-center mb-8">
             Chỉnh sửa thông tin cá nhân
           </h1>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="">
             <div className="">
               <form onSubmit={formik.handleSubmit}>
-                <div className="mb-2">
-                  <label htmlFor="username" className="block">
-                    Tên người dùng:{" "}
-                  </label>
-                  <input
-                    type="text"
-                    id="username"
-                    className="block border w-full py-1 px-2"
-                    name="username"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.username}
-                  />
-                  {formik.touched.username && formik.errors.username ? (
-                    <div className="text-red-700 text-sm">
-                      {formik.errors.username}
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <div className="mb-2">
+                      <label htmlFor="username" className="block">
+                        Tên người dùng:{" "}
+                      </label>
+                      <input
+                        type="text"
+                        id="username"
+                        className="block border outline-none rounded w-full py-1 px-2"
+                        name="username"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.username}
+                      />
+                      {formik.touched.username && formik.errors.username ? (
+                        <div className="text-red-700 text-sm">
+                          {formik.errors.username}
+                        </div>
+                      ) : null}
                     </div>
-                  ) : null}
-                </div>
 
-                <div className="mb-2">
-                  <label htmlFor="email" className="block">
-                    Email:
-                  </label>
-                  <input
-                    type="text"
-                    disabled
-                    id="email"
-                    name="email"
-                    className="border w-full py-1 px-2 block mb-3 opacity-70"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.email}
-                  />
-                  {formik.touched.email && formik.errors.email ? (
-                    <div className="text-red-700 text-sm">
-                      {formik.errors.email}
+                    <div className="mb-2">
+                      <label htmlFor="email" className="block">
+                        Email:
+                      </label>
+                      <input
+                        type="text"
+                        disabled
+                        id="email"
+                        name="email"
+                        className="border w-full py-1 px-2 block mb-3 opacity-70"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.email}
+                      />
+                      {formik.touched.email && formik.errors.email ? (
+                        <div className="text-red-700 text-sm">
+                          {formik.errors.email}
+                        </div>
+                      ) : null}
                     </div>
-                  ) : null}
-                </div>
 
-                <div className="mb-2">
-                  <label htmlFor="phone" className="block">
-                    Phone:
-                  </label>
-                  <input
-                    type="text"
-                    id="phone"
-                    className="block border w-full py-1 px-2"
-                    name="phone"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.phone}
-                  />
-                  {formik.touched.phone && formik.errors.phone ? (
-                    <div className="text-red-700 text-sm">
-                      {formik.errors.phone}
+                    <div className="mb-2">
+                      <label htmlFor="phone" className="block">
+                        Phone:
+                      </label>
+                      <input
+                        type="text"
+                        id="phone"
+                        className="block border outline-none rounded w-full py-1 px-2"
+                        name="phone"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.phone}
+                      />
+                      {formik.touched.phone && formik.errors.phone ? (
+                        <div className="text-red-700 text-sm">
+                          {formik.errors.phone}
+                        </div>
+                      ) : null}
                     </div>
-                  ) : null}
-                </div>
 
-                <div className="mb-2">
-                  <label htmlFor="password" className="block">
-                    Nhập mật khẩu:
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    className="block border w-full py-1 px-2"
-                    name="password"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.password}
-                  />
-                  {formik.touched.password && formik.errors.password ? (
-                    <div className="text-red-700 text-sm">
-                      {formik.errors.password}
+                    <div className="mb-2">
+                      <label htmlFor="password" className="block">
+                        Nhập mật khẩu:
+                      </label>
+                      <input
+                        type="password"
+                        id="password"
+                        className="block border outline-none rounded w-full py-1 px-2"
+                        name="password"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.password}
+                      />
+                      {formik.touched.password && formik.errors.password ? (
+                        <div className="text-red-700 text-sm">
+                          {formik.errors.password}
+                        </div>
+                      ) : null}
                     </div>
-                  ) : null}
+                  </div>
+
+                  <div className="flex justify-center flex-col items-center">
+                    <div className="mb-8 flex justify-center">
+                      <img
+                        src={avatarLink}
+                        alt="Không có hình ảnh"
+                        className="h-36"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="chooseFile"
+                        className="bg-primary text-white duration-200 text-sm px-2 py-1 cursor-pointer rounded flex justify-center border border-primary hover:text-primary hover:bg-white"
+                      >
+                        <FileUpload
+                          className="mr-1"
+                          fontSize="small"
+                          sx={{ fontSize: "20px" }}
+                        />
+                        Upload file
+                      </label>
+                      <input
+                        id="chooseFile"
+                        type="file"
+                        className="hidden"
+                        onChange={(e) => handleSetAvatar(e)}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div>
+                <div className="mx-auto w-fit mt-2">
                   <button
                     type="submit"
-                    className="inline-block border px-2 py-1 bg-primary text-white border-primary rounded-md mt-3 hover:text-primary duration-200 hover:bg-white mr-2"
+                    className="inline-block border px-3 py-1 text-lg bg-primary text-white border-primary rounded mt-3 hover:text-primary duration-200 hover:bg-white mr-2"
                   >
                     Chỉnh sửa
                   </button>
                   <button
                     type="button"
-                    className="inline-block border px-2 py-1 bg-white text-primary border-primary rounded-md mt-3 hover:text-white duration-200 hover:bg-primary"
+                    className="inline-block border px-5 py-1 bg-white text-lg text-primary border-primary rounded mt-3 hover:text-white duration-200 hover:bg-primary"
                     onClick={handleClose}
                   >
                     Hủy
                   </button>
                 </div>
               </form>
-            </div>
-            <div className="flex justify-center flex-col items-center">
-              <div className="mb-8 flex justify-center">
-                <img
-                  src={avatarLink}
-                  alt="Không có hình ảnh"
-                  className="h-36"
-                />
-              </div>
-              <div>
-                <input
-                  type="file"
-                  className=""
-                  onChange={(e) => handleSetAvatar(e)}
-                />
-              </div>
             </div>
           </div>
         </Box>

@@ -123,12 +123,12 @@ const TransactionNotification = () => {
       <SubHeader heading="Đặt hàng thành công" custom="Thông báo" />
       <div className=" w-3/5 mx-auto gap-8">
         <div className="col-span-7">
-          <div className="flex items-center mb-6 justify-center mt-8">
+          <div className="flex items-center mb-6 justify-center mt-8 border my-12 py-12 border-primary rounded">
             <div className="mr-4">
               <CheckCircle sx={{ fontSize: "120px" }} color="success" />
             </div>
-            <div className="text-xl">
-              <p className="font-bold mb-2 text-3xl text-primary">
+            <div className="text-xl  py-2 ">
+              <p className="font-bold mb-2 text-3xl text-primary my-8 ">
                 Cảm ơn bạn đã đặt hàng
               </p>
               <p>
@@ -172,7 +172,7 @@ const TransactionNotification = () => {
             </div>
           </div>
         </div>
-        <div className="w-full">
+        <div className="w-full mt-6 rounded">
           <div className="bg-zinc-50 p-6">
             <h6 className="font-bold">Đơn hàng #{orderInfo?.orderNumber}</h6>
             <ul className="mt-4 border-t pt-4">
