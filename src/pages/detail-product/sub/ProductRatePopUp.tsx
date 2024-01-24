@@ -8,8 +8,6 @@ import { useNavigate } from "react-router-dom";
 const ProductRatePopUp = ({ productId, setShowPopup }: any) => {
   const auth = useContext(AuthContext);
   const [product, setProduct] = useState<any>();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const [content, setContent] = useState("");
   const [rate, setRate] = React.useState<number | null>(1);
   const navigate = useNavigate();
@@ -25,22 +23,22 @@ const ProductRatePopUp = ({ productId, setShowPopup }: any) => {
         navigate("/login");
       }, 1000);
     } else {
-      if (name && email && content) {
+      if (content) {
         const reqBody = {
           comment: content,
-          email: email,
-          username: name,
+          email: auth.userData?.email,
+          username: auth.userData?.username,
           vote: rate,
           productId: productId,
         };
-        console.log("reqBody: ", reqBody);
         const res = await ProductService.postComment(reqBody);
-        console.log("res: ", res);
-        setName("");
-        setEmail("");
         setContent("");
+        setShowPopup(false);
       } else {
-        Swal.fire({ icon: "error", title: "Vui lòng nhập đầy đủ thông tin" });
+        Swal.fire({
+          icon: "question",
+          title: "Hãy cho chúng tôi biết bạn cảm thấy thế nào về sản phẩm này",
+        });
       }
     }
   };
@@ -74,7 +72,8 @@ const ProductRatePopUp = ({ productId, setShowPopup }: any) => {
             <div className="w-11/12 mx-auto mt-6">
               <input
                 type="text"
-                value={name}
+                value={auth?.userData?.username}
+                disabled
                 className="w-full outline-none border  p-1 px-4 text-base rounded"
                 placeholder="Nhập họ tên của bạn"
                 onChange={(e) => setName(e.target.value)}
@@ -86,7 +85,8 @@ const ProductRatePopUp = ({ productId, setShowPopup }: any) => {
                 className="w-full outline-none border  p-1 px-4 text-base rounded"
                 placeholder="Nhập email của bạn"
                 type="email"
-                value={email}
+                value={auth?.userData?.email}
+                disabled
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>

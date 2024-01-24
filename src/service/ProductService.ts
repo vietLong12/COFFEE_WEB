@@ -68,12 +68,13 @@ export class ProductService {
   }
 
   private static handleApiError(error: any) {
+    console.log('error: ', error);
     Swal.fire({
       icon: "warning",
       title: "Bad Request",
       text:
         error.message === "Request failed with status code 400"
-          ? "Đường dẫn không hợp lệ"
+          ? "Yêu cầu không hợp lệ"
           : error.message,
     });
   }

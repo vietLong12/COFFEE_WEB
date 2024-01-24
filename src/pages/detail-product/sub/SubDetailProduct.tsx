@@ -44,6 +44,8 @@ const ProductReview = ({
 
     return formattedDateTime;
   }
+  const [rateListC, setRateListC] = useState(rateList);
+  console.log("rateListC: ", rateListC);
   const [rate, setRate] = useState(1);
   const [vote1, setVote1] = useState(0);
   const [vote2, setVote2] = useState(0);
@@ -51,7 +53,18 @@ const ProductReview = ({
   const [vote4, setVote4] = useState(0);
   const [vote5, setVote5] = useState(0);
   const [quantityRate, setVote6] = useState(0);
+  const [voteFilter, setVoteFilter] = useState(0);
+
   useEffect(() => {
+    if (voteFilter == 0) {
+      setRateListC(rateList);
+    } else {
+      const data = rateList?.listComment;
+      setRateListC({
+        ...rateList,
+        listComment: data?.filter((s) => s.vote == voteFilter),
+      });
+    }
     const listVote = rateList?.listComment.map((item) => item.vote);
     let rate = 1;
     if (listVote) {
@@ -72,7 +85,7 @@ const ProductReview = ({
     setVote5(vote5);
     const quantityRate = rateList?.listComment.length;
     setVote(quantityRate);
-  }, [rateList]);
+  }, [rateList, voteFilter]);
   return (
     <div>
       <div className="flex pt-10 mt-6 pb-6 bg-yellow-50 border">
@@ -95,75 +108,109 @@ const ProductReview = ({
           </button>
         </div>
         <div className="text-sm">
-          <button className="border border-primary mr-4 px-2 rounded-md py-1 ">
+          <button
+            className="border border-primary mr-4 px-2 rounded-md py-1 "
+            onClick={() => setVoteFilter(0)}
+          >
             Tất cả
           </button>
-          <button className="border border-primary mr-4 px-2 rounded-md py-1 ">
+          <button
+            className="border border-primary mr-4 px-2 rounded-md py-1 "
+            onClick={() => setVoteFilter(5)}
+          >
             5 điểm({vote5?.length})
           </button>
-          <button className="border border-primary mr-4 px-2 rounded-md py-1 ">
+          <button
+            className="border border-primary mr-4 px-2 rounded-md py-1 "
+            onClick={() => setVoteFilter(4)}
+          >
             4 điểm({vote4?.length})
           </button>
-          <button className="border border-primary mr-4 px-2 rounded-md py-1 ">
+          <button
+            className="border border-primary mr-4 px-2 rounded-md py-1 "
+            onClick={() => setVoteFilter(3)}
+          >
             3 điểm({vote3?.length})
           </button>
-          <button className="border border-primary mr-4 px-2 rounded-md py-1 ">
+          <button
+            className="border border-primary mr-4 px-2 rounded-md py-1 "
+            onClick={() => setVoteFilter(2)}
+          >
             2 điểm({vote2?.length})
           </button>
-          <button className="border border-primary mr-4 px-2 rounded-md py-1 ">
+          <button
+            className="border border-primary mr-4 px-2 rounded-md py-1 "
+            onClick={() => setVoteFilter(1)}
+          >
             1 điểm({vote1?.length})
           </button>
         </div>
       </div>
       <div>
-        <ul className="px-6 py-4  border xl:max-h-screen lg:h-80 overflow-y-auto">
-          {rateList?.listComment.map((comment, index) => {
-            return (
-              <li className="mb-6" key={index}>
-                <div className="flex items-center">
-                  <p className="font-bold">{comment.username} </p>
-                  <Rating
-                    size="small"
-                    name="half-rating-read"
-                    value={comment.vote}
-                    precision={0.5}
-                    readOnly
-                    className="ml-4"
-                  />
-                  <span className="text-sm ml-4 text-orange-500">
-                    {comment.isPurchased ? "*Đã từng mua hàng tại Monster" : ""}
-                  </span>
-                </div>
+        {rateListC?.listComment.length > 0 ? (
+          <ul className="px-6 py-4  border xl:max-h-screen lg:h-80 overflow-y-auto">
+            {rateListC?.listComment.map((comment, index) => {
+              return (
+                <li className="mb-6" key={index}>
+                  <div className="grid xl:flex xl:items-center grid-cols-2">
+                    <p className="font-bold">{comment.username} </p>
+                    <Rating
+                      size="small"
+                      name="half-rating-read"
+                      value={comment.vote}
+                      precision={0.5}
+                      readOnly
+                      className="ml-4"
+                    />
+                    <span className="text-sm ml-4 text-orange-500 col-span-3">
+                      {comment.isPurchased
+                        ? "*Đã từng mua hàng tại Monster"
+                        : ""}
+                    </span>
+                  </div>
 
-                <p>{comment.comment}</p>
-                <div className="flex items-center mb-2">
-                  <div className="cursor-pointer hover-primary duration-200 mr-2">
-                    <ThumbUpAlt sx={{ fontSize: "14px", marginRight: "4px" }} />
-                    {comment.useful} Hữu ích
+                  <p className="md:py-2">
+                    <span className="font-bold">Đánh giá:</span>{" "}
+                    {comment.comment}
+                  </p>
+                  <div className="flex items-start md:items-center mb-2 flex-col md:flex-row">
+                    <div className="cursor-pointer hover-primary duration-200 mr-2">
+                      <ThumbUpAlt
+                        sx={{ fontSize: "14px", marginRight: "4px" }}
+                      />
+                      {comment.useful} Hữu ích
+                    </div>
+                    <div className="md:inline-block hidden">
+                      <FiberManualRecordIcon
+                        sx={{ fontSize: "10px", marginRight: "0.5rem" }}
+                      />
+                    </div>
+                    <div
+                      className="cursor-pointer hover-primary duration-200 mr-2 text-yellow-500"
+                      onClick={() =>
+                        confirm(
+                          "Bạn có chắc chắn muốn báo cáo đánh giá này là một sai phạm?"
+                        )
+                      }
+                    >
+                      <WarningIcon sx={{ fontSize: "14px" }} /> Cảnh báo sai
+                      phạm
+                    </div>
+                    <div className="md:inline-block hidden">
+                      <FiberManualRecordIcon
+                        sx={{ fontSize: "10px", marginRight: "0.5rem" }}
+                      />
+                    </div>
+                    <p className="mr-2">{formatDateTime(comment.createdAt)} </p>
                   </div>
-                  <FiberManualRecordIcon
-                    sx={{ fontSize: "10px", marginRight: "0.5rem" }}
-                  />
-                  <div
-                    className="cursor-pointer hover-primary duration-200 mr-2 text-yellow-500"
-                    onClick={() =>
-                      confirm(
-                        "Bạn có chắc chắn muốn báo cáo đánh giá này là một sai phạm?"
-                      )
-                    }
-                  >
-                    <WarningIcon sx={{ fontSize: "14px" }} /> Cảnh báo sai phạm
-                  </div>
-                  <FiberManualRecordIcon
-                    sx={{ fontSize: "10px", marginRight: "0.5rem" }}
-                  />
-                  <p className="mr-2">{formatDateTime(comment.createdAt)} </p>
-                </div>
-                <hr />
-              </li>
-            );
-          })}
-        </ul>
+                  <hr />
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <p className="px-2 mt-2">Chưa có đánh giá...</p>
+        )}
       </div>
       <br />
       <hr />

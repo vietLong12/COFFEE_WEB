@@ -40,7 +40,6 @@ const Order = () => {
   const [listAddress, setListAddress] = useState<any[]>([]);
 
   const [cartData, setCartData] = useState<ProductPayload[]>([]);
-  console.log("cartData: ", cartData);
 
   const [homeAddress, setHomeAddress] = useState("");
   const [wardSelected, setWardSelected] = useState<number | null>(1);
@@ -88,7 +87,6 @@ const Order = () => {
   const navigate = useNavigate();
 
   const handlePaymentChange = (e) => {
-    console.log(e.target.value);
     setSelectedPayment(e.target.value);
   };
 
@@ -111,7 +109,6 @@ const Order = () => {
           freightCost: freightCost,
         };
         const resOrder = await OrderService.postOrder(req);
-        console.log("resOrder: ", resOrder);
         if (resOrder.msg === "Cart is empty") {
           Swal.fire({
             icon: "warning",
@@ -137,7 +134,6 @@ const Order = () => {
 
   useEffect(() => {
     if (!(indexAddress === "other")) {
-      console.log(listAddress[Number(indexAddress)]);
       setHomeAddress(listAddress[Number(indexAddress)].homeAddress);
       setCitySelected(listAddress[Number(indexAddress)].city.code);
       setDistrictSelected(listAddress[Number(indexAddress)].district.code);
@@ -157,7 +153,21 @@ const Order = () => {
         );
         if (account) {
           setListAddress(account.data.address);
-          setCartData(auth?.cart);
+          const data = account.data.cart.items.map(async (item) => {
+            const product = await ProductService.getProductById(item.productId);
+            const size = product.product.sizes.filter(
+              (s) => s._id == item.sizeId
+            );
+            return {
+              productName: product.product.productName,
+              total: size[0].price * item.quantity,
+              quantity: item.quantity,
+              img: product.product.img,
+              note: item.note,
+            };
+          });
+          const result = await Promise.all(data);
+          setCartData(result);
         }
       }
     };
@@ -302,7 +312,6 @@ const Order = () => {
                 <TextField
                   onChange={(e) => setNoteValue(e.target.value)}
                   className="w-full"
-                  defaultValue={""}
                   value={noteValue}
                   id="outlined-required"
                   label="Required"

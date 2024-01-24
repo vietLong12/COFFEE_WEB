@@ -16,9 +16,11 @@ const DetailProduct = () => {
   const auth = useContext(AuthContext);
   const productId = slug.pathname.split("/")[2];
   const [product, setProduct] = useState<ProductResponse>();
+  const [price, setPrice] = useState("");
   const [vote, setVote] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const [listComment, setListComment] = useState();
+  console.log("listComment: ", listComment);
   const [sizeId, setSizeId] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [note, setNote] = useState("Không có ghi chú");
@@ -28,13 +30,22 @@ const DetailProduct = () => {
     if (auth?.isLoggedIn) {
       try {
         const a = await AccountService.addProductToCart({
-          //@ts-ignore
           accountId: auth?.userData?._id,
           productId: productId,
           sizeId: sizeId,
           quantity: quantity,
           note: note,
         });
+        console.log(a);
+        if (a.status === "success") {
+          auth.setRender(!auth.render);
+          Swal.fire({
+            icon: "success",
+            title: "Sản phẩm đã được thêm vào giỏ hàng của bạn",
+          });
+          setQuantity(1);
+          setNote("Không có ghi chú");
+        }
       } catch (error: any) {
         Swal.fire({ icon: "error", title: error.message });
       }
@@ -50,6 +61,7 @@ const DetailProduct = () => {
     handleAddToCart();
     if (auth?.isLoggedIn) {
       navigate("/order");
+      auth.setRender(!auth.render);
     }
   };
 
@@ -58,11 +70,17 @@ const DetailProduct = () => {
       .then((res) => {
         setProduct(res.product);
         setSizeId(res.product.sizes[0]._id);
+        setPrice(res.product.sizes[0].price);
       })
       .catch((err) => {
         navigate("/");
       });
     ProductService.getListCommentById(productId).then((res: any) => {
+      console.log(
+        res.data.listComment.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        )
+      );
       setListComment(res.data);
     });
   }, [productId, showPopup]);
@@ -82,11 +100,16 @@ const DetailProduct = () => {
             <h2 className="uppercase text-3xl font-bold mb-2">
               {product?.productName}
             </h2>
-            <Rating name="read-only" value={vote || 0} readOnly />
+            <Rating
+              precision={0.5}
+              name="read-only"
+              value={vote || 0}
+              readOnly
+            />
             <p className="mt-2 mb-2">
               Giá:
               <span className="ml-2 text-4xl primary font-bold">
-                {product?.sizes[0].price}.000₫
+                {price}.000₫
               </span>
             </p>
             <div className="flex">
@@ -101,7 +124,10 @@ const DetailProduct = () => {
                         name="sizeDetail"
                         defaultChecked={index == 0 ? true : false}
                         id={`optionDetail${index + 1}`}
-                        onClick={() => setSizeId(size._id)}
+                        onClick={() => {
+                          setSizeId(size._id);
+                          setPrice(size.price);
+                        }}
                       />
                       <label
                         className="uppercase text-xl ml-1  cursor-pointer"

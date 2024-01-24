@@ -225,7 +225,7 @@ const TransactionNotification = () => {
           </div>
         </div>
       </div>
-      <div className="flex justify-center mb-8">
+      <div className="flex justify-center mb-8 mt-6">
         <button
           className="bg-primary border border-primary text-white rounded-md py-3 px-4 text-xl mr-6 hover:bg-white hover:text-primary duration-200"
           onClick={() => navigate("/")}
@@ -233,7 +233,7 @@ const TransactionNotification = () => {
           Tiếp tục mua hàng
         </button>
         <button
-          className="text-primary hover:text-white hover:bg-primary rounded-md text-2xl font-bold border px-4 duration-200 border-primary"
+          className="text-primary hover:text-white hover:bg-primary rounded-md text-2xl font-bold border duration-200 border-primary px-12"
           onClick={handlePrint}
         >
           <Print fontSize="large" />

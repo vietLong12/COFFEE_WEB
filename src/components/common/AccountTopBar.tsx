@@ -17,6 +17,7 @@ const AccountTopBar = () => {
       });
     }
     auth?.setLoggedIn(false);
+    auth?.setUserData(null);
     removeCookies("token");
   };
   return (
