@@ -154,7 +154,7 @@ const MyAddress = () => {
           setWardSelected(1);
           setOpen(!open);
         }}
-        className="bg-primary text-white text-sm p-4 py-3 mt-3 up hover:opacity-60 border border-primary duration-200"
+        className="bg-primary text-white text-sm p-4 py-3 mt-3 up hover:opacity-60 border border-primary duration-200 rounded"
       >
         Thêm địa chỉ
       </button>

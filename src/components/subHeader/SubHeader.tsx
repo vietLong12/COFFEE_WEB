@@ -1,7 +1,5 @@
-import { ArrowRightTwoTone } from "@mui/icons-material";
 import { Link, useLocation } from "react-router-dom";
 import monsterCoffee from "../../assets/icon/logo-sidebar.webp";
-import { Breadcrumbs, Typography } from "@mui/material";
 
 interface SubHeaderProps {
   heading: string;
@@ -11,6 +9,7 @@ interface SubHeaderProps {
 
 const SubHeader = ({ heading, productName, custom }: SubHeaderProps) => {
   let matches = useLocation().pathname.split("/");
+  const matchesOld = matches;
   matches = matches.map((path) => {
     switch (path) {
       case "login":
@@ -49,21 +48,28 @@ const SubHeader = ({ heading, productName, custom }: SubHeaderProps) => {
       <div className="pt-6 pb-10 text-center text-white uppercase text-4xl bg-black font-bold ">
         <h3 className="xl:text-4xl text-2xl bg-black">{heading}</h3>
       </div>
-      <div className="xl:text-start xl:mx-auto font-bold py-3 bg-primary-100 border">
-        <span className="xl:text-base text-xs text-black normal-case  border  py-1 px-4 rounded xl:w-3/5 mx-auto block">
+      <div className="xl:text-start xl:mx-auto font-bold py-3 bg-primary-100">
+        <span className="xl:text-base text-xs text-black normal-case   py-1 px-4 rounded xl:w-3/5 mx-auto block">
           <Link to="/" className="hover:opacity-60 uppercase">
             Trang chủ
           </Link>
           {" / "}
-          <p className="inline-block uppercase ">{custom || heading}</p>
+          <Link
+            to={`/${
+              matchesOld[1] == "detail-product" ? "menu" : matchesOld[1]
+            }`}
+            className="inline-block uppercase "
+          >
+            {custom || heading}
+          </Link>
           {matches.splice(2).map((item, i) => {
             if (item === "") {
               return "";
             }
             return (
-              <span key={i} className="uppercase">
+              <Link to={matchesOld[i]} key={i} className="uppercase">
                 {" / "} {productName ? productName : item}
-              </span>
+              </Link>
             );
           })}
         </span>
