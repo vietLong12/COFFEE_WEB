@@ -146,6 +146,7 @@ const MenuPage = () => {
               <div className="xl:block grid lg:grid-cols-3 grid-cols-1 md:grid-cols-2  gap-8 lg:p-4 xl:p-0 lg:mb-10">
                 {dataMenu.map((item, index) => (
                   <div
+                    key={index}
                     className={`xl:grid grid-cols-4 px-4 py-6 border-b lg:border mb-2 rounded-md shadow-sm bg-white`}
                   >
                     <div className="flex justify-center items-center">
