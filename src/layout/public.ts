@@ -13,6 +13,7 @@ import TransactionNotification from "../pages/TransactionNotification";
 import Account from "../pages/Account";
 import NotFound from "../pages/NotFound";
 import SearchPage from "../pages/SearchPage";
+import LiveStream from "../pages/LiveStream";
 
 interface TBaseLayout {
   path: string;
@@ -55,6 +56,11 @@ export const publicLayout: TBaseLayout[] = [
   {
     path: "/search",
     element: SearchPage,
+  },
+  {
+    path: "/live",
+    element: LiveStream,
+    childRoute: [],
   },
   {
     path: "*",
