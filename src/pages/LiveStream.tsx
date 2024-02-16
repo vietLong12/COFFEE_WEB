@@ -1,19 +1,68 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import SubHeader from "../components/subHeader/SubHeader";
 import io from "socket.io-client";
 import { AuthContext } from "../context/authContext";
-const socket = io.connect("http://localhost:5500");
+import { BASE_URL } from "../service/type";
+import Swal from "sweetalert2";
+import { randomString } from "../utilities";
+
+interface DataUserCommentSocket {
+  author: string;
+  content: string;
+  time: string;
+}
+
+// @ts-ignore
+const socket = io.connect(BASE_URL);
 const LiveStream = () => {
   const auth = useContext(AuthContext);
   const [comments, setComments] = useState([]);
   const [viewCount, setViewCount] = useState(0);
-  console.log("viewCount: ", viewCount);
-  console.log("comments: ", comments);
+  const [text, setText] = useState("");
+  const [stream, setStream] = useState(null);
 
+  const videoRef = useRef(null);
+  console.log('videoRef: ', videoRef);
+  const guest = useRef("GUEST_" + randomString(4));
+  const commentContainerRef = useRef(null);
+
+  let username = auth?.userData?.username;
   const joinLive = async () => {
-    const username = await auth?.userData?.username;
-    console.log("username: ", username);
-    socket.emit("joinLive", username);
+    socket.emit("joinLive");
+  };
+
+  const sendCommentSocket = (data: DataUserCommentSocket) => {
+    socket.emit("sendComment", data);
+  };
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSendComment();
+    }
+  };
+  const handleSendComment = () => {
+    if (text.length > 0) {
+      if (auth?.isLoggedIn) {
+        const comment = {
+          author: username ? username : "GUEST",
+          content: text,
+          time: new Date().toLocaleString(),
+        };
+        console.log(comment);
+        setText("");
+        sendCommentSocket(comment);
+      } else {
+        const comment = {
+          author: guest.current,
+          content: text,
+          time: new Date().toLocaleString(),
+        };
+        console.log(comment);
+        sendCommentSocket(comment);
+        setText("");
+      }
+    } else {
+      Swal.fire({ title: "Hãy viết gì đó", icon: "warning" });
+    }
   };
 
   useEffect(() => {
@@ -21,24 +70,31 @@ const LiveStream = () => {
     socket.on("viewCount", (data) => {
       setViewCount(data);
     });
-    return () => {
-      socket.disconnect();
-    };
+    socket.on("listComment", (data) => {
+      setComments(data);
+    });
+    socket.on("live", (data) => {
+      console.log('data: ', data);
+      if (videoRef && videoRef.current) {
+        videoRef.current.srcObject = data;
+      }
+    });
   }, [socket]);
+  useEffect(() => {
+    // Cuộn đến cuối cùng của phần tử chứa các bình luận sau mỗi lần thêm bình luận mới
+    if (commentContainerRef.current) {
+      commentContainerRef.current.scrollTop =
+        commentContainerRef.current.scrollHeight;
+    }
+  }, [comments]);
 
   return (
     <>
       <SubHeader heading="Live Stream" />
-      <button onClick={joinLive}>AAA</button>
       <div className="w-4/5 mx-auto py-10 pb-40">
         <div className="lg:grid grid-cols-4 gap-4">
           <div className="col-span-3">
-            <video controls className="w-full">
-              <source
-                src="https://www.w3schools.com/html/movie.mp4/"
-                type="video/mp4"
-              />
-            </video>
+            <video controls className="w-full" ref={videoRef}></video>
             <h1 className="text-3xl font-bold pt-4 line-clamp-1">
               Buổi bán hàng của Monster ngày 31 tháng 1 năm 2024
             </h1>
@@ -49,10 +105,10 @@ const LiveStream = () => {
               Bình luận hàng đầu
             </h1>
             <div
-              className="p-4 pt-2 mt-4 overflow-y-scroll border border-primary rounded lg:h-96 h-40"
-              style={{ height: "500px" }}
+              className="p-4 pt-2 mt-4 overflow-y-scroll border border-primary rounded xl:h-500 h-200"
+              ref={commentContainerRef}
             >
-              {comments.map((comment, index) => {
+              {comments.map((comment: any, index) => {
                 return (
                   <div className="flex flex-row mb-2 mt-1" key={index}>
                     <p>
@@ -71,8 +127,14 @@ const LiveStream = () => {
                   name=""
                   placeholder="Để lại bình luận của bạn..."
                   id=""
+                  onChange={(e) => setText(e.target.value)}
+                  value={text}
+                  onKeyUp={handleKeyPress}
                 />
-                <button className="bg-primary text-white rounded hover:text-primary hover:bg-white border border-primary duration-200">
+                <button
+                  className="bg-primary text-white rounded hover:text-primary hover:bg-white border border-primary duration-200"
+                  onClick={handleSendComment}
+                >
                   Gửi
                 </button>
               </div>

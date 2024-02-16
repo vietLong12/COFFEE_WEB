@@ -24,6 +24,10 @@ module.exports = {
         "400px": "400px"
       }, screens: {
         "laptop-small": "1500px"
+      },
+      height: {
+        "500": "500px",
+        "200": "200px"
       }
     },
   },
