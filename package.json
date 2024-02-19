@@ -17,6 +17,8 @@
     "@mui/icons-material": "^5.14.11",
     "@mui/lab": "^5.0.0-alpha.156",
     "@mui/material": "^5.14.11",
+    "@rollup/plugin-inject": "^5.0.5",
+    "@types/simple-peer": "^9.11.8",
     "animate.css": "^4.1.1",
     "axios": "^1.6.2",
     "formik": "^2.4.5",
@@ -30,6 +32,7 @@
     "react-scroll-to-bottom": "^4.2.0",
     "react-to-print": "^2.14.15",
     "redux": "^4.2.1",
+    "simple-free-encryption-tool": "^2.0.14",
     "simple-peer": "^9.11.1",
     "socket.io-client": "^4.7.4",
     "sweetalert2": "^11.10.1",
@@ -50,6 +53,7 @@
     "postcss-cli": "^10.1.0",
     "tailwindcss": "^3.3.3",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vite-plugin-node-polyfills": "^0.21.0"
   }
 }

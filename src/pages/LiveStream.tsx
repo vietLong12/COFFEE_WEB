@@ -5,7 +5,7 @@ import { AuthContext } from "../context/authContext";
 import { BASE_URL } from "../service/type";
 import Swal from "sweetalert2";
 import { randomString } from "../utilities";
-
+import Peer from "simple-peer";
 interface DataUserCommentSocket {
   author: string;
   content: string;
@@ -13,16 +13,17 @@ interface DataUserCommentSocket {
 }
 
 // @ts-ignore
-const socket = io.connect(BASE_URL);
+const socket = io.connect("http://172.16.0.2:5500");
 const LiveStream = () => {
   const auth = useContext(AuthContext);
   const [comments, setComments] = useState([]);
   const [viewCount, setViewCount] = useState(0);
   const [text, setText] = useState("");
   const [stream, setStream] = useState(null);
+  const [peer, setPeer] = useState(null);
 
   const videoRef = useRef(null);
-  console.log('videoRef: ', videoRef);
+  console.log("videoRef: ", videoRef);
   const guest = useRef("GUEST_" + randomString(4));
   const commentContainerRef = useRef(null);
 
@@ -73,11 +74,19 @@ const LiveStream = () => {
     socket.on("listComment", (data) => {
       setComments(data);
     });
+
     socket.on("live", (data) => {
-      console.log('data: ', data);
-      if (videoRef && videoRef.current) {
-        videoRef.current.srcObject = data;
-      }
+      console.log("Co tin hieu");
+      const peer = new Peer({ initiator: false });
+      console.log("peer: ", peer);
+
+      peer.signal(data);
+      peer.on("stream", (stream) => {
+        videoRef.current.srcObject = stream;
+      });
+      videoRef.current.play();
+
+      setPeer(peer);
     });
   }, [socket]);
   useEffect(() => {
@@ -94,7 +103,13 @@ const LiveStream = () => {
       <div className="w-4/5 mx-auto py-10 pb-40">
         <div className="lg:grid grid-cols-4 gap-4">
           <div className="col-span-3">
-            <video controls className="w-full" ref={videoRef}></video>
+            <video
+              controls
+              autoPlay
+              playsInline
+              className="w-full"
+              ref={videoRef}
+            ></video>
             <h1 className="text-3xl font-bold pt-4 line-clamp-1">
               Buổi bán hàng của Monster ngày 31 tháng 1 năm 2024
             </h1>
