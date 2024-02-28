@@ -5,8 +5,7 @@ import { AuthContext } from "../context/authContext";
 import { BASE_URL } from "../service/type";
 import Swal from "sweetalert2";
 import { randomString } from "../utilities";
-import Peer from "simple-peer";
-
+import Peer from "peerjs";
 const socket = io.connect("http://localhost:5500");
 
 interface DataUserCommentSocket {
@@ -14,7 +13,6 @@ interface DataUserCommentSocket {
   content: string;
   time: string;
 }
-
 const LiveStream = () => {
   const auth = useContext(AuthContext);
   const [comments, setComments] = useState([]);
@@ -69,24 +67,24 @@ const LiveStream = () => {
       setComments(data);
     });
 
-    socket.on("live", async (offerSdp) => {
-      const configuration = {}; // Cấu hình ICE servers nếu cần
-      const peer = new Peer({
-        initiator: false,
-        trickle: false,
+    socket.on("live", (stream) => {
+      console.log("stream: ", stream);
+      const peer = new Peer();
+      console.log("peer: ", peer);
+      peer.on("open", (id) => {
+        console.log("id: ", id);
       });
-
-      peer.signal(offerSdp);
-
-      peer.on("signal", (answerSdp) => {
-        socket.emit("answer", answerSdp);
-      });
-
-      peer.on("stream", (stream) => {
-        videoRef.current.srcObject = stream;
+      peer.on("call", (call) => {
+        console.log("call: ", call);
+        call.answer(stream); // Trả lời cuộc gọi với luồng video
+        call.on("stream", (remoteStream) => {
+          console.log("remoteStream: ", remoteStream);
+          // Xử lý luồng video từ máy chủ phát trực tiếp, ví dụ: hiển thị nó trong một thẻ video
+          videoRef.current.srcObject = remoteStream;
+        });
       });
     });
-  }, []);
+  }, [socket]);
 
   return (
     <>
