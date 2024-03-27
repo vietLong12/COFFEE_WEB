@@ -1,7 +1,7 @@
 import imgAboutUs from "../../assets/bg/img-about-us.webp";
 const AboutUs = () => {
   return (
-    <div className="flex flex-col lg:flex-row lg:mt-60 mt-20 container mx-auto items-center ">
+    <div className="flex flex-col lg:flex-row lg:mt-64 mt-20 container mx-auto items-center ">
       <div className="img-aboutUs w-3/5 relative z-30 lg:mb-0 mb-11">
         <img src={imgAboutUs} alt="" />
       </div>

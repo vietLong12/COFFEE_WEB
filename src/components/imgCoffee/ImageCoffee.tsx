@@ -10,7 +10,7 @@ const ImageCoffee = () => {
       <div className="font-bold tracking-tighter">
         <Heading
           title="Hình ảnh monster quán"
-          href="/hinh-anh-monster-coffee"
+          href="/tin-tuc"
           className="lg:text-2xl text-xl"
         />
       </div>

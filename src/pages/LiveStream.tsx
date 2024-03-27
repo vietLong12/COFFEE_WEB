@@ -6,6 +6,7 @@ import { BASE_URL } from "../service/type";
 import Swal from "sweetalert2";
 import { randomString } from "../utilities";
 import Peer from "peerjs";
+// @ts-ignore
 const socket = io.connect("http://localhost:5500");
 
 interface DataUserCommentSocket {
@@ -15,10 +16,11 @@ interface DataUserCommentSocket {
 }
 const LiveStream = () => {
   const auth = useContext(AuthContext);
+  const peer = new Peer();
   const [comments, setComments] = useState([]);
+  const [online, setOnline] = useState(false);
   const [viewCount, setViewCount] = useState(0);
   const [text, setText] = useState("");
-
   const videoRef = useRef(null);
   const guest = useRef("GUEST_" + randomString(4));
   let username = auth?.userData?.username;
@@ -40,7 +42,7 @@ const LiveStream = () => {
   const handleSendComment = () => {
     if (text.length > 0) {
       const comment = {
-        author: username ? username : "GUEST",
+        author: username ? username : guest.current,
         content: text,
         time: new Date().toLocaleString(),
       };
@@ -53,10 +55,6 @@ const LiveStream = () => {
   };
 
   useEffect(() => {
-    socket.on("connect", () => {
-      console.log("socket: ", socket);
-    });
-
     joinLive();
 
     socket.on("viewCount", (data) => {
@@ -66,21 +64,15 @@ const LiveStream = () => {
     socket.on("listComment", (data) => {
       setComments(data);
     });
-
     socket.on("live", (stream) => {
-      console.log("stream: ", stream);
-      const peer = new Peer();
-      console.log("peer: ", peer);
       peer.on("open", (id) => {
-        console.log("id: ", id);
+        socket.emit("user-id", id);
       });
       peer.on("call", (call) => {
-        console.log("call: ", call);
-        call.answer(stream); // Trả lời cuộc gọi với luồng video
+        call.answer(null);
         call.on("stream", (remoteStream) => {
-          console.log("remoteStream: ", remoteStream);
-          // Xử lý luồng video từ máy chủ phát trực tiếp, ví dụ: hiển thị nó trong một thẻ video
           videoRef.current.srcObject = remoteStream;
+          setOnline(true);
         });
       });
     });
@@ -99,8 +91,10 @@ const LiveStream = () => {
               className="w-full"
               ref={videoRef}
             ></video>
-            <h1 className="text-3xl font-bold pt-4 line-clamp-1">
-              Buổi bán hàng của Monster ngày 31 tháng 1 năm 2024
+
+            <h1 className="xl:text-3xl font-bold pt-4 text-2xl md:line-clamp-1 ">
+              Buổi bán hàng của Monster ngày {new Date().getDate()} tháng{" "}
+              {new Date().getMonth() + 1} năm {new Date().getFullYear()}
             </h1>
             <p>Số lượng người xem: {viewCount}</p>
           </div>

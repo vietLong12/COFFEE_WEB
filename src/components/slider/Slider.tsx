@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AddRounded, StarRateRounded } from "@mui/icons-material";
 import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 import PopUp from "../common/PopUp";
@@ -9,9 +8,10 @@ import {
   GetProductListResponse,
   ProductResponse,
 } from "../../Types/ResponseType";
+import { AuthContext } from "../../context/authContext";
 
 const Slider = () => {
-  // const auth = useContext(AuthContext);
+  const auth = useContext(AuthContext);
 
   const navigate = useNavigate();
   const [showDetail, setShowDetail] = useState(false);
@@ -36,6 +36,14 @@ const Slider = () => {
     return <div>{stars}</div>;
   };
 
+  const handleOrdrNow = () => {
+    if (auth?.isLoggedIn) {
+      navigate("/order");
+    } else {
+      navigate("/login");
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const q = {
@@ -55,9 +63,12 @@ const Slider = () => {
         className="hidden xl:flex flex-col items-center mx-auto w-5/12 justify-center  text-2xl
          font-medium"
       >
-        <p className="bg-white text-black hover-primary font-bold uppercase text-3xl px-4 py-2 cursor-pointer slider-left w-96 text-center mb-4 duration-200 relative rounded">
+        <a
+          href="#menu-today"
+          className="bg-white text-black hover-primary font-bold uppercase text-3xl px-4 py-2 cursor-pointer slider-left w-96 text-center mb-4 duration-200 relative rounded"
+        >
           Deal hot trong ngày
-        </p>
+        </a>
         <p>
           Mua <span className="font-bold">1 phần nước</span> bất kì
         </p>
@@ -70,7 +81,7 @@ const Slider = () => {
         </p>
         <button
           className="mt-8 bg-primary font-bold uppercase px-4 py-2 border border-primary rounded-lg text-2xl hover:bg-black hover:border-black duration-200"
-          onClick={() => navigate("/login")}
+          onClick={handleOrdrNow}
         >
           Đặt hàng ngay
         </button>
@@ -82,13 +93,11 @@ const Slider = () => {
               key={i}
               className="flex bg-blur mb-4 p-2 rounded-lg border border-white shadow-md"
             >
-              <div className="mr-4 cursor-pointer flex">
+              <div className="mr-4 cursor-pointer w-16  pb-0 relative ">
                 <img
                   src={item.img}
                   alt=""
-                  className="rounded-lg"
-                  width={80}
-                  height={80}
+                  className="rounded-lg w-full h-full absolute top-0 left-0 object-cover "
                 />
               </div>
               <div className="w-full">

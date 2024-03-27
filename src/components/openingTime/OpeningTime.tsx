@@ -1,7 +1,19 @@
 import Heading from "../common/Heading";
 import "./openTime.css";
 import img from "../../assets/icon/img-nguoi-van-chuyen.webp";
+import { useContext } from "react";
+import { AuthContext } from "../../context/authContext";
+import { useNavigate } from "react-router-dom";
 const OpeningTime = () => {
+  const auth = useContext(AuthContext);
+  const navigate = useNavigate();
+  const handlOrderNow = () => {
+    if (auth?.isLoggedIn) {
+      navigate("/order");
+    } else {
+      navigate("/login");
+    }
+  };
   return (
     <div className="bg-image pt-32">
       <div className="lg:w-3/5 mx-auto flex justify-center">
@@ -45,7 +57,10 @@ const OpeningTime = () => {
             </div>
           </div>
           <div className="text-center mt-4 lg:block hidden">
-            <button className="border-2 px-8 py-1 xl:text-white text-primary xl:bg-transparent bg-white uppercase text-xl rounded-xl hover:text-black hover:border-black duration-200 ">
+            <button
+              className="border-2 px-8 py-1 xl:text-white text-primary xl:bg-transparent bg-white uppercase text-xl rounded-xl hover:text-black hover:border-black duration-200"
+              onClick={handlOrderNow}
+            >
               Đặt hàng ngay
             </button>
           </div>

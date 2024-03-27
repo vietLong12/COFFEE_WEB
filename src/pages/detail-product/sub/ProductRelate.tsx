@@ -24,7 +24,7 @@ const ProductRelate = ({ categoryId }: ProductRelateProps) => {
     };
 
     fetchData();
-  }, []);
+  }, [categoryId]);
 
   return (
     <div className="mx-auto w-full xl:w-3/5 pt-28 pb-20 xl:px-0 px-6">
@@ -34,9 +34,20 @@ const ProductRelate = ({ categoryId }: ProductRelateProps) => {
           {dataRender?.map((data, index) => {
             return (
               <li key={index} className="border rounded-b-lg">
-                <div className="h-52 flex justify-center items-center px-2 ">
-                  <img src={data.img} alt="" width={200} />
+                <div className="h-52 flex justify-center items-center px-2">
+                  <img
+                    src={data.img}
+                    alt=""
+                    className="max-w-full max-h-full"
+                    style={{
+                      width: "auto",
+                      height: "auto",
+                      maxWidth: "80%",
+                      maxHeight: "80%",
+                    }}
+                  />
                 </div>
+
                 <div>
                   <div className="flex justify-between items-center bg-primary text-white hover:text-black cursor-pointer px-3 py-1 rounded-t-lg">
                     <Link

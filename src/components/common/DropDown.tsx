@@ -18,8 +18,8 @@ const Dropdown = ({
   const [selectedOption, setSelectedOption] = useState<any>(defaultValue);
 
   const handleSelect = (option: string) => {
-    setSelectedOption(Number(option));
-    onSelect(Number(option));
+    setSelectedOption(option);
+    onSelect(option);
   };
 
   useEffect(() => {
@@ -41,14 +41,14 @@ const Dropdown = ({
         }}
         aria-label={label}
       >
-        <option value="" disabled className="text-blue-500">
+        <option value="emty" className="text-blue-500">
           -- Vui lòng chọn --
         </option>
         {options?.map((option) => (
           <option key={option.code} value={option.code}>
             {option.name}
           </option>
-        ))}
+        ))}   
       </select>
     </div>
   );

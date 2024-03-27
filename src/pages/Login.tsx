@@ -176,7 +176,7 @@ const Login = () => {
               }
             }, [errors.email, touched.email]);
             return (
-              <Form className="bg-white xl:w-1/5 lg:w-2/5 mx-auto p-7 shadow-2xl">
+              <Form className="bg-white xl:w-1/5 lg:w-2/5 md:w-3/5 mx-auto p-7 shadow-2xl">
                 <h2 className="uppercase text-2xl font-medium text-center mt-10">
                   {" "}
                   Đăng nhập

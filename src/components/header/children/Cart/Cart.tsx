@@ -46,19 +46,13 @@ const Cart = ({ render, setRender }: CartProps) => {
       dispatch(changeQuantity({ _id: productId, quantity, size }));
     } else {
       if (productId) {
-        console.log({
-          accountId: accountId,
-          quantity: quantity,
-          sizeId: sizeId,
-          productId: productId,
-        });
+        
         const account = await AccountService.addProductToCart({
           accountId: accountId ? accountId : "",
           quantity: quantity,
           sizeId: sizeId,
           productId: productId,
         });
-        console.log(account);
       }
     }
     setRender(!render);
@@ -97,7 +91,6 @@ const Cart = ({ render, setRender }: CartProps) => {
               })
             );
 
-            console.log("listCart: ", listCart);
             setCartData(listCart);
             auth.setCart(listCart);
           } catch (error) {

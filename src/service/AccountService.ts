@@ -31,12 +31,32 @@ interface CartRequest {
 
 export class AccountService {
   static getAccountById = async (logReq: string) => {
-    const response = await request.get(`/accounts/${logReq}`);
-    return response.data;
+    try {
+      const response = await request.get(`/accounts/${logReq}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   static putAccount = async (logReq: PutAccount) => {
     try {
+      if (logReq.address && logReq.address?.length > 0) {
+        const address = logReq.address.map((a) => {
+          const cityCode = a.city?.code.toString().replace(/\b(\d)\b/g, "0$1");
+          const districtCode = a.district?.code
+            .toString()
+            .replace(/\b(\d)\b/g, "0$1");
+          const wardCode = a.ward?.code.toString().replace(/\b(\d)\b/g, "0$1");
+          return {
+            ...a,
+            city: { name: a.city?.name, code: cityCode },
+            district: { name: a.district?.name, code: districtCode },
+            ward: { name: a.ward?.name, code: wardCode },
+          };
+        });
+        logReq.address = address;
+      }
       const response = await request.put("/accounts", logReq);
       return response.data;
     } catch (error: any) {

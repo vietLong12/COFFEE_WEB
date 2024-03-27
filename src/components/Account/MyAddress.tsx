@@ -20,15 +20,18 @@ import Swal from "sweetalert2";
 const MyAddress = () => {
   const auth = useContext(AuthContext);
   const [checked, setChecked] = useState(false);
+  const [password, setPassword] = useState("");
   const [isEdit, setEditStatus] = useState(false);
   const [open, setOpen] = useState(false);
   const [city, setCity] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
   const [homeAddress, setHomeAddress] = useState<string | undefined>("");
-  const [citySelected, setCitySelected] = useState<Number | null>(1);
-  const [districtSelected, setDistrictSelected] = useState<Number | null>(1);
-  const [wardSelected, setWardSelected] = useState<Number | null>(1);
+  const [citySelected, setCitySelected] = useState<number | string>("1");
+  const [districtSelected, setDistrictSelected] = useState<number | string>(
+    "1"
+  );
+  const [wardSelected, setWardSelected] = useState<number | string>("1");
   const [idEdit, setIdEdit] = useState<number>(-1);
 
   const handleDeleteAddress = async (index: number) => {
@@ -43,9 +46,14 @@ const MyAddress = () => {
   };
 
   const handleAddAddress = async () => {
-    const city = await AddressService.getCity(citySelected);
-    const district = await AddressService.getDistrict(districtSelected);
-    const ward = await AddressService.getWard(wardSelected);
+    let city = await AddressService.getListProvince();
+    city = city.filter((c) => c.code == citySelected)[0];
+    let district = await AddressService.getListDistrictByProvinceId(
+      citySelected
+    );
+    district = district.filter((d) => d.code == districtSelected)[0];
+    let ward = await AddressService.getListWardByDistrictId(districtSelected);
+    ward = ward.filter((w) => w.code == wardSelected)[0];
     const dataReq = {
       homeAddress,
       city: {
@@ -62,6 +70,7 @@ const MyAddress = () => {
       },
       defaultAddress: checked,
     };
+
     if (auth?.userData != null) {
       if (!isEdit) {
         const address = auth?.userData?.address.map((item) => {
@@ -77,7 +86,6 @@ const MyAddress = () => {
         };
         auth?.setUserData({ ...auth.userData, address: req.address });
         const account = await AccountService.putAccount(req);
-        console.log("account: ", account);
         Swal.fire({
           icon: account.status,
           text: "Thêm địa chỉ thành công",
@@ -107,33 +115,34 @@ const MyAddress = () => {
         }
       }
     }
-
-    console.log(dataReq);
   };
 
   const handleEditAddress = async (address: any, index: number) => {
-    console.log("address: ", address);
     setEditStatus(true);
     setOpen(!open);
     setHomeAddress(address.homeAddress);
     setChecked(address?.defaultAddress);
-    setCitySelected(address.city?.code);
-    setDistrictSelected(address.district?.code);
-    setWardSelected(address.ward?.code);
+    setCitySelected(address.city?.code.toString().replace(/\b(\d)\b/g, "0$1"));
+    setDistrictSelected(
+      address.district?.code.toString().replace(/\b(\d)\b/g, "0$1")
+    );
+    setWardSelected(address.ward?.code.toString().replace(/\b(\d)\b/g, "0$1"));
     setIdEdit(index);
   };
 
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const listCity = await AddressService.getAll();
-        setCity(listCity);
-        const districts = listCity.filter((c: any) => c.code === citySelected);
-        setDistricts(districts[0].districts);
-        const wards = districts[0].districts.filter(
-          (c: any) => c.code === districtSelected
+        const listCity = await AddressService.getListProvince();
+        const listDistrict = await AddressService.getListDistrictByProvinceId(
+          citySelected?.toString() ? citySelected?.toString() : ""
         );
-        setWards(wards[0].wards);
+        const listWard = await AddressService.getListWardByDistrictId(
+          districtSelected?.toString() ? districtSelected.toString() : ""
+        );
+        setCity(listCity);
+        setDistricts(listDistrict);
+        setWards(listWard);
       } catch (error) {
         console.error("Error fetching cities:", error);
       }
@@ -198,6 +207,7 @@ const MyAddress = () => {
               options={wards}
             />
           </div>
+
           {/* <div className="mb-4">
             <DropDown
               dataSelected={districtSelected}

@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 const News = () => {
   return (
     <>
-      <SubHeader heading="Tin tức" />
+      <SubHeader heading="Đang phát triển" />
       <div className="py-20 mx-auto w-3/5 text-center">
-        <h2 className="text-xl text-primary font-bold">
+        <h2 className="text-3xl text-primary font-bold">
           Trang này đang được phát triển
         </h2>
-        <p className="text-primary mb-3">
+        <p className="text-primary my-5 font-bold italic underline">
           Xin lỗi vì sự bất tiện này. Chúng tôi đang nỗ lực để mang lại trải
           nghiệm tốt nhất cho bạn.
         </p>

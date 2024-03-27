@@ -57,7 +57,6 @@ const AccountInfo = () => {
       if (file) {
         try {
           if (auth?.userData?._id) {
-            console.log(file[0]);
             const formData = new FormData();
             formData.append("file", file[0]);
             const image = await ImageUploadService.postImage(formData);

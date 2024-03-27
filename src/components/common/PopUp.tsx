@@ -54,7 +54,6 @@ const PopUp: React.FC<TPopUpProps> = ({ item, setShowDetail }) => {
           size: sizes?.name,
           total: sizes?.price || 1 * quantity,
         };
-        console.log("payload: ", payload);
         dispatch(addProductToCart(payload));
         setShowDetail(false);
       }

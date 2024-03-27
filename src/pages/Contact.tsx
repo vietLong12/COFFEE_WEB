@@ -19,7 +19,6 @@ const Contact = () => {
         "http://localhost:5500/contacts",
         formData
       );
-      console.log(formDataSaved);
       Swal.fire({
         icon: "success",
         title: "Thành công",
@@ -39,7 +38,6 @@ const Contact = () => {
       });
     }
   };
-  console.log("formData: ", formData);
   return (
     <div className="bg-primary-100">
       <SubHeader heading="liên hệ" />

@@ -31,7 +31,6 @@ const ChangPassword = () => {
         setOldPass("");
         setReNewPass("");
       }
-      console.log("account: ", account);
     }
   };
 

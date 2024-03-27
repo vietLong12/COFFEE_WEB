@@ -12,7 +12,7 @@ const RateComponent = () => {
 
   return (
     <div className="font-bold tracking-tighter pt-60 bg-rate -mt-40 pb-4">
-      <Heading title="ĐÁNH GIÁ KHÁCH HÀNG" href="/danh-gia-khach-hang"/>
+      <Heading title="ĐÁNH GIÁ KHÁCH HÀNG" href="/tin-tuc"/>
       <Swiper
         spaceBetween={screenWidth > 1024 ? 16 : 4}
         slidesPerView={screenWidth > 1024 ? 3 : 1}

@@ -42,7 +42,6 @@ const MyOrder = () => {
           limit: "5",
           keyword: account.data.email,
         });
-        console.log(orders);
         setTotalPages(orders.pagination.totalPages);
         setOrders(orders.orders);
       }
@@ -52,78 +51,84 @@ const MyOrder = () => {
   return (
     <div>
       <h2 className="text-2xl uppercase mb-4">đơn hàng của bạn</h2>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow className="bg-primary ">
-              <TableCell sx={{ minWidth: "100px", color: "white" }}>
-                Đơn hàng
-              </TableCell>
-              <TableCell align="center" sx={{ color: "white" }}>
-                Ngày
-              </TableCell>
-              <TableCell
-                align="center"
-                sx={{ color: "white" }}
-                className="w-60"
-              >
-                Địa chỉ
-              </TableCell>
-              <TableCell align="center" sx={{ color: "white" }}>
-                Giá trị đơn hàng
-              </TableCell>
-              <TableCell align="center" sx={{ color: "white" }}>
-                TT Thanh toán
-              </TableCell>
-              <TableCell align="center" sx={{ color: "white" }}>
-                TT Vận chuyển
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {orders?.map((row: any) => (
-              <TableRow
-                key={row._id}
-                className="overflow-hidden"
-                sx={{ "&:last-child td, &:last-child th": {} }}
-              >
-                <TableCell
-                  component="th"
-                  scope="row"
-                  sx={{ color: "blueviolet" }}
-                >
-                  <Link to={"/account/don-hang/" + row.orderNumber}>
-                    {"#" + row.orderNumber}
-                  </Link>
-                </TableCell>
-                <TableCell align="center">
-                  {new Date(row.createdAt).toLocaleDateString()}
-                </TableCell>
-                <TableCell align="center">{row.customer.address}</TableCell>
-                <TableCell align="center">{row.totalAmount}.000đ</TableCell>
-                <TableCell align="center" sx={{}}>
-                  <span
-                    className={` block ${
-                      !row.status ? "text-blue-600" : "text-red-500"
-                    }`}
+      {orders?.length > 0 ? (
+        <>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow className="bg-primary ">
+                  <TableCell sx={{ minWidth: "100px", color: "white" }}>
+                    Đơn hàng
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    Ngày
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{ color: "white" }}
+                    className="w-60"
                   >
-                    {row.status ? "Chưa thanh toán" : "Đã thanh toán"}
-                  </span>
-                </TableCell>
-                <TableCell align="center">{row.status}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <div className="flex justify-center pb-4 mt-4">
-        <Pagination
-          size="small"
-          count={totalPages}
-          page={selectedPage}
-          onChange={handleChangePage}
-        />
-      </div>
+                    Địa chỉ
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    Giá trị đơn hàng
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    TT Thanh toán
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    TT Vận chuyển
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {orders?.map((row: any) => (
+                  <TableRow
+                    key={row._id}
+                    className="overflow-hidden"
+                    sx={{ "&:last-child td, &:last-child th": {} }}
+                  >
+                    <TableCell
+                      component="th"
+                      scope="row"
+                      sx={{ color: "blueviolet" }}
+                    >
+                      <Link to={"/account/don-hang/" + row.orderNumber}>
+                        {"#" + row.orderNumber}
+                      </Link>
+                    </TableCell>
+                    <TableCell align="center">
+                      {new Date(row.createdAt).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell align="center">{row.customer.address}</TableCell>
+                    <TableCell align="center">{row.totalAmount}.000đ</TableCell>
+                    <TableCell align="center" sx={{}}>
+                      <span
+                        className={` block ${
+                          !row.status ? "text-blue-600" : "text-red-500"
+                        }`}
+                      >
+                        {row.status ? "Chưa thanh toán" : "Đã thanh toán"}
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">{row.status}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <div className="flex justify-center pb-4 mt-4">
+            <Pagination
+              size="small"
+              count={totalPages}
+              page={selectedPage}
+              onChange={handleChangePage}
+            />
+          </div>{" "}
+        </>
+      ) : (
+        <p>Bạn chưa có đơn hàng nào...</p>
+      )}
     </div>
   );
 };

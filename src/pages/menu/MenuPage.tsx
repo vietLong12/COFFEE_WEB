@@ -12,17 +12,19 @@ import Skeleton from "react-loading-skeleton";
 import { changeQuantity } from "../../redux/action/AddProductToCart";
 import { AuthContext } from "../../context/authContext";
 import Swal from "sweetalert2";
+import { AccountService } from "../../service/AccountService";
 
 const MenuPage = () => {
-  const cart: any = useSelector((store: RootState) => store.cart);
+  const [cart, setCart] = useState([]);
   const dispatch = useDispatch();
+  const cartRedux = useSelector((s) => s.cart);
   const auth = useContext(AuthContext);
   const [listCategory, setListCategory] = useState<any>([]);
   const [selectedPage, setSelectedPage] = useState<any>(1);
   const [totalPages, setTotalPages] = useState<any>(10);
   const [category, setCategory] = useState({
     category: "cà phê",
-    categoryId: "",
+    categoryId: "cà phê",
   });
   const [showDetail, setShowDetail] = useState(false);
   const [itemSelected, setItemSelected] = useState<ProductResponse>();
@@ -67,6 +69,41 @@ const MenuPage = () => {
   useEffect(() => {
     ProductService.getListCategory().then((res) => setListCategory(res.data));
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (auth?.isLoggedIn) {
+        const accountId = auth?.userData?._id ? auth?.userData?._id : "";
+        const accountResponse = await AccountService.getAccountById(accountId);
+        const listCartRes = accountResponse.data.cart.items;
+        const listCart = await Promise.all(
+          listCartRes.map(async (item: any) => {
+            const responseProduct = await ProductService.getProductById(
+              item.productId
+            );
+            const product = responseProduct.product;
+            const size = product.sizes.find((s: any) => s._id === item.sizeId);
+
+            const dataReturn = {
+              _id: product._id,
+              note: item.note,
+              productName: product.productName,
+              quantity: item.quantity,
+              size: size ? size.name : "N/A",
+              total: size.price * item.quantity,
+              sizeId: size._id,
+              img: product.img,
+            };
+            return dataReturn;
+          })
+        );
+        setCart(listCart);
+      } else {
+        setCart(cartRedux);
+      }
+    };
+    fetchData();
+  }, [showDetail]);
   return (
     <div>
       <SubHeader heading="Menu" />
@@ -173,7 +210,7 @@ const MenuPage = () => {
                       "
                       >
                         {item.inStock
-                          ? item.sizes[0].price + ".000đ"
+                          ? item.sizes[0]?.price + ".000đ"
                           : "Liên hệ"}
                       </p>
                       {item.inStock ? (
@@ -215,62 +252,27 @@ const MenuPage = () => {
               <hr className="border-gray-800" />
               <div>
                 <ul className="p-4 overflow-y-auto h-96">
-                  {cart.map((item: any, index: number) => {
+                  {cart?.map((item: any, index: number) => {
                     return (
-                      <>
-                        <li key={index} className="grid grid-cols-3">
-                          <div className="col-span-2">
-                            <p className="font-bold text-lg uppercase">
-                              {item.productName} - {item.size}
-                            </p>
-                            <p className="text-green-500 text-xs">
-                              {item.note}
-                            </p>
-                            <button className="text-yellow-600 text-sm py-2">
-                              x Xoá
-                            </button>
+                      <li key={index} className="grid grid-cols-3">
+                        <div className="col-span-2">
+                          <p className="font-bold text-lg uppercase">
+                            {item.productName} - {item.size}
+                          </p>
+                          <p className="text-green-500 text-xs">{item.note}</p>
+                        </div>
+                        <div className="flex  flex-col items-end">
+                          <div className="flex justify">
+                            <input
+                              type="text"
+                              className="w-10 text-center bg-transparent"
+                              value={"x " + item.quantity}
+                              disabled
+                            />
                           </div>
-                          <div className="flex  flex-col items-end">
-                            <div className="flex justify">
-                              <button
-                                className="bg-primary w-5 h-5 flex justify-center items-center rounded-md text-white"
-                                onClick={() =>
-                                  dispatch(
-                                    changeQuantity({
-                                      _id: item._id,
-                                      quantity: -1,
-                                      size: item.size,
-                                    })
-                                  )
-                                }
-                              >
-                                -
-                              </button>
-                              <input
-                                type="text"
-                                className="w-10 text-center"
-                                value={item.quantity}
-                                disabled
-                              />
-                              <button
-                                className="bg-primary w-5 h-5 flex justify-center items-center rounded-md text-white"
-                                onClick={() =>
-                                  dispatch(
-                                    changeQuantity({
-                                      _id: item._id,
-                                      quantity: 1,
-                                      size: item.size,
-                                    })
-                                  )
-                                }
-                              >
-                                +
-                              </button>
-                            </div>
-                            <div className="fl">{item.total}.000₫</div>
-                          </div>
-                        </li>
-                      </>
+                          <div className="fl">{item.total}.000₫</div>
+                        </div>
+                      </li>
                     );
                   })}
                 </ul>
@@ -278,7 +280,7 @@ const MenuPage = () => {
                 <div className="border-y border-gray-800 py-4 flex justify-between p-6">
                   <p>Tổng cộng: </p>
                   <span className="font-bold text-xl text-red-700">
-                    {cart.reduce(
+                    {cart?.reduce(
                       (acc: number, item: ProductCart) => acc + item.total,
                       0
                     )}

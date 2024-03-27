@@ -20,7 +20,6 @@ const DetailProduct = () => {
   const [vote, setVote] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const [listComment, setListComment] = useState();
-  console.log("listComment: ", listComment);
   const [sizeId, setSizeId] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [note, setNote] = useState("Không có ghi chú");
@@ -36,7 +35,6 @@ const DetailProduct = () => {
           quantity: quantity,
           note: note,
         });
-        console.log(a);
         if (a.status === "success") {
           auth.setRender(!auth.render);
           Swal.fire({
@@ -76,15 +74,9 @@ const DetailProduct = () => {
         navigate("/");
       });
     ProductService.getListCommentById(productId).then((res: any) => {
-      console.log(
-        res.data.listComment.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        )
-      );
       setListComment(res.data);
     });
   }, [productId, showPopup]);
-
   return (
     <div className="">
       <SubHeader

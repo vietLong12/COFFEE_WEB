@@ -12,6 +12,7 @@ const MenuToday = () => {
           title="Menu hôm nay"
           className="xl:text-white text-black"
           href="/menu"
+          id="menu-today"
         />
         <MenuList />
         <div className="text-center">

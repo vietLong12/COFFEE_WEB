@@ -45,7 +45,6 @@ const ProductReview = ({
     return formattedDateTime;
   }
   const [rateListC, setRateListC] = useState(rateList);
-  console.log("rateListC: ", rateListC);
   const [rate, setRate] = useState(1);
   const [vote1, setVote1] = useState(0);
   const [vote2, setVote2] = useState(0);
@@ -84,7 +83,7 @@ const ProductReview = ({
     setVote4(vote4);
     setVote5(vote5);
     const quantityRate = rateList?.listComment.length;
-    setVote(quantityRate);
+    setVote(rate);
   }, [rateList, voteFilter]);
   return (
     <div>

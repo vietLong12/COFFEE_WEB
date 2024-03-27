@@ -45,7 +45,6 @@ const Order = () => {
   const [wardSelected, setWardSelected] = useState<number | null>(1);
   const [districtSelected, setDistrictSelected] = useState<number | null>(1);
   const [citySelected, setCitySelected] = useState<number | null>(1);
-
   const [city, setCity] = useState([]);
   const [district, setDistrict] = useState([]);
   const [ward, setWard] = useState([]);
@@ -93,13 +92,22 @@ const Order = () => {
   const handleSubmitOrder = async () => {
     try {
       if (citySelected && districtSelected && wardSelected) {
-        const city = await AddressService.getCity(citySelected);
-        const district = await AddressService.getDistrict(districtSelected);
-        const ward = await AddressService.getWard(wardSelected);
+        const cityReq = city.filter((c: any) => c.code === citySelected);
+        const districtReq = district.filter(
+          (d: any) => d.code === districtSelected
+        );
+        const wardReq = ward.filter((c: any) => c.code === wardSelected);
+        if (
+          wardReq.length < 1 ||
+          cityReq.length < 1 ||
+          districtReq.length < 1
+        ) {
+          throw new Error("address not found");
+        }
         const req = {
           accountId: auth?.userData?._id,
           customer: {
-            address: `${homeAddress} - ${ward.name} - ${district.name} - ${city.name}`,
+            address: `${homeAddress} - ${wardReq[0].name} - ${districtReq[0].name} - ${cityReq[0].name}`,
             email: auth?.userData?.email,
             phone: auth?.userData?.phone,
             username: auth?.userData?.username,
@@ -127,7 +135,13 @@ const Order = () => {
         }
       }
     } catch (error) {
-      console.log(error.response.data);
+      console.log(error);
+      if (error.message === "address not found") {
+        Swal.fire({
+          icon: "warning",
+          title: "Vui lòng kiểm tra lại địa chỉ nhận hàng",
+        });
+      }
     }
     // navigate("/order/alert");
   };
@@ -135,9 +149,22 @@ const Order = () => {
   useEffect(() => {
     if (!(indexAddress === "other")) {
       setHomeAddress(listAddress[Number(indexAddress)].homeAddress);
-      setCitySelected(listAddress[Number(indexAddress)].city.code);
-      setDistrictSelected(listAddress[Number(indexAddress)].district.code);
-      setWardSelected(listAddress[Number(indexAddress)].ward.code);
+
+      setCitySelected(
+        listAddress[Number(indexAddress)].city.code
+          .toString()
+          .replace(/\b(\d)\b/g, "0$1")
+      );
+      setDistrictSelected(
+        listAddress[Number(indexAddress)].district.code
+          .toString()
+          .replace(/\b(\d)\b/g, "0$1")
+      );
+      setWardSelected(
+        listAddress[Number(indexAddress)].ward.code
+          .toString()
+          .replace(/\b(\d)\b/g, "0$1")
+      );
       setIsNewAddress(false);
     } else {
       setHomeAddress("");
@@ -177,14 +204,17 @@ const Order = () => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const listCity = await AddressService.getAll();
+        const listCity = await AddressService.getListProvince();
+
         setCity(listCity);
-        const districts = listCity.filter((c: any) => c.code === citySelected);
-        setDistrict(districts[0].districts);
-        const wards = districts[0].districts.filter(
-          (c: any) => c.code === districtSelected
+        const districts = await AddressService.getListDistrictByProvinceId(
+          citySelected ? citySelected : ""
         );
-        setWard(wards[0]?.wards);
+        setDistrict(districts);
+        const wards = await AddressService.getListWardByDistrictId(
+          districtSelected ? districtSelected : ""
+        );
+        setWard(wards);
       } catch (error) {
         console.error("Error fetching cities:", error);
       }
@@ -213,7 +243,9 @@ const Order = () => {
                 name="selectAddreess"
                 id="listAddress"
                 className="overflow-hidden border-2 py-1 px-1 w-full"
-                onChange={(e) => setIndexAddress(e.target.value)}
+                onChange={(e) => {
+                  setIndexAddress(e.target.value);
+                }}
               >
                 <option value="other" className="">
                   1. Địa chỉ mới
@@ -275,7 +307,9 @@ const Order = () => {
             <div className="mb-2">
               <DropDown
                 label="Tỉnh/Thành phố"
-                onSelect={(w) => setCitySelected(w)}
+                onSelect={(w) => {
+                  setCitySelected(w);
+                }}
                 options={city}
                 disabled={!isNewAddress}
                 defaultValue={citySelected}
@@ -291,7 +325,9 @@ const Order = () => {
                 label="Quận/Huyện"
                 defaultValue={districtSelected}
                 disabled={!isNewAddress}
-                onSelect={(w) => setDistrictSelected(w)}
+                onSelect={(w) => {
+                  setDistrictSelected(w);
+                }}
                 options={district}
               />
             </div>
