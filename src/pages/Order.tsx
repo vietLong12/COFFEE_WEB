@@ -308,6 +308,7 @@ const Order = () => {
               <DropDown
                 label="Tỉnh/Thành phố"
                 onSelect={(w) => {
+                  // @ts-ignore
                   setCitySelected(w);
                 }}
                 options={city}
@@ -326,6 +327,7 @@ const Order = () => {
                 defaultValue={districtSelected}
                 disabled={!isNewAddress}
                 onSelect={(w) => {
+                  // @ts-ignore
                   setDistrictSelected(w);
                 }}
                 options={district}
@@ -335,6 +337,7 @@ const Order = () => {
               <DropDown
                 disabled={!isNewAddress}
                 label="Phường/Xã"
+                // @ts-ignore
                 onSelect={(w) => setWardSelected(w)}
                 options={ward}
                 defaultValue={wardSelected}
@@ -437,7 +440,7 @@ const Order = () => {
                       key={index}
                     >
                       <div className="relative mr-5">
-                        <img src={item.img} alt="" width={50} />
+                        <img src={(item as any).img} alt="" width={50} />
                         <span className="bg-blue-600 w-5 h-5 justify-center flex items-center absolute -top-2 left-9 text-white text-xs rounded-full">
                           {item.quantity}
                         </span>

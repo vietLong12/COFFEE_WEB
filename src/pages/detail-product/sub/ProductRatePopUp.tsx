@@ -76,6 +76,7 @@ const ProductRatePopUp = ({ productId, setShowPopup }: any) => {
                 disabled
                 className="w-full outline-none border  p-1 px-4 text-base rounded"
                 placeholder="Nhập họ tên của bạn"
+                // @ts-ignore
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
@@ -87,6 +88,7 @@ const ProductRatePopUp = ({ productId, setShowPopup }: any) => {
                 type="email"
                 value={auth?.userData?.email}
                 disabled
+                // @ts-ignore
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>

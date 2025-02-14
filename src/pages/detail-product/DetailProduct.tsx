@@ -118,6 +118,7 @@ const DetailProduct = () => {
                         id={`optionDetail${index + 1}`}
                         onClick={() => {
                           setSizeId(size._id);
+                          // @ts-ignore
                           setPrice(size.price);
                         }}
                       />
@@ -217,6 +218,7 @@ const DetailProduct = () => {
           desc={product?.desc}
           rateList={listComment}
           setShowPopup={setShowPopup}
+          // @ts-ignore
           setVote={setVote}
         />
       </div>

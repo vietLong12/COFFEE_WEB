@@ -4,6 +4,7 @@ interface Props {
   options: any[];
   onSelect: (code: Number) => void;
   label: string;
+  // @ts-ignore
   defaultValue?: Number | null;
   disabled?: boolean;
 }
@@ -19,6 +20,7 @@ const Dropdown = ({
 
   const handleSelect = (option: string) => {
     setSelectedOption(option);
+    // @ts-ignore
     onSelect(option);
   };
 
@@ -48,7 +50,7 @@ const Dropdown = ({
           <option key={option.code} value={option.code}>
             {option.name}
           </option>
-        ))}   
+        ))}
       </select>
     </div>
   );

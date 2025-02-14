@@ -184,7 +184,9 @@ const MyAddress = () => {
           </div>
           <div className="mb-4">
             <DropDown
+              // @ts-ignore
               onSelect={(city) => setCitySelected(city)}
+              // @ts-ignore
               defaultValue={citySelected}
               label="Tỉnh/Thành phố"
               options={city}
@@ -192,8 +194,10 @@ const MyAddress = () => {
           </div>
           <div className="mb-4">
             <DropDown
+              // @ts-ignore
               onSelect={(d) => setDistrictSelected(d)}
               label="Quận/Huyện"
+              // @ts-ignore
               defaultValue={districtSelected}
               options={districts}
             />
@@ -201,7 +205,9 @@ const MyAddress = () => {
 
           <div className="mb-4">
             <DropDown
+              // @ts-ignore
               defaultValue={wardSelected}
+              // @ts-ignore
               onSelect={(w) => setWardSelected(w)}
               label="Phường/Xã"
               options={wards}

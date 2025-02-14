@@ -55,6 +55,7 @@ export class AccountService {
             ward: { name: a.ward?.name, code: wardCode },
           };
         });
+        // @ts-ignore
         logReq.address = address;
       }
       const response = await request.put("/accounts", logReq);

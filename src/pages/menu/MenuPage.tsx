@@ -17,6 +17,7 @@ import { AccountService } from "../../service/AccountService";
 const MenuPage = () => {
   const [cart, setCart] = useState([]);
   const dispatch = useDispatch();
+  // @ts-ignore
   const cartRedux = useSelector((s) => s.cart);
   const auth = useContext(AuthContext);
   const [listCategory, setListCategory] = useState<any>([]);
@@ -281,6 +282,7 @@ const MenuPage = () => {
                   <p>Tổng cộng: </p>
                   <span className="font-bold text-xl text-red-700">
                     {cart?.reduce(
+                      // @ts-ignore
                       (acc: number, item: ProductCart) => acc + item.total,
                       0
                     )}
