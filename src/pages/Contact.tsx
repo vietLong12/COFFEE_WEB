@@ -16,7 +16,7 @@ const Contact = () => {
   const handleSubmit = async () => {
     try {
       const formDataSaved = await axios.post(
-        "http://localhost:5500/contacts",
+        "https://coffeewebapi-production.up.railway.app/contacts",
         formData
       );
       Swal.fire({
